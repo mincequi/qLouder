@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>project/ProjectTab.qml</file>
+        <file>measure/MeasureTab.qml</file>
+        <file>VerticalTabBar.qml</file>
+        <file>MaterialDesignIcon.qml</file>
+        <file>MaterialTabButton.qml</file>
+        <file>MaterialDesignIconGlyphs.js</file>
+        <file>materialdesignicons-webfont.ttf</file>
+        <file>SmallToolButton.qml</file>
+        <file>SmallComboBox.qml</file>
+        <file>SmallRangeSlider.qml</file>
+        <file>SmallSpinBox.qml</file>
+        <file>measure/Gauge.qml</file>
+        <file>measure/GaugePointer.qml</file>
+        <file>status/StatusBar.qml</file>
+        <file>materialdesignicons-webfont.svg</file>
+        <file>charts/FrChart.qml</file>
+        <file>charts/IrChart.qml</file>
+        <file>charts/Chart.qml</file>
+    </qresource>
+</RCC>

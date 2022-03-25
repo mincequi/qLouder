@@ -1,0 +1,112 @@
+cmake_minimum_required(VERSION 3.14)
+
+project(qLouder VERSION 0.1 LANGUAGES CXX)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick QuickControls2 Multimedia Charts Svg Xml REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 Multimedia Charts Svg Xml REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(FFTW3F REQUIRED fftw3f)
+pkg_check_modules(FFTW3 REQUIRED fftw3)
+
+include_directories(
+    src
+)
+
+set(PROJECT_SOURCES
+    src/charts/AbstractChart.cpp
+    src/charts/ChartModel.cpp
+    src/charts/FrChartModel.cpp
+    src/charts/IrChartModel.cpp
+    src/charts/LinChart.cpp
+    src/charts/LogChart.cpp
+    src/charts/TimeTable.cpp
+    src/measure/AudioBuffer.cpp
+    src/measure/AudioDeviceInfo.cpp
+    src/measure/MeasurementError.cpp
+    src/measure/MeasureModel.cpp
+    src/measure/Measurement.cpp
+    src/measure/MeasurementManager.cpp
+    src/measure/MeasurementService.cpp
+    src/measure/SignalGenerator.cpp
+    src/project/ProjectModel.cpp
+    src/status/StatusModel.cpp
+    src/util/FrFile.cpp
+    src/Config.cpp
+    src/FrequencyTable.cpp
+    src/MaterialDesignIcon.cpp
+    src/main.cpp
+    src/main.cpp
+    src/qml.qrc
+)
+
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    qt_add_executable(qLouder
+        MANUAL_FINALIZATION
+        ${PROJECT_SOURCES}
+    )
+# Define target properties for Android with Qt 6 as:
+#    set_property(TARGET qLouder APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
+# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
+else()
+    if(ANDROID)
+        add_library(qLouder SHARED
+            ${PROJECT_SOURCES}
+        )
+# Define properties for Android with Qt 5 after find_package() calls as:
+#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
+    else()
+        add_executable(qLouder
+          ${PROJECT_SOURCES}
+        )
+    endif()
+endif()
+
+if(APPLE)
+    set_target_properties(qLouder PROPERTIES
+	MACOSX_BUNDLE TRUE
+    )
+endif()
+
+target_include_directories(qLouder
+PRIVATE
+    ${FFTW3_INCLUDE_DIRS}
+)
+
+target_compile_definitions(qLouder
+  PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
+target_link_libraries(qLouder
+PRIVATE
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Quick
+    Qt${QT_VERSION_MAJOR}::QuickControls2
+    Qt${QT_VERSION_MAJOR}::Multimedia
+    Qt${QT_VERSION_MAJOR}::Charts
+    Qt${QT_VERSION_MAJOR}::Svg
+    Qt${QT_VERSION_MAJOR}::Xml
+    ${FFTW3F_LINK_LIBRARIES}
+    ${FFTW3_LINK_LIBRARIES}
+)
+
+set_target_properties(qLouder PROPERTIES
+    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
+    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist
+)
+
+if(QT_VERSION_MAJOR EQUAL 6)
+    qt_import_qml_plugins(qLouder)
+    qt_finalize_executable(qLouder)
+endif()
+
+add_subdirectory(test)

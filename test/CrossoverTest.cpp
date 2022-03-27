@@ -1,0 +1,27 @@
+#include <cmath>
+#include <complex>
+#include <cstdint>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_vector.hpp>
+
+#include <FrequencyTable.h>
+#include <AudioFilter.h>
+
+TEST_CASE("Mix low and high pass", "[Biquad]") {
+    FrequencyTable<double> table(1);
+    auto fs = table.frequencies();
+
+    AudioFilter lp(FilterType::LowPass, 630.0, 0.0, 0.707);
+    AudioFilter hp(FilterType::HighPass, 630.0, 0.0, 0.707);
+
+    auto lpr = lp.response(fs);
+    auto hpr = hp.response(fs);
+
+    std::vector<double> magSum;
+
+    for (int i = 0; i < lpr.size(); ++i) {
+        magSum.push_back(20*log10(abs(lpr.at(i) + hpr.at(i))));
+    }
+
+    REQUIRE(magSum.size() == fs.size());
+}

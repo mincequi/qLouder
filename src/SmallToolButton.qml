@@ -8,6 +8,8 @@ ToolButton {
     property alias iconColor: icon.color
     property alias iconRotation: icon.rotation
     property alias iconEnabled: icon.enabled
+    property alias iconX: icon.x
+    property alias iconY: icon.y
 
     id: control
     implicitHeight: 24
@@ -26,7 +28,7 @@ ToolButton {
 
     MaterialDesignIcon {
         id: icon
-        x: (control.height - size)/2
+        x: text.length ? (control.height - size)/2 : (control.width - size)/2
         y: (control.height - size)/2
         color: !control.iconEnabled ? control.Material.hintTextColor : control.down || control.checked ? control.Material.accentColor : control.Material.foreground
     }

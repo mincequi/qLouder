@@ -13,14 +13,18 @@ RowLayout {
     property int type: ChartModel.ImpulseResponse
     property var model
     property alias chart: chart
-    property list<Item> toolBarChildren
+    // TODO(HACK): assigning an empty item is needed to keep proper width of the toolbar.
+    property list<Item> toolBarChildren: [ Item { width: 96} ]
     property color axisLabelColor: Material.primary
     property color accentColor: Material.accent
     property color foregroundColor: Material.foreground
+    property int toolBarWidth: 96
 
     property alias xAxis: xAxis
     property alias yAxis: yAxis
     property alias xAxisLog: xAxisLog
+
+    property var irWindowHandles: chart.createSeries(ChartView.SeriesTypeScatter, "Handles", control.xAxis, control.yAxis)
 
     layoutDirection: Qt.RightToLeft
     Layout.fillWidth: true
@@ -29,7 +33,7 @@ RowLayout {
     ToolBar {
         id: toolBar
         Layout.fillHeight: true
-        width: 96
+        width: control.toolBarWidth
         Material.elevation: 0
         anchors.margins: 0
         anchors.top: parent.top
@@ -69,60 +73,6 @@ RowLayout {
             model.setIrWindowSeries(irWindowSeries)
             model.setUpperEnvelopeSeries(envelope)
             //model.setLowerEnvelopeSeries(chart.series(3))
-            model.setIrWindowHandles(irWindowHandles)
-        }
-
-        // https://stackoverflow.com/questions/48789849/draging-a-point-on-qtcharts-in-qml
-        MouseArea {
-            id: mouseArea
-            x: chart.x
-            y: chart.y
-            width: chart.width
-            height: chart.height
-            hoverEnabled: true
-            property real tolerance: 0.05
-            property var selectedPoint: undefined
-            property int selectedHandle: -1
-
-            onPressed: {
-                //console.log("mouse> x: ", mouse.x, ", y: ", mouse.y)
-
-                var cp = Qt.point(mouse.x,mouse.y);
-                for (var i = 0; i < irWindowHandles.count; ++i) {
-                    var p = chart.mapToPosition(irWindowHandles.at(i));
-                    //console.log("p", i, "> x: ", p.x, ", y: ", p.y)
-
-                    if (Math.abs(cp.x - p.x) <= irWindowHandles.markerSize/2 &&
-                            Math.abs(cp.y - p.y) <= irWindowHandles.markerSize/2) {
-                        mouseArea.selectedPoint = p;
-                        mouseArea.selectedHandle = i;
-                        console.log("onPressed> x: ", p.x, ", y: ", p.y)
-                        break;
-                    }
-                }
-            }
-
-            onPositionChanged: {
-                //console.log("mouse x: ", mouse.x, ", y: ", mouse.y)
-
-                if (mouseArea.selectedPoint != undefined) {
-                    var p = Qt.point(mouse.x, mouse.y);
-                    var cp = chart.mapToValue(p);
-                    if (cp.x >= xAxis.min && cp.x <= xAxis.max && cp.y >= yAxis.min && cp.y <= yAxis.max) {
-                        //irWindowHandles.replace(mouseArea.selectedPoint.x, mouseArea.selectedPoint.y, cp.x, cp.y);
-                        mouseArea.selectedPoint = cp;
-                        model.moveIrHandle(mouseArea.selectedHandle, cp.x)
-                        irWindowHandles.at(mouseArea.selectedPoint).x = p.x
-                        console.log("onPositionChanged> x: ", cp.x, ", y: ", cp.y)
-                    }
-                }
-            }
-
-            onReleased: {
-                mouseArea.selectedPoint = undefined;
-                mouseArea.selectedHandle = -1;
-                console.log("onReleased>")
-            }
         }
 
         ValueAxis {
@@ -166,7 +116,7 @@ RowLayout {
             minorGridLinePen: gridLinePen
             tickType: ValueAxis.TicksDynamic
             tickAnchor: 0.0
-            tickInterval: 12.0
+            tickInterval: 6.0
             labelsColor: control.axisLabelColor
             //labelFormat: "%2.1f"
             labelsFont.pointSize: 10
@@ -226,20 +176,54 @@ RowLayout {
             width: 1.0
             color: control.accentColor
         }
+    }
 
-        // TODO: move this to IrChart.qml
-        ScatterSeries {
-            id: irWindowHandles
-            axisX: xAxis
-            axisY: yAxis
-            color: "transparent"
-            visible: model.hasMeasurement && control.type == ChartModel.ImpulseResponse
-            borderWidth: 1.0
-            borderColor: control.foregroundColor
-            markerSize: 9.0
-            //markerShape: ScatterSeries.MarkerShapeRectangle
-            XYPoint { x: model.irWindowLeft; y: 0.0 }
-            XYPoint { x: model.irWindowRight; y: 0.0 }
+    // https://stackoverflow.com/questions/48789849/draging-a-point-on-qtcharts-in-qml
+    MouseArea {
+        id: mouseArea
+        x: chart.x
+        y: chart.y
+        width: chart.width
+        height: chart.height
+        hoverEnabled: true
+        property var selectedPoint: undefined
+        property int selectedHandle: -1
+
+        onPressed: {
+            var cp = Qt.point(mouse.x,mouse.y);
+            for (var i = 0; i < irWindowHandles.count; ++i) {
+                console.log("onPressed>")
+                var p = chart.mapToPosition(irWindowHandles.at(i), irWindowHandles);
+                console.log("p", i, "> x: ", p.x, ", y: ", p.y)
+
+                if (Math.abs(cp.x - p.x) <= irWindowHandles.markerSize/2 &&
+                        Math.abs(cp.y - p.y) <= irWindowHandles.markerSize/2) {
+                    mouseArea.selectedPoint = p;
+                    mouseArea.selectedHandle = i;
+                    console.log("onPressed> x: ", p.x, ", y: ", p.y)
+                    break;
+                }
+            }
+        }
+
+        onPositionChanged: {
+            if (mouseArea.selectedPoint != undefined) {
+                var p = Qt.point(mouse.x, mouse.y);
+                var cp = chart.mapToValue(p, irWindowHandles);
+                if (cp.x >= xAxis.min && cp.x <= xAxis.max && cp.y >= yAxis.min && cp.y <= yAxis.max) {
+                    //irWindowHandles.replace(mouseArea.selectedPoint.x, mouseArea.selectedPoint.y, cp.x, cp.y);
+                    mouseArea.selectedPoint = cp;
+                    control.model.moveHandle(mouseArea.selectedHandle, cp.x, cp.y)
+                    //irWindowHandles.at(mouseArea.selectedPoint).x = p.x
+                    //console.log("onPositionChanged> x: ", cp.x, ", y: ", cp.y)
+                }
+            }
+        }
+
+        onReleased: {
+            mouseArea.selectedPoint = undefined;
+            mouseArea.selectedHandle = -1;
+            //console.log("onReleased>")
         }
     }
 }

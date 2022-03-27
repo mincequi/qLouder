@@ -71,18 +71,17 @@ void IrChartModel::moveIrWindowRight(int step) {
     updateChart();
 }
 
-void IrChartModel::moveIrHandle(int index, double value) {
+void IrChartModel::moveHandle(int index, double x, double y) {
     if (index == 0) {
-        value = std::min(value, -0.1);
-        _measurement->setIrWindowLeft(value);
+        x = std::min(x, -0.1);
+        _measurement->setIrWindowLeft(x);
     } else if (index == 1) {
-        value = std::max(value, +0.5);
-        _measurement->setIrWindowRight(value);
+        x = std::max(x, +0.5);
+        _measurement->setIrWindowRight(x);
     }
 
     updateChart();
 }
-
 
 QString IrChartModel::irWindowLeftReadout() const {
     if (!_measurement) {
@@ -190,5 +189,4 @@ void IrChartModel::onCurrentMeasurementChangedF(Measurement<float>* measurement)
 
     updateChart();
     emit irWindowChanged();
-    //_measurement->setFrChangedCallback(std::bind(&IrChartModel::updateChart, this));
 }

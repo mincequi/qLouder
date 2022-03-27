@@ -32,7 +32,7 @@ public:
     double irWindowRight() const;
     Q_INVOKABLE void moveIrWindowLeft(int step);
     Q_INVOKABLE void moveIrWindowRight(int step);
-    Q_INVOKABLE void moveIrHandle(int index, double value);
+    void moveHandle(int index, double x, double y) override;
 
 signals:
 

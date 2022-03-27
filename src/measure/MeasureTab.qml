@@ -8,6 +8,7 @@ import QtCharts 2.15
 import ".."
 import "../charts"
 
+import FrChartModel 1.0
 import MeasureModel 1.0
 
 Page {
@@ -178,6 +179,72 @@ Page {
             SplitView.maximumHeight: 192
         }
         FrChart {
+            id: frChart
+            model: FrChartModel {
+            }
+            toolBarChildren: [
+                RowLayout {
+                    spacing: 0
+                    Layout.topMargin: 6
+
+                    SmallToolButton {
+                        iconName: "magnify-minus"
+                        flat: true
+                        onClicked: frChart.model.zoom(0.5);
+                    }
+                    SmallToolButton {
+                        id: zoomIn
+                        iconName: "magnify-plus"
+                        flat: true
+                        onClicked: frChart.model.zoom(2.0);
+                    }
+                    SmallToolButton {
+                        iconName: "chevron-left"
+                        flat: true
+                        onClicked: frChart.model.pan(-0.2);
+                    }
+                    SmallToolButton {
+                        iconName: "chevron-right"
+                        flat: true
+                        onClicked: frChart.model.pan(0.2);
+                    }
+                },
+
+                ToolSeparator {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    topPadding: 6
+                    bottomPadding: 6
+                    orientation: Qt.Horizontal
+                },
+
+                Label {
+                    height: 24
+                    text: "Calibration"
+                    leftPadding: 3
+                    font.pointSize: 12
+                },
+                SmallComboBox {
+                    flat: true
+                    implicitWidth: parent.width
+                    model: frChart.model.calibrations
+                    //model: [ "None", "0°", "90°" ]
+                    onCurrentIndexChanged: frChart.model.setCalibration(currentIndex)
+                },
+
+                ToolSeparator {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    topPadding: 6
+                    bottomPadding: 6
+                    orientation: Qt.Horizontal
+                },
+
+                // spacer item
+                Item {
+                    Layout.fillHeight: true
+                }
+            ]
         }
     }
 

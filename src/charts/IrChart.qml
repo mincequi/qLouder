@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtCharts 2.0
 import QtQuick.Controls 2.1
 import QtQuick.Controls.Material 2.0
 import QtQuick.Layouts 1.0
@@ -15,6 +16,22 @@ Chart {
     model: IrChartModel {
         id: model
         type: chart.type
+    }
+
+    Binding {
+        target: chart.irWindowHandles
+        property: "visible"
+        value: model.hasMeasurement
+    }
+
+    Component.onCompleted: {
+        chart.irWindowHandles.color = "transparent"
+        chart.irWindowHandles.borderWidth = 1.0
+        chart.irWindowHandles.borderColor = chart.foregroundColor
+        chart.irWindowHandles.markerSize = 9.0
+        chart.irWindowHandles.append(model.irWindowLeft, 0.0)
+        chart.irWindowHandles.append(model.irWindowRight, 0.0)
+        model.setIrWindowHandles(chart.irWindowHandles)
     }
 
     toolBarChildren: [

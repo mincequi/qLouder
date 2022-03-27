@@ -38,11 +38,15 @@ public:
     // Zoom, scroll
     double xMin() const;
     double xMax() const;
-    double yMin() const;
-    double yMax() const;
+    virtual double yMin() const;
+    virtual double yMax() const;
     int tickInterval() const;
     Q_INVOKABLE void zoom(double zoom);
     Q_INVOKABLE void pan(double pan);
+
+public slots:
+    virtual void setHandles(QtCharts::QAbstractSeries* series);
+    virtual void moveHandle(int index, double x, double y);
 
 signals:
     void typeChanged();
@@ -54,6 +58,8 @@ private:
     void onCurrentMeasurementChanged(Measurement<float>* measurement);
 
     Type _type = ImpulseResponse;
+    QtCharts::QXYSeries* _handles = nullptr;
+
     // Use unique_ptr here to prevent object slicinig
     std::map<Type, std::unique_ptr<AbstractChart>> _charts;
 };

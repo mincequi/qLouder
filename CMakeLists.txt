@@ -8,7 +8,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick QuickControls2 Multimedia Charts Svg Xml REQUIRED)
@@ -16,6 +16,8 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 Multimed
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FFTW3F REQUIRED fftw3f)
 pkg_check_modules(FFTW3 REQUIRED fftw3)
+string(REPLACE "fftw3f" "fftw3f_threads" FFTW3F_THREADS_LINK_LIBRARIES ${FFTW3F_LINK_LIBRARIES})
+string(REPLACE "fftw3" "fftw3_threads" FFTW3_THREADS_LINK_LIBRARIES ${FFTW3_LINK_LIBRARIES})
 
 include_directories(
     src
@@ -29,6 +31,7 @@ set(PROJECT_SOURCES
     src/charts/LinChart.cpp
     src/charts/LogChart.cpp
     src/charts/TimeTable.cpp
+    src/crossover/CrossoverModel.cpp
     src/measure/AudioBuffer.cpp
     src/measure/AudioDeviceInfo.cpp
     src/measure/MeasurementError.cpp
@@ -40,6 +43,7 @@ set(PROJECT_SOURCES
     src/project/ProjectModel.cpp
     src/status/StatusModel.cpp
     src/util/FrFile.cpp
+    src/AudioFilter.cpp
     src/Config.cpp
     src/FrequencyTable.cpp
     src/MaterialDesignIcon.cpp
@@ -95,6 +99,8 @@ PRIVATE
     Qt${QT_VERSION_MAJOR}::Xml
     ${FFTW3F_LINK_LIBRARIES}
     ${FFTW3_LINK_LIBRARIES}
+    #${FFTW3F_THREADS_LINK_LIBRARIES}
+    #${FFTW3_THREADS_LINK_LIBRARIES}
 )
 
 set_target_properties(qLouder PROPERTIES

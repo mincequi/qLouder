@@ -19,5 +19,7 @@
         <file>charts/FrChart.qml</file>
         <file>charts/IrChart.qml</file>
         <file>charts/Chart.qml</file>
+        <file>crossover/CrossoverTab.qml</file>
+        <file>ui/UpDownSpinBox.qml</file>
     </qresource>
 </RCC>

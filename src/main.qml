@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.15
 import QtQuick.Window 2.12
 import Qt.labs.settings 1.0
 
+import "crossover"
 import "project"
 import "measure"
 import "status"
@@ -52,6 +53,10 @@ ApplicationWindow {
             text: "Measure"
             icon.name: "microphone-variant"
         }
+        MaterialTabButton {
+            text: "Crossover"
+            icon.name: "swap-horizontal"
+        }
     }
 
     StackLayout {
@@ -68,8 +73,7 @@ ApplicationWindow {
         }
         MeasureTab {
         }
-        Item {
-            id: designTab
+        CrossoverTab {
         }
     }
 

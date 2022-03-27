@@ -5,6 +5,7 @@
 
 FrChartModel::FrChartModel(QObject *parent)
     : ChartModel{parent} {
+    setType(FrequencyResponse);
     connect(&MeasurementManager::instance(), &MeasurementManager::currentMeasurementChangedF,
             this, &FrChartModel::onCurrentMeasurementChangedF);
     connect(&MeasurementManager::instance(), &MeasurementManager::currentMeasurementChangedD,

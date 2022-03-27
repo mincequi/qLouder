@@ -38,6 +38,15 @@ ChartModel::Type ChartModel::type() const {
     return _type;
 }
 
+void ChartModel::setHandles(QtCharts::QAbstractSeries* series) {
+    if (series) {
+        _handles = static_cast<QtCharts::QXYSeries*>(series);
+    }
+}
+
+void ChartModel::moveHandle(int index, double x, double y) {
+}
+
 double ChartModel::xMin() const {
     return _charts.at(_type)->_xMin;
 }

@@ -67,3 +67,20 @@ target_link_libraries(tt_test
 PRIVATE
   Catch2::Catch2WithMain
 )
+
+# Crossover test
+add_executable(xo_test
+  CrossoverTest.cpp
+  ../src/AudioFilter.cpp
+  ../src/FrequencyTable.cpp
+)
+
+target_include_directories(xo_test
+PRIVATE
+  ../src
+)
+
+target_link_libraries(xo_test
+PRIVATE
+  Catch2::Catch2WithMain
+)

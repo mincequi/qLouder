@@ -98,7 +98,7 @@ AudioFilter::AudioFilter(FilterType type, double f, double g, double q) :
     }
 }
 
-std::vector<std::complex<double>> AudioFilter::response(const std::vector<double>& fs) {
+std::vector<std::complex<double>> AudioFilter::response(const std::vector<double>& fs, int cascades) {
     std::vector<std::complex<double>> out;
     out.reserve(fs.size());
     for (int i = 0; i < fs.size(); ++i) {
@@ -107,6 +107,9 @@ std::vector<std::complex<double>> AudioFilter::response(const std::vector<double
         std::complex<double> numerator = _biquad.b0 + (_biquad.b1 + _biquad.b2*z)*z;
         std::complex<double> denominator = 1.0 + (_biquad.a1 + _biquad.a2*z)*z;
         std::complex<double> res = numerator / denominator;
+        if (cascades != 1) {
+            res = pow(res, cascades);
+        }
 
         out.push_back(res);
     }

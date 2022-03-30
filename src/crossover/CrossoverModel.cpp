@@ -147,6 +147,26 @@ void CrossoverModel::stepParam(int index, double x, double y) {
     }
 }
 
+void CrossoverModel::setOrder(int index, int orderIndex) {
+    if (index == 0) {
+        _lowPassC = orderIndex + 1;
+        computeLowPassResponse();
+        computeSumResponse();
+        emit rangeChanged();
+    } else if (index == 1) {
+        _highPassC = orderIndex + 1;
+        computeHighPassResponse();
+        computeSumResponse();
+        emit rangeChanged();
+    }
+}
+
+void CrossoverModel::invert(bool invert) {
+    _invert = invert;
+    computeSumResponse();
+    emit rangeChanged();
+}
+
 void CrossoverModel::setLowPassSeries(QtCharts::QAbstractSeries* series) {
     if (series) {
         _lowPassSeries = static_cast<QtCharts::QXYSeries*>(series);
@@ -178,10 +198,12 @@ double CrossoverModel::yMax() const {
 }
 
 void CrossoverModel::computeLowPassResponse() {
+    if (!_handles) return;
+
     _handles->replace(0, _lowPassF, _lowPassQ + _lowPassG);
 
     AudioFilter lp(FilterType::LowPass, _frequencyTable.at(_lowPassF), 0.0, pow(10, _lowPassQ/20.0));
-    _lowPassResponse = lp.response(_frequencyTable);
+    _lowPassResponse = lp.response(_frequencyTable, _lowPassC);
 
     QVector<QPointF> points;
     points.reserve(_frequencyTable.size());
@@ -192,10 +214,12 @@ void CrossoverModel::computeLowPassResponse() {
 }
 
 void CrossoverModel::computeHighPassResponse() {
+    if (!_handles) return;
+
     _handles->replace(1, _highPassF, _highPassQ + _highPassG);
 
-    AudioFilter lp(FilterType::HighPass, _frequencyTable.at(_highPassF), 0.0, pow(10, _highPassQ/20.0));
-    _highPassResponse = lp.response(_frequencyTable);
+    AudioFilter hp(FilterType::HighPass, _frequencyTable.at(_highPassF), 0.0, pow(10, _highPassQ/20.0));
+    _highPassResponse = hp.response(_frequencyTable, _highPassC);
 
     QVector<QPointF> points;
     points.reserve(_frequencyTable.size());
@@ -206,12 +230,14 @@ void CrossoverModel::computeHighPassResponse() {
 }
 
 void CrossoverModel::computeSumResponse() {
+    if (!_sumSeries) return;
+
     double lpFactor = pow(10, _lowPassG/20.0);
     double hpFactor = pow(10, _highPassG/20.0);
     std::vector<double> sum;
     sum.reserve(_frequencyTable.size());
     for (int i = 0; i < _frequencyTable.size(); ++i) {
-        sum.push_back(20 * log10(abs(_lowPassResponse.at(i) - _highPassResponse.at(i))));
+        sum.push_back(20 * log10(abs(_lowPassResponse.at(i) + (_invert ? -1.0 : 1.0) * _highPassResponse.at(i))));
     }
     _sumMax = -144.0;
     _sumMin = 144.0;
@@ -223,7 +249,7 @@ void CrossoverModel::computeSumResponse() {
     QVector<QPointF> points;
     points.reserve(_frequencyTable.size());
     for (int i = 0; i < _frequencyTable.size(); ++i) {
-        points.append( { _frequencyTable.at(i), 20 * log10(abs(_lowPassResponse.at(i)*lpFactor - _highPassResponse.at(i)*hpFactor)) } );
+        points.append( { _frequencyTable.at(i), 20 * log10(abs(_lowPassResponse.at(i)*lpFactor + (_invert ? -1.0 : 1.0) * _highPassResponse.at(i)*hpFactor)) } );
     }
     _sumSeries->replace(points);
 }

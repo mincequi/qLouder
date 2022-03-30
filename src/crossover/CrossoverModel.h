@@ -35,11 +35,14 @@ public:
 
 public slots:
     virtual void setHandles(QtCharts::QAbstractSeries* series) override;
-    void moveHandle(int index, double x, double y) override;
-    void stepParam(int index, double x, double y);
     void setLowPassSeries(QtCharts::QAbstractSeries* series);
     void setHighPassSeries(QtCharts::QAbstractSeries* series);
     void setSumSeries(QtCharts::QAbstractSeries* series);
+
+    void moveHandle(int index, double x, double y) override;
+    void stepParam(int index, double x, double y);
+    void setOrder(int index, int orderIndex);
+    void invert(bool invert);
 
 signals:
 	void rangeChanged();
@@ -55,9 +58,13 @@ private:
     int _lowPassF = 0.0;
     double _lowPassQ = -3.0;
     double _lowPassG = 0.0;
+    int _lowPassC = 1;
     int _highPassF = 0.0;
     double _highPassQ = -3.0;
     double _highPassG = 0.0;
+    int _highPassC = 1;
+    bool _invert = false;
+
     double _sumMax = -144.0;
     double _sumMin = 144.0;
 

@@ -21,5 +21,6 @@
         <file>charts/Chart.qml</file>
         <file>crossover/CrossoverTab.qml</file>
         <file>ui/UpDownSpinBox.qml</file>
+        <file>ui/SmallSwitch.qml</file>
     </qresource>
 </RCC>

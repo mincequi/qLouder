@@ -22,7 +22,7 @@ public:
            double g = 0.0,
            double q = 0.0);
 
-    std::vector<std::complex<double>> response(const std::vector<double>& fs);
+    std::vector<std::complex<double>> response(const std::vector<double>& fs, int cascades);
 
 private:
     struct BiQuad {

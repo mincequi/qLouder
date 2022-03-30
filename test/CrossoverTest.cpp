@@ -14,8 +14,8 @@ TEST_CASE("Mix low and high pass", "[Biquad]") {
     AudioFilter lp(FilterType::LowPass, 630.0, 0.0, 0.707);
     AudioFilter hp(FilterType::HighPass, 630.0, 0.0, 0.707);
 
-    auto lpr = lp.response(fs);
-    auto hpr = hp.response(fs);
+    auto lpr = lp.response(fs, 1);
+    auto hpr = hp.response(fs, 1);
 
     std::vector<double> magSum;
 

@@ -70,6 +70,12 @@ Page {
                     onValueUp: CrossoverModel.stepParam(2, 0, +0.2)
                     onValueDown: CrossoverModel.stepParam(2, 0, -0.2)
                 },
+                SmallComboBox {
+                    flat: true
+                    implicitWidth: 96
+                    model: [ "Order 2", "Order 4" ]
+                    onCurrentIndexChanged: CrossoverModel.setOrder(0, currentIndex)
+                },
 
                 ToolSeparator {
                     anchors.left: parent.left
@@ -104,6 +110,17 @@ Page {
                     onValueUp: CrossoverModel.stepParam(3, 0, +0.2)
                     onValueDown: CrossoverModel.stepParam(3, 0, -0.2)
                 },
+                SmallComboBox {
+                    flat: true
+                    implicitWidth: 96
+                    model: [ "Order 2", "Order 4" ]
+                    onCurrentIndexChanged: CrossoverModel.setOrder(1, currentIndex)
+                },
+                SmallSwitch {
+                    implicitHeight: 24
+                    implicitWidth: 96
+                    onCheckedChanged: CrossoverModel.invert(checked)
+                },
 
                 ToolSeparator {
                     anchors.left: parent.left
@@ -115,7 +132,9 @@ Page {
 
                 Label {
                     height: 24
-                    padding: 6
+                    leftPadding: 6
+                    topPadding: 6
+                    bottomPadding: 6
                     text: "Sum deviation"
                     font.bold: true
                     font.pointSize: 12

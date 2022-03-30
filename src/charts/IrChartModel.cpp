@@ -3,6 +3,7 @@
 #include "TimeTable.h"
 #include "measure/MeasurementManager.h"
 
+#include <cmath>
 #include <QCoreApplication>
 
 IrChartModel::IrChartModel(QObject *parent)

@@ -1,5 +1,7 @@
 #include "MeasurementService.h"
 
+#include <cmath>
+
 #include <QDebug>
 
 #include "Config.h"

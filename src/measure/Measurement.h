@@ -1,6 +1,8 @@
 #ifndef MEASUREMENT_H
 #define MEASUREMENT_H
 
+#include <functional>
+
 #include "FrequencyTable.h"
 #include "Types.h"
 

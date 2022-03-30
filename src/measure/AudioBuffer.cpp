@@ -1,6 +1,8 @@
 #include "AudioBuffer.h"
 
 #include <assert.h>
+#include <cmath>
+#include <cstring>
 
 #include <QDebug>
 

@@ -22,5 +22,6 @@
         <file>crossover/CrossoverTab.qml</file>
         <file>ui/UpDownSpinBox.qml</file>
         <file>ui/SmallSwitch.qml</file>
+        <file>target/TargetTab.qml</file>
     </qresource>
 </RCC>

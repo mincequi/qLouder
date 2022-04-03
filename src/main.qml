@@ -9,6 +9,7 @@ import "crossover"
 import "project"
 import "measure"
 import "status"
+import "target"
 
 ApplicationWindow {
     id: window
@@ -54,6 +55,10 @@ ApplicationWindow {
             icon.name: "microphone-variant"
         }
         MaterialTabButton {
+            text: "Target"
+            icon.name: "bullseye"
+        }
+        MaterialTabButton {
             text: "Crossover"
             icon.name: "swap-horizontal"
         }
@@ -72,6 +77,8 @@ ApplicationWindow {
         ProjectTab {
         }
         MeasureTab {
+        }
+        TargetTab {
         }
         CrossoverTab {
         }

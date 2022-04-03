@@ -95,12 +95,37 @@ AudioFilter::AudioFilter(FilterType type, double f, double g, double q) :
 
     case FilterType::Invalid:
         break;
+
+    case FilterType::Loudness:
+        // Filter 1> t: pk, f: 35.5,  q: 0.537, g: <phon>/40 * 12db
+        // Filter 2> t: pk, f: 100,   q: 0.25,  g: <phon>/40 * 9db
+        // Filter 3> t: hs, f: 10000, q: 0.78,  g: <phon>/40 * 9db
+        _filters.push_back(AudioFilter(FilterType::Peak, 35.5, g * 0.3, 0.537));
+        _filters.push_back(AudioFilter(FilterType::Peak, 100.0, g * 0.225, 0.25));
+        _filters.push_back(AudioFilter(FilterType::HighShelf, 10000.0, g * 0.225, 0.78));
+        break;
     }
 }
 
-std::vector<std::complex<double>> AudioFilter::response(const std::vector<double>& fs, int cascades) {
+std::vector<std::complex<double>> AudioFilter::response(const std::vector<double>& fs, int cascades) const {
     std::vector<std::complex<double>> out;
     out.reserve(fs.size());
+
+    if (!_filters.empty()) {
+        //out.resize(fs.size());
+        for (const auto& f : _filters) {
+            if (out.empty()) {
+                out = f.response(fs, 1);
+            } else {
+                auto res = f.response(fs, 1);
+                for (int i = 0; i < fs.size(); ++i) {
+                    out.at(i) *= res.at(i);
+                }
+            }
+        }
+        return out;
+    }
+
     for (int i = 0; i < fs.size(); ++i) {
         double w = 2.0 * std::numbers::pi * fs.at(i)/48000;
         std::complex<double> z(cos(w), sin(w));

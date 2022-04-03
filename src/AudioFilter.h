@@ -13,6 +13,9 @@ enum class FilterType : uint8_t {
     LowShelf,
     HighShelf,
     AllPass,
+
+    // Special filters
+    Loudness = 128
 };
 
 class AudioFilter {
@@ -22,7 +25,7 @@ public:
            double g = 0.0,
            double q = 0.0);
 
-    std::vector<std::complex<double>> response(const std::vector<double>& fs, int cascades);
+    std::vector<std::complex<double>> response(const std::vector<double>& fs, int cascades) const;
 
 private:
     struct BiQuad {
@@ -35,4 +38,5 @@ private:
     double _g = 0.0;
     double _q = 0.0;
     BiQuad _biquad;
+    std::vector<AudioFilter> _filters;
 };

@@ -42,6 +42,7 @@ set(PROJECT_SOURCES
     src/measure/SignalGenerator.cpp
     src/project/ProjectModel.cpp
     src/status/StatusModel.cpp
+    src/target/TargetModel.cpp
     src/util/FrFile.cpp
     src/AudioFilter.cpp
     src/Config.cpp

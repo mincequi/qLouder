@@ -78,6 +78,15 @@ double CrossoverModel::highPassQ() const {
     return pow(10, _highPassQ/20.0);
 }
 
+QString CrossoverModel::ripple() const {
+    double ripple = abs(_sumMax - _sumMin);
+    if (ripple < 10.0) {
+        return QString::number(ripple, 'f', 1) + " dB";
+    } else {
+        return QString::number(ripple, 'f', 0) + " dB";
+    }
+}
+
 void CrossoverModel::setHandles(QtCharts::QAbstractSeries* series) {
     if (series) {
         _handles = static_cast<QtCharts::QXYSeries*>(series);

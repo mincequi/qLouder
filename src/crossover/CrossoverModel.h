@@ -20,6 +20,7 @@ class CrossoverModel : public ChartModel {
 
     Q_PROPERTY(double sumMin MEMBER _sumMin NOTIFY rangeChanged)
     Q_PROPERTY(double sumMax MEMBER _sumMax NOTIFY rangeChanged)
+    Q_PROPERTY(QString ripple READ ripple NOTIFY rangeChanged)
 
 public:
     explicit CrossoverModel(QObject *parent = nullptr);
@@ -32,6 +33,8 @@ public:
     double lowPassQ() const;
     QString highPassFrequencyReadout() const;
     double highPassQ() const;
+
+    QString ripple() const;
 
 public slots:
     virtual void setHandles(QtCharts::QAbstractSeries* series) override;

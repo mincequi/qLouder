@@ -12,15 +12,6 @@ import "../ui"
 import CrossoverModel 1.0
 
 Page {
-    function colorWithAlpha(color, alpha) {
-        return Qt.rgba(color.r, color.g, color.b, alpha)
-    }
-
-    //Layout.fillWidth: parent
-    //Layout.fillHeight: parent
-
-    //anchors.fill: parent
-
     header: ToolBar {
         height: 24
         width: parent.width
@@ -142,19 +133,19 @@ Page {
 
                 UpDownSpinBox {
                     label: "Min"
-                    value: CrossoverModel.sumMin.toFixed(1)
+                    value: CrossoverModel.sumMin.toFixed(1) + " dB"
                     valueColor: Material.accent
                     buttonsVisible: false
                 },
                 UpDownSpinBox {
                     label: "Max"
-                    value: CrossoverModel.sumMax.toFixed(1)
+                    value: CrossoverModel.sumMax.toFixed(1) + " dB"
                     valueColor: Material.accent
                     buttonsVisible: false
                 },
                 UpDownSpinBox {
                     label: "Ripple"
-                    value: Math.abs(CrossoverModel.sumMax - CrossoverModel.sumMin).toFixed(1)
+                    value: CrossoverModel.ripple
                     valueColor: Material.accent
                     buttonsVisible: false
                 },

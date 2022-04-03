@@ -15,6 +15,7 @@
 #include "measure/SignalGenerator.h"
 #include "project/ProjectModel.h"
 #include "status/StatusModel.h"
+#include "target/TargetModel.h"
 
 int main(int argc, char *argv[]) {
     //fftw_init_threads();
@@ -46,6 +47,10 @@ int main(int argc, char *argv[]) {
 	});
     qmlRegisterSingletonType<StatusModel>("StatusModel", 1, 0, "StatusModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {
         return StatusModel::instance();
+    });
+    auto targetModel = new TargetModel();
+    qmlRegisterSingletonType<TargetModel>("TargetModel", 1, 0, "TargetModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {
+        return targetModel;
     });
 
     qmlRegisterType<ChartModel>("ChartModel", 1, 0, "ChartModel");

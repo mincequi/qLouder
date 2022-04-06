@@ -151,6 +151,12 @@ Page {
             }
             */
 
+            Rectangle {
+                height: 24
+                width: 1
+                color: Material.background
+            }
+
             SmallToolButton {
                 id: measureButton
                 TextMetrics {

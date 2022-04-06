@@ -25,6 +25,36 @@ Page {
             width: parent.width
             layoutDirection: "LeftToRight"
             spacing: 0
+
+            // Spacer item
+            Item {
+                Layout.fillWidth: true
+            }
+            Rectangle {
+                height: 24
+                width: 1
+                color: Material.background
+            }
+            SmallToolButton {
+                height: 24
+                implicitWidth: 96
+                text: "Add filter"
+                iconName: "plus"
+                onClicked: {
+                    var response = chart.chart.createSeries(ChartView.SeriesTypeLine, "Response", chart.xAxisLog, chart.yAxis)
+                    response.color = chart.foregroundColor
+                    response.width = 1.0
+
+                    // TODO: we have to delete sumSeries each filter creation to keep z ordering
+                    chart.chart.removeSeries(chart.sumSeries)
+                    chart.sumSeries = chart.chart.createSeries(ChartView.SeriesTypeLine, "Sum", chart.xAxisLog, chart.yAxis)
+                    chart.sumSeries.color = chart.accentColor
+                    chart.sumSeries.width = 1.0
+
+                    EqualizerModel.addFilter(response)
+                    EqualizerModel.setSumSeries(chart.sumSeries)
+                }
+            }
         }
     }
 
@@ -50,32 +80,6 @@ Page {
                         model: modelData
                     }
                 },
-                Rectangle {
-                    width: 96
-                    height: 1
-                    color: Material.background
-                },
-                SmallToolButton {
-                    height: 24
-                    implicitWidth: 96
-                    text: "Add filter"
-                    iconName: "plus"
-                    onClicked: {
-                        var response = chart.chart.createSeries(ChartView.SeriesTypeLine, "Response", chart.xAxisLog, chart.yAxis)
-                        response.color = chart.foregroundColor
-                        response.width = 1.0
-
-                        // TODO: we have to delete sumSeries each filter creation to keep z ordering
-                        chart.chart.removeSeries(chart.sumSeries)
-                        chart.sumSeries = chart.chart.createSeries(ChartView.SeriesTypeLine, "Sum", chart.xAxisLog, chart.yAxis)
-                        chart.sumSeries.color = chart.accentColor
-                        chart.sumSeries.width = 1.0
-
-                        EqualizerModel.addFilter(response)
-                        EqualizerModel.setSumSeries(chart.sumSeries)
-                    }
-                },
-
                 Rectangle {
                     width: 96
                     height: 1

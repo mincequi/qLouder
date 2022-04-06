@@ -67,3 +67,6 @@ int ChartModel::tickInterval() const {
     return _charts.at(_type)->_tickInterval;
 }
 
+QtCharts::QXYSeries* ChartModel::handles() {
+    return _handles;
+}

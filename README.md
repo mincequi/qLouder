@@ -27,13 +27,13 @@ optimal filter set and crossover for your DIY loudspeaker.
 
 # Current features
 * Sine sweep generation (including proper windowing).
-* Time gate measured impulse response
-* Signal recording with calibrated microphones
-* Crossover design tool
+* Time gating of measured impulse response
+* Microphone calibration
+* Crossover
+* House curve
+* Parametric equalizer
 
 # Planned features
-* House curve design tool
-* Parametric equalizer design tool
 * Persistent measurements
 
 # Requirements

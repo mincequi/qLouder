@@ -24,7 +24,7 @@ RowLayout {
     property alias yAxis: yAxis
     property alias xAxisLog: xAxisLog
 
-    property var irWindowHandles: chart.createSeries(ChartView.SeriesTypeScatter, "Handles", control.xAxis, control.yAxis)
+    property var handles: chart.createSeries(ChartView.SeriesTypeScatter, "Handles", control.xAxis, control.yAxis)
 
     layoutDirection: Qt.RightToLeft
     Layout.fillWidth: true
@@ -41,6 +41,7 @@ RowLayout {
 
         ColumnLayout {
             id: toolBarLayout
+            anchors.bottomMargin: 0
             anchors.fill: parent
             spacing: 0
 
@@ -191,13 +192,13 @@ RowLayout {
 
         onPressed: {
             var cp = Qt.point(mouse.x,mouse.y);
-            for (var i = 0; i < irWindowHandles.count; ++i) {
+            for (var i = 0; i < handles.count; ++i) {
                 console.log("onPressed>")
-                var p = chart.mapToPosition(irWindowHandles.at(i), irWindowHandles);
+                var p = chart.mapToPosition(handles.at(i), handles);
                 console.log("p", i, "> x: ", p.x, ", y: ", p.y)
 
-                if (Math.abs(cp.x - p.x) <= irWindowHandles.markerSize/2 &&
-                        Math.abs(cp.y - p.y) <= irWindowHandles.markerSize/2) {
+                if (Math.abs(cp.x - p.x) <= handles.markerSize/2 &&
+                        Math.abs(cp.y - p.y) <= handles.markerSize/2) {
                     mouseArea.selectedPoint = p;
                     mouseArea.selectedHandle = i;
                     console.log("onPressed> x: ", p.x, ", y: ", p.y)
@@ -209,13 +210,10 @@ RowLayout {
         onPositionChanged: {
             if (mouseArea.selectedPoint != undefined) {
                 var p = Qt.point(mouse.x, mouse.y);
-                var cp = chart.mapToValue(p, irWindowHandles);
+                var cp = chart.mapToValue(p, model.handles);
                 if (cp.x >= xAxis.min && cp.x <= xAxis.max && cp.y >= yAxis.min && cp.y <= yAxis.max) {
-                    //irWindowHandles.replace(mouseArea.selectedPoint.x, mouseArea.selectedPoint.y, cp.x, cp.y);
                     mouseArea.selectedPoint = cp;
                     control.model.moveHandle(mouseArea.selectedHandle, cp.x, cp.y)
-                    //irWindowHandles.at(mouseArea.selectedPoint).x = p.x
-                    //console.log("onPositionChanged> x: ", cp.x, ", y: ", cp.y)
                 }
             }
         }

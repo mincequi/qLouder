@@ -6,6 +6,7 @@ import QtQuick.Window 2.12
 import Qt.labs.settings 1.0
 
 import "crossover"
+import "equalizer"
 import "project"
 import "measure"
 import "status"
@@ -59,6 +60,10 @@ ApplicationWindow {
             icon.name: "bullseye"
         }
         MaterialTabButton {
+            text: "Equalizer"
+            icon.name: "tune-vertical"
+        }
+        MaterialTabButton {
             text: "Crossover"
             icon.name: "swap-horizontal"
         }
@@ -79,6 +84,8 @@ ApplicationWindow {
         MeasureTab {
         }
         TargetTab {
+        }
+        EqualizerTab {
         }
         CrossoverTab {
         }

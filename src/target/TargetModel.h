@@ -18,7 +18,6 @@ public:
     double loudness() const;
 
 public slots:
-    virtual void setHandles(QtCharts::QAbstractSeries* series) override;
     void setLoudnessSeries(QtCharts::QAbstractSeries* series);
     void setHarmanSeries(QtCharts::QAbstractSeries* series);
     void setSumSeries(QtCharts::QAbstractSeries* series);
@@ -43,7 +42,6 @@ private:
     double _sumMax = -144.0;
     double _sumMin = 144.0;
 
-    QtCharts::QXYSeries* _handles = nullptr;
     std::vector<std::complex<double>> _loudnessResponse;
     QtCharts::QXYSeries* _loudnessSeries = nullptr;
     std::vector<std::complex<double>> _harmanResponse;

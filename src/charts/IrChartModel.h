@@ -17,12 +17,6 @@ class IrChartModel : public ChartModel {
 public:
     explicit IrChartModel(QObject *parent = nullptr);
 
-    Q_INVOKABLE void setSeries(QtCharts::QAbstractSeries* series);
-    Q_INVOKABLE void setIrWindowSeries(QtCharts::QAbstractSeries* series);
-    Q_INVOKABLE void setIrWindowHandles(QtCharts::QAbstractSeries* series);
-    Q_INVOKABLE void setUpperEnvelopeSeries(QtCharts::QAbstractSeries* series);
-    Q_INVOKABLE void setLowerEnvelopeSeries(QtCharts::QAbstractSeries* series);
-
     bool hasMeasurement() const;
 
     // IR window
@@ -30,9 +24,17 @@ public:
     QString irWindowRightReadout() const;
     double irWindowLeft() const;
     double irWindowRight() const;
-    Q_INVOKABLE void moveIrWindowLeft(int step);
-    Q_INVOKABLE void moveIrWindowRight(int step);
+
     void moveHandle(int index, double x, double y) override;
+
+public slots:
+    void setSeries(QtCharts::QAbstractSeries* series);
+    void setIrWindowSeries(QtCharts::QAbstractSeries* series);
+    void setUpperEnvelopeSeries(QtCharts::QAbstractSeries* series);
+    void setLowerEnvelopeSeries(QtCharts::QAbstractSeries* series);
+
+    void moveIrWindowLeft(int step);
+    void moveIrWindowRight(int step);
 
 signals:
 
@@ -47,12 +49,10 @@ private:
     QtCharts::QXYSeries* _series = nullptr;
 
     QtCharts::QXYSeries* _irWindowSeries = nullptr;
-    QtCharts::QXYSeries* _irWindowHandles = nullptr;
     QtCharts::QXYSeries* _upperEnvelopeSeries = nullptr;
     QtCharts::QXYSeries* _lowerEnvelopeSeries = nullptr;
 
     Measurement<float>* _measurement = nullptr;
-
 };
 
 #endif // IRCHARTMODEL_H

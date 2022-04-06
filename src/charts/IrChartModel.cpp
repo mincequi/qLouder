@@ -37,15 +37,6 @@ void IrChartModel::setIrWindowSeries(QtCharts::QAbstractSeries* series) {
     }
 }
 
-void IrChartModel::setIrWindowHandles(QtCharts::QAbstractSeries* series) {
-    if (series) {
-        _irWindowHandles = static_cast<QtCharts::QXYSeries*>(series);
-        //auto arrow = material::pixmap("arrow-split-vertical", QSize(24, 24));
-        //auto arrow = material::pixmap("arrow-collapse-left", QSize(24, 24));
-        //_irWindowHandles->setBrush(arrow);
-    }
-}
-
 bool IrChartModel::hasMeasurement() const {
     return _measurement != nullptr;
 }
@@ -130,8 +121,8 @@ void IrChartModel::updateChart() {
     }
 
     // Update UI controls
-    _irWindowHandles->replace(0, _measurement->irWindowLeft(), 0.0);
-    _irWindowHandles->replace(1, _measurement->irWindowRight(), 0.0);
+    handles()->replace(0, _measurement->irWindowLeft(), 0.0);
+    handles()->replace(1, _measurement->irWindowRight(), 0.0);
 
     // Process core events, before doing costly operations
     QCoreApplication::processEvents();

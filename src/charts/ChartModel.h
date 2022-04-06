@@ -12,6 +12,7 @@ class ChartModel : public QObject {
     Q_OBJECT
     // General
     Q_PROPERTY(Type type READ type WRITE setType NOTIFY typeChanged)
+    Q_PROPERTY(QtCharts::QXYSeries* handles MEMBER _handles CONSTANT)
 
     // Zoom, scroll
     Q_PROPERTY(double xMin READ xMin NOTIFY rangeChanged)
@@ -53,6 +54,9 @@ signals:
     void measurementChanged();
     void rangeChanged();
     void irWindowChanged();
+
+protected:
+    virtual QtCharts::QXYSeries* handles();
 
 private:
     void onCurrentMeasurementChanged(Measurement<float>* measurement);

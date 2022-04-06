@@ -19,19 +19,19 @@ Chart {
     }
 
     Binding {
-        target: chart.irWindowHandles
+        target: chart.handles
         property: "visible"
         value: model.hasMeasurement
     }
 
     Component.onCompleted: {
-        chart.irWindowHandles.color = "transparent"
-        chart.irWindowHandles.borderWidth = 1.0
-        chart.irWindowHandles.borderColor = chart.foregroundColor
-        chart.irWindowHandles.markerSize = 9.0
-        chart.irWindowHandles.append(model.irWindowLeft, 0.0)
-        chart.irWindowHandles.append(model.irWindowRight, 0.0)
-        model.setIrWindowHandles(chart.irWindowHandles)
+        chart.handles.color = "transparent"
+        chart.handles.borderWidth = 1.0
+        chart.handles.borderColor = chart.foregroundColor
+        chart.handles.markerSize = 9.0
+        chart.handles.append(model.irWindowLeft, 0.0)
+        chart.handles.append(model.irWindowRight, 0.0)
+        model.setHandles(chart.handles)
     }
 
     toolBarChildren: [

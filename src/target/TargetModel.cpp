@@ -23,12 +23,6 @@ double TargetModel::loudness() const {
     return _loudness * 2.0;
 }
 
-void TargetModel::setHandles(QtCharts::QAbstractSeries* series) {
-    if (series) {
-        _handles = static_cast<QtCharts::QXYSeries*>(series);
-    }
-}
-
 void TargetModel::moveHandle(int index, double x, double y) {
     double yIndex = std::round(y * 4.0) / 4.0;
 
@@ -36,13 +30,13 @@ void TargetModel::moveHandle(int index, double x, double y) {
         _loudness = yIndex;
         _loudness = std::max(_loudness, 0.0);
         _loudness = std::min(_loudness, 20.0);
-        _handles->replace(index, _handles->at(index).x(), _loudness);
+        handles()->replace(index, handles()->at(index).x(), _loudness);
         computeLoudnessResponse();
         computeSumResponse();
         emit valuesChanged();
     } else if (index == 1 && _harman != yIndex) {
         _harman = yIndex;
-        _handles->replace(index, _handles->at(index).x(), _harman);
+        handles()->replace(index, handles()->at(index).x(), _harman);
         computeHarmanResponse();
         computeSumResponse();
         emit valuesChanged();
@@ -54,13 +48,13 @@ void TargetModel::stepParam(int index, double x, double y) {
         _loudness += y;
         _loudness = std::max(_loudness, 0.0);
         _loudness = std::min(_loudness, 20.0);
-        _handles->replace(index, _handles->at(index).x(), _loudness);
+        handles()->replace(index, handles()->at(index).x(), _loudness);
         computeLoudnessResponse();
         computeSumResponse();
         emit valuesChanged();
     } else if (index == 1) {
         _harman += y;
-        _handles->replace(index, _handles->at(index).x(), _harman);
+        handles()->replace(index, handles()->at(index).x(), _harman);
         computeHarmanResponse();
         computeSumResponse();
         emit valuesChanged();
@@ -98,7 +92,7 @@ double TargetModel::yMax() const {
 }
 
 void TargetModel::computeLoudnessResponse() {
-    if (!_handles) return;
+    if (!handles()) return;
 
     AudioFilter lp(FilterType::Loudness, 0.0, _loudness * 2.0, 0.0);
     _loudnessResponse = lp.response(_frequencyTable, 1);
@@ -112,7 +106,7 @@ void TargetModel::computeLoudnessResponse() {
 }
 
 void TargetModel::computeHarmanResponse() {
-    if (!_handles) return;
+    if (!handles()) return;
 
     AudioFilter hp(FilterType::Loudness, 0.0, _harman, 0.0);
     _harmanResponse = hp.response(_frequencyTable, 1);

@@ -23,5 +23,7 @@
         <file>ui/UpDownSpinBox.qml</file>
         <file>ui/SmallSwitch.qml</file>
         <file>target/TargetTab.qml</file>
+        <file>equalizer/EqualizerTab.qml</file>
+        <file>equalizer/FilterItem.qml</file>
     </qresource>
 </RCC>

@@ -40,14 +40,6 @@ Page {
                     onValueDown: TargetModel.stepParam(0, 0, -0.25)
                 },
 
-                ToolSeparator {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    topPadding: 6
-                    bottomPadding: 6
-                    orientation: Qt.Horizontal
-                },
-
                 /*
                 Label {
                     height: 24
@@ -71,6 +63,18 @@ Page {
                 },
                 */
 
+
+                // spacer item
+                Item {
+                    Layout.fillHeight: true
+                },
+
+                Rectangle {
+                    width: 96
+                    height: 1
+                    color: Material.background
+                },
+
                 Label {
                     height: 24
                     leftPadding: 6
@@ -92,11 +96,7 @@ Page {
                     value: TargetModel.sumMax.toFixed(1) + " dB"
                     valueColor: Material.accent
                     buttonsVisible: false
-                },
-
-                // spacer item
-                Item {
-                    Layout.fillHeight: true
+                    Layout.bottomMargin: 6
                 }
             ]
 
@@ -115,14 +115,14 @@ Page {
                 chart.sumSeries.color = chart.accentColor
                 chart.sumSeries.width = 1.0
 
-                chart.irWindowHandles.color = "transparent"
-                chart.irWindowHandles.borderWidth = 1.0
-                chart.irWindowHandles.borderColor = chart.foregroundColor
-                chart.irWindowHandles.markerSize = 9.0
+                chart.handles.color = "transparent"
+                chart.handles.borderWidth = 1.0
+                chart.handles.borderColor = chart.foregroundColor
+                chart.handles.markerSize = 9.0
                 // Gain handles
-                chart.irWindowHandles.append(24, 0.0)
+                chart.handles.append(24, 0.0)
                 //chart.irWindowHandles.append(234.0, 0.0)
-                TargetModel.setHandles(chart.irWindowHandles)
+                TargetModel.setHandles(chart.handles)
                 TargetModel.setLoudnessSeries(loudnessSeries)
                 //TargetModel.setHarmanSeries(harmanSeries)
                 TargetModel.setSumSeries(sumSeries)

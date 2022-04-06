@@ -1,6 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Dialogs 1.3
-import QtQuick.Controls 2.15
+import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.15
 import QtQuick.Layouts 1.15
 import QtCharts 2.15
@@ -71,8 +71,8 @@ Page {
                 ToolSeparator {
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    topPadding: 6
-                    bottomPadding: 6
+                    topPadding: 0
+                    bottomPadding: 0
                     orientation: Qt.Horizontal
                 },
 
@@ -113,12 +113,15 @@ Page {
                     onCheckedChanged: CrossoverModel.invert(checked)
                 },
 
-                ToolSeparator {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    topPadding: 6
-                    bottomPadding: 6
-                    orientation: Qt.Horizontal
+                // spacer item
+                Item {
+                    Layout.fillHeight: true
+                },
+
+                Rectangle {
+                    width: 96
+                    height: 1
+                    color: Material.background
                 },
 
                 Label {
@@ -148,11 +151,7 @@ Page {
                     value: CrossoverModel.ripple
                     valueColor: Material.accent
                     buttonsVisible: false
-                },
-
-                // spacer item
-                Item {
-                    Layout.fillHeight: true
+                    Layout.bottomMargin: 6
                 }
             ]
 
@@ -171,17 +170,17 @@ Page {
                 chart.sumSeries.color = chart.accentColor
                 chart.sumSeries.width = 1.0
 
-                chart.irWindowHandles.color = "transparent"
-                chart.irWindowHandles.borderWidth = 1.0
-                chart.irWindowHandles.borderColor = chart.foregroundColor
-                chart.irWindowHandles.markerSize = 9.0
+                chart.handles.color = "transparent"
+                chart.handles.borderWidth = 1.0
+                chart.handles.borderColor = chart.foregroundColor
+                chart.handles.markerSize = 9.0
                 // F and Q handles
-                chart.irWindowHandles.append(160, -3.0)
-                chart.irWindowHandles.append(176.0, -3.0)
+                chart.handles.append(160, -3.0)
+                chart.handles.append(176.0, -3.0)
                 // Gain handles
-                chart.irWindowHandles.append(6, 0.0)
-                chart.irWindowHandles.append(234.0, 0.0)
-                CrossoverModel.setHandles(chart.irWindowHandles)
+                chart.handles.append(6, 0.0)
+                chart.handles.append(234.0, 0.0)
+                CrossoverModel.setHandles(chart.handles)
                 CrossoverModel.setLowPassSeries(lowPassSeries)
                 CrossoverModel.setHighPassSeries(highPassSeries)
                 CrossoverModel.setSumSeries(sumSeries)

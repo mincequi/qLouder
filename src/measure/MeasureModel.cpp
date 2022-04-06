@@ -159,7 +159,7 @@ void MeasureModel::saveFile(const QUrl& fileName) {
 }
 
 void MeasureModel::onServiceProgressChanged(double progress) {
-    qDebug() << "measure> progress: " << progress;
+    //qDebug() << "measure> progress: " << progress;
     emit progressChanged();
     if (progress == 0.0) {
         m_state = State::Idle;

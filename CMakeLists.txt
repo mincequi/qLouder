@@ -32,6 +32,8 @@ set(PROJECT_SOURCES
     src/charts/LogChart.cpp
     src/charts/TimeTable.cpp
     src/crossover/CrossoverModel.cpp
+    src/equalizer/EqualizerModel.cpp
+    src/equalizer/FilterModel.cpp
     src/measure/AudioBuffer.cpp
     src/measure/AudioDeviceInfo.cpp
     src/measure/MeasurementError.cpp
@@ -43,6 +45,7 @@ set(PROJECT_SOURCES
     src/project/ProjectModel.cpp
     src/status/StatusModel.cpp
     src/target/TargetModel.cpp
+    src/ui/UiUtil.cpp
     src/util/FrFile.cpp
     src/AudioFilter.cpp
     src/Config.cpp

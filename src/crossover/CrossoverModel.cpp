@@ -11,6 +11,7 @@
 
 #include "AudioFilter.h"
 #include "FrequencyTable.h"
+#include "ui/UiUtil.h"
 
 CrossoverModel::CrossoverModel(QObject *parent)
     : ChartModel(parent) {
@@ -20,41 +21,8 @@ CrossoverModel::CrossoverModel(QObject *parent)
     _highPassF = _frequencyTable.size()-1;
 }
 
-double CrossoverModel::lowPassFrequencySlider() const {
-    return _lowPassF;
-}
-
-double CrossoverModel::highPassFrequencySlider() const {
-    return _highPassF;
-}
-
-void CrossoverModel::setLowPassFrequencySlider(double value) {
-    _lowPassF = std::min(value, (double)(_frequencyTable.size()-1));
-    if (_highPassF <= _lowPassF) {
-        _highPassF = _lowPassF + 1;
-	}
-	emit rangeChanged();
-}
-
-void CrossoverModel::setHighPassFrequencySlider(double value) {
-    _highPassF = std::max(value, 1.0);
-    if (_lowPassF >= _highPassF) {
-        _lowPassF = _highPassF - 1;
-	}
-	emit rangeChanged();
-}
-
 QString CrossoverModel::lowPassFrequencyReadout() const {
-    const auto f = _frequencyTable.at(_lowPassF);
-    if (f < 100.0) {
-        return "<b>" + QString::number(f, 'f', 1) + "</b><size=8> Hz</size>";
-    } else if (f < 1000.0) {
-        return "<b>" + QString::number(f, 'f', 0) + "</b><size=8> Hz</size>";
-    } else if (f < 10000.0) {
-        return "<b>" + QString::number(f/1000.0, 'f', 2) + "</b><size=8> kHz</size>";
-    } else {
-        return "<b>" + QString::number(f/1000.0, 'f', 1) + "</b><size=8> kHz</size>";
-    }
+    return UiUtil::fToStr(_frequencyTable.at(_lowPassF));
 }
 
 double CrossoverModel::lowPassQ() const {
@@ -62,16 +30,7 @@ double CrossoverModel::lowPassQ() const {
 }
 
 QString CrossoverModel::highPassFrequencyReadout() const {
-    const auto f = _frequencyTable.at(_highPassF);
-    if (f < 100.0) {
-        return "<b>" + QString::number(f, 'f', 1) + "</b><size=10> Hz</size>";
-    } else if (f < 1000.0) {
-        return "<b>" + QString::number(f, 'f', 0) + "</b><size=10> Hz</size>";
-    } else if (f < 10000.0) {
-        return "<b>" + QString::number(f/1000.0, 'f', 2) + "</b><size=10> kHz</size>";
-    } else {
-        return "<b>" + QString::number(f/1000.0, 'f', 1) + "</b><size=10> kHz</size>";
-    }
+    return UiUtil::fToStr(_frequencyTable.at(_highPassF));
 }
 
 double CrossoverModel::highPassQ() const {
@@ -88,13 +47,12 @@ QString CrossoverModel::ripple() const {
 }
 
 void CrossoverModel::setHandles(QtCharts::QAbstractSeries* series) {
-    if (series) {
-        _handles = static_cast<QtCharts::QXYSeries*>(series);
-        _lowPassF = _handles->at(0).x();
-        _lowPassQ = _handles->at(0).y();
-        _highPassF = _handles->at(1).x();
-        _highPassQ = _handles->at(1).y();
-    }
+    ChartModel::setHandles(series);
+
+    _lowPassF = handles()->at(0).x();
+    _lowPassQ = handles()->at(0).y();
+    _highPassF = handles()->at(1).x();
+    _highPassQ = handles()->at(1).y();
 }
 
 void CrossoverModel::moveHandle(int index, double x, double y) {
@@ -115,13 +73,13 @@ void CrossoverModel::moveHandle(int index, double x, double y) {
         emit rangeChanged();
     } else if (index == 2 && _lowPassG != yIndex) {
         _lowPassG = yIndex;
-        _handles->replace(index, _handles->at(index).x(), _lowPassG);
+        handles()->replace(index, handles()->at(index).x(), _lowPassG);
         computeLowPassResponse();
         computeSumResponse();
         emit rangeChanged();
     } else if (index == 3 && _highPassG != yIndex) {
         _highPassG = yIndex;
-        _handles->replace(index, _handles->at(index).x(), _highPassG);
+        handles()->replace(index, handles()->at(index).x(), _highPassG);
         computeHighPassResponse();
         computeSumResponse();
         emit rangeChanged();
@@ -143,13 +101,13 @@ void CrossoverModel::stepParam(int index, double x, double y) {
         emit rangeChanged();
     } else if (index == 2) {
         _lowPassG += y;
-        _handles->replace(index, _handles->at(index).x(), _lowPassG);
+        handles()->replace(index, handles()->at(index).x(), _lowPassG);
         computeLowPassResponse();
         computeSumResponse();
         emit rangeChanged();
     } else if (index == 3) {
         _highPassG += y;
-        _handles->replace(index, _handles->at(index).x(), _highPassG);
+        handles()->replace(index, handles()->at(index).x(), _highPassG);
         computeHighPassResponse();
         computeSumResponse();
         emit rangeChanged();
@@ -207,9 +165,9 @@ double CrossoverModel::yMax() const {
 }
 
 void CrossoverModel::computeLowPassResponse() {
-    if (!_handles) return;
+    if (!handles()) return;
 
-    _handles->replace(0, _lowPassF, _lowPassQ + _lowPassG);
+    handles()->replace(0, _lowPassF, _lowPassQ + _lowPassG);
 
     AudioFilter lp(FilterType::LowPass, _frequencyTable.at(_lowPassF), 0.0, pow(10, _lowPassQ/20.0));
     _lowPassResponse = lp.response(_frequencyTable, _lowPassC);
@@ -223,9 +181,9 @@ void CrossoverModel::computeLowPassResponse() {
 }
 
 void CrossoverModel::computeHighPassResponse() {
-    if (!_handles) return;
+    if (!handles()) return;
 
-    _handles->replace(1, _highPassF, _highPassQ + _highPassG);
+    handles()->replace(1, _highPassF, _highPassQ + _highPassG);
 
     AudioFilter hp(FilterType::HighPass, _frequencyTable.at(_highPassF), 0.0, pow(10, _highPassQ/20.0));
     _highPassResponse = hp.response(_frequencyTable, _highPassC);

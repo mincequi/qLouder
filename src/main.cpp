@@ -9,6 +9,7 @@
 #include "charts/FrChartModel.h"
 #include "charts/IrChartModel.h"
 #include "crossover/CrossoverModel.h"
+#include "equalizer/EqualizerModel.h"
 #include "measure/Measurement.h"
 #include "measure/MeasureModel.h"
 #include "measure/MeasurementService.h"
@@ -36,6 +37,10 @@ int main(int argc, char *argv[]) {
     auto crossoverModel = new CrossoverModel();
     qmlRegisterSingletonType<CrossoverModel>("CrossoverModel", 1, 0, "CrossoverModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {
         return crossoverModel;
+    });
+    auto equalizerModel = new EqualizerModel();
+    qmlRegisterSingletonType<EqualizerModel>("EqualizerModel", 1, 0, "EqualizerModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {
+        return equalizerModel;
     });
     auto measureModel = new MeasureModel(MeasurementService::instance());
 	qmlRegisterSingletonType<ProjectModel>("MeasureModel", 1, 0, "MeasureModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {

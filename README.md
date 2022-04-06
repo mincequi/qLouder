@@ -34,6 +34,7 @@ optimal filter set and crossover for your DIY loudspeaker.
 * Parametric equalizer
 
 # Planned features
+* Different sample rates for playback and recording
 * Persistent measurements
 
 # Requirements

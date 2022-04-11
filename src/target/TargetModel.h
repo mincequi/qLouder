@@ -3,6 +3,8 @@
 #include <complex>
 #include <charts/ChartModel.h>
 
+#include <rxcpp/rx-lite.hpp>
+
 class TargetModel : public ChartModel {
     Q_OBJECT
 
@@ -17,6 +19,8 @@ public:
 
     double loudness() const;
 
+    rxcpp::observable<std::vector<double>> fr() const;
+
 public slots:
     void setLoudnessSeries(QtCharts::QAbstractSeries* series);
     void setHarmanSeries(QtCharts::QAbstractSeries* series);
@@ -27,6 +31,7 @@ public slots:
 
 signals:
     void valuesChanged();
+    void frChanged(const std::vector<double>& response);
 
 private:
     double yMin() const override;
@@ -46,5 +51,6 @@ private:
     QtCharts::QXYSeries* _loudnessSeries = nullptr;
     std::vector<std::complex<double>> _harmanResponse;
     QtCharts::QXYSeries* _harmanSeries = nullptr;
+    rxcpp::subjects::subject<std::vector<double>> _fr;
     QtCharts::QXYSeries* _sumSeries = nullptr;
 };

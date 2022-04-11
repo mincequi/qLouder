@@ -18,6 +18,7 @@ RowLayout {
     property color axisLabelColor: Material.primary
     property color accentColor: Material.accent
     property color foregroundColor: Material.foreground
+    property color backgroundColor: Material.background
     property int toolBarWidth: 96
 
     property alias xAxis: xAxis
@@ -134,17 +135,6 @@ RowLayout {
             opacity: 0.25
             visible: false
         }
-
-        /*
-        LineSeries {
-            id: logSeries
-            name: "Logarithmic"
-            axisX: xAxisLog
-            axisY: yAxis
-            width: 1.0
-            color: control.accentColor
-        }
-        */
 
         LineSeries {
             id: irWindowSeries

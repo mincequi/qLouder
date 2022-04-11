@@ -21,7 +21,6 @@ signals:
 private:
     void updateChart();
     void onCurrentMeasurementChangedF(Measurement<float>* measurement);
-    void onCurrentMeasurementChangedD(Measurement<double>* measurement);
 
     QtCharts::QXYSeries* _logSeries = nullptr;
     Measurement<float>* _measurement = nullptr;

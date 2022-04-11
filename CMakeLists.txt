@@ -1,5 +1,14 @@
 cmake_minimum_required(VERSION 3.14)
 
+Include(FetchContent)
+
+FetchContent_Declare(
+  rxcpp
+  GIT_REPOSITORY https://github.com/ReactiveX/RxCpp.git
+  GIT_TAG        761b932a80e2be6e2b62d232e754bd96fc448946 # main from Mar 13, 2022
+)
+FetchContent_MakeAvailable(rxcpp)
+
 project(qLouder VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -105,6 +114,7 @@ PRIVATE
     ${FFTW3_LINK_LIBRARIES}
     #${FFTW3F_THREADS_LINK_LIBRARIES}
     #${FFTW3_THREADS_LINK_LIBRARIES}
+    rxcpp
 )
 
 set_target_properties(qLouder PROPERTIES

@@ -3,6 +3,10 @@
 
 #include <QObject>
 
+#include <Types.h>
+
+#include <rxcpp/rx-lite.hpp>
+
 template <class T>
 class Measurement;
 
@@ -16,9 +20,15 @@ public:
 
     Measurement<float>* currentMeasurement() const;
 
+    void setFrCalibration(Calibration calibration);
+
+    rxcpp::observable<std::vector<double>> calibratedFr() const;
+
 signals:
     void currentMeasurementChangedF(Measurement<float>* measurement);
     void currentMeasurementChangedD(Measurement<double>* measurement);
+
+    void calibratedFrChanged(const std::vector<double>& fr);
 
 private:
     explicit MeasurementManager(const MeasurementService& measurementService, QObject *parent = nullptr);
@@ -27,6 +37,8 @@ private:
     const MeasurementService& _measurementService;
     std::vector<Measurement<float>*> _measurements;
     Measurement<float>* _currentMeasurement = nullptr;
+
+    rxcpp::subjects::subject<std::vector<double>> _calibratedFr;
 };
 
 #endif // MEASUREMENTMANAGER_H

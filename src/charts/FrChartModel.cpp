@@ -8,8 +8,6 @@ FrChartModel::FrChartModel(QObject *parent)
     setType(FrequencyResponse);
     connect(&MeasurementManager::instance(), &MeasurementManager::currentMeasurementChangedF,
             this, &FrChartModel::onCurrentMeasurementChangedF);
-    connect(&MeasurementManager::instance(), &MeasurementManager::currentMeasurementChangedD,
-            this, &FrChartModel::onCurrentMeasurementChangedD);
 }
 
 QStringList FrChartModel::calibrations() const {
@@ -21,9 +19,7 @@ void FrChartModel::setCalibration(int index) {
     if (_calibrationSeries)
         _calibrationSeries->replace(_calibrations[cfg->calibration]);
 
-    if (_measurement) {
-        _measurement->setFrCalibration(cfg->calibration);
-    }
+    MeasurementManager::instance().setFrCalibration(cfg->calibration);
 }
 
 void FrChartModel::setLogSeries(QtCharts::QAbstractSeries* series) {
@@ -88,8 +84,4 @@ void FrChartModel::onCurrentMeasurementChangedF(Measurement<float>* measurement)
 
     // Initial chart update
     updateChart();
-}
-
-void FrChartModel::onCurrentMeasurementChangedD(Measurement<double>* measurement) {
-
 }

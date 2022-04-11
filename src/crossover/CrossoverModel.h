@@ -40,7 +40,8 @@ public slots:
     void invert(bool invert);
 
 signals:
-	void rangeChanged();
+    void rangeChanged();
+    void frChanged(const std::vector<double>& response);
 
 private:
     double yMin() const override;
@@ -67,5 +68,6 @@ private:
     QtCharts::QXYSeries* _lowPassSeries = nullptr;
     std::vector<std::complex<double>> _highPassResponse;
     QtCharts::QXYSeries* _highPassSeries = nullptr;
+    std::vector<double> _fr;
     QtCharts::QXYSeries* _sumSeries = nullptr;
 };

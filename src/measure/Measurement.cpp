@@ -142,12 +142,12 @@ void Measurement<T>::setFrChangedCallback(std::function<void()> cb) {
 }
 
 template <class T>
-const std::vector<T>& Measurement<T>::frequencies() {
+const std::vector<double>& Measurement<T>::frequencies() {
     return _table.frequencies();
 }
 
 template <class T>
-const std::vector<T>& Measurement<T>::fr() {
+const std::vector<double>& Measurement<T>::fr() {
     if (_fr.empty()) {
         const auto& wIr = windowedIr();
 
@@ -186,7 +186,7 @@ void Measurement<T>::setFrCalibration(Calibration calibration) {
 }
 
 template <class T>
-const std::vector<T>& Measurement<T>::calibratedFr() {
+const std::vector<double>& Measurement<T>::calibratedFr() {
     const auto& fr_ = fr();
     if (_calibratedFr.empty()) {
         if (_frCalibrations[_calibration].empty()) {
@@ -202,7 +202,7 @@ const std::vector<T>& Measurement<T>::calibratedFr() {
 }
 
 template <class T>
-const std::vector<T>& Measurement<T>::frCalibration(Calibration calibration) {
+const std::vector<double>& Measurement<T>::frCalibration(Calibration calibration) {
     return _frCalibrations[calibration];
 }
 

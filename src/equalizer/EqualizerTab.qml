@@ -12,6 +12,10 @@ import "../ui"
 import EqualizerModel 1.0
 
 Page {
+    function colorWithAlpha(color, alpha) {
+        return Qt.rgba(color.r, color.g, color.b, alpha)
+    }
+
     header: ToolBar {
         height: 24
         width: parent.width
@@ -25,6 +29,77 @@ Page {
             width: parent.width
             layoutDirection: "LeftToRight"
             spacing: 0
+
+            Label {
+                height: 24
+                leftPadding: 9
+                text: "Level"
+                font.pointSize: 12
+            }
+            SmallSpinBox {
+                value: -12
+                from: -24
+                to: 0
+                onValueModified: EqualizerModel.setLevel(value)
+                Component.onCompleted: EqualizerModel.setLevel(value)
+            }
+
+            // Frequency range
+            // Level
+            ToolSeparator {
+                leftPadding: 0
+                implicitHeight: 24
+                horizontalPadding: 9
+            }
+            Label {
+                height: 24
+                text: "Range"
+                font.pointSize: 12
+            }
+            TextMetrics {
+                id: textMetrics
+                font: minFrequencyReadout.font
+                text: "250 Hz"
+            }
+            Item {
+                height: 24
+                width: textMetrics.width + 6
+
+                Label {
+                    id: minFrequencyReadout
+                    topPadding: 5
+                    height: 24
+                    anchors.right: parent.right
+                    text: EqualizerModel.minFrequencyReadout
+                    font.pointSize: 12
+                    font.bold: true
+                }
+            }
+            SmallRangeSlider {
+                implicitWidth: 96
+                from: 0
+                to: EqualizerModel.frequencies.length-1
+                snapMode: RangeSlider.SnapAlways
+                stepSize: 1
+                first.value: EqualizerModel.minFrequencySlider
+                second.value: EqualizerModel.maxFrequencySlider
+                first.onVisualPositionChanged: EqualizerModel.setMinFrequencySlider(first.value)
+                second.onVisualPositionChanged: EqualizerModel.setMaxFrequencySlider(second.value)
+            }
+            Item {
+                id: maxFrequencyReadout
+                height: 24
+                width: textMetrics.width + 6
+
+                Label {
+                    topPadding: 5
+                    height: 24
+                    anchors.right: parent.right
+                    text: EqualizerModel.maxFrequencyReadout
+                    font.pointSize: 12
+                    font.bold: true
+                }
+            }
 
             // Spacer item
             Item {
@@ -42,17 +117,16 @@ Page {
                 iconName: "plus"
                 onClicked: {
                     var response = chart.chart.createSeries(ChartView.SeriesTypeLine, "Response", chart.xAxisLog, chart.yAxis)
-                    response.color = chart.foregroundColor
+                    response.color = chart.axisLabelColor // colorWithAlpha(chart.foregroundColor, 0.33)
                     response.width = 1.0
+                    EqualizerModel.addFilter(response)
 
                     // TODO: we have to delete sumSeries each filter creation to keep z ordering
                     chart.chart.removeSeries(chart.sumSeries)
                     chart.sumSeries = chart.chart.createSeries(ChartView.SeriesTypeLine, "Sum", chart.xAxisLog, chart.yAxis)
                     chart.sumSeries.color = chart.accentColor
                     chart.sumSeries.width = 1.0
-
-                    EqualizerModel.addFilter(response)
-                    EqualizerModel.setSumSeries(chart.sumSeries)
+                    EqualizerModel.setFilterSumSeries(chart.sumSeries)
                 }
             }
         }
@@ -66,6 +140,8 @@ Page {
             id: chart
             model: EqualizerModel
             property var sumSeries: chart.chart.createSeries(ChartView.SeriesTypeLine, "Sum", chart.xAxisLog, chart.yAxis)
+            property var targetSeries: chart.chart.createSeries(ChartView.SeriesTypeLine, "Target", chart.xAxisLog, chart.yAxis)
+            property var measurementSeries: chart.chart.createSeries(ChartView.SeriesTypeLine, "Measurement", chart.xAxisLog, chart.yAxis)
 
             toolBarChildren: [
                 ListView {
@@ -123,8 +199,15 @@ Page {
 
                 chart.sumSeries.color = chart.accentColor
                 chart.sumSeries.width = 1.0
+                EqualizerModel.setFilterSumSeries(sumSeries)
 
-                EqualizerModel.setSumSeries(sumSeries)
+                chart.targetSeries.color = Material.color(Material.Amber, Material.Shade200)
+                chart.targetSeries.width = 1.0
+                EqualizerModel.setTargetSeries(targetSeries)
+
+                chart.measurementSeries.color = Material.color(Material.Orange, Material.Shade200)
+                chart.measurementSeries.width = 1.0
+                EqualizerModel.setFilteredMeasurementSeries(measurementSeries)
             }
         }
     }

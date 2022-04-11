@@ -201,14 +201,14 @@ void CrossoverModel::computeSumResponse() {
 
     double lpFactor = pow(10, _lowPassG/20.0);
     double hpFactor = pow(10, _highPassG/20.0);
-    std::vector<double> sum;
-    sum.reserve(_frequencyTable.size());
+    _fr.clear();
+    _fr.reserve(_frequencyTable.size());
     for (int i = 0; i < _frequencyTable.size(); ++i) {
-        sum.push_back(20 * log10(abs(_lowPassResponse.at(i) + (_invert ? -1.0 : 1.0) * _highPassResponse.at(i))));
+        _fr.push_back(20 * log10(abs(_lowPassResponse.at(i) + (_invert ? -1.0 : 1.0) * _highPassResponse.at(i))));
     }
     _sumMax = -144.0;
     _sumMin = 144.0;
-    for (const auto& s : sum) {
+    for (const auto& s : _fr) {
         _sumMax = std::max(_sumMax, s);
         _sumMin = std::min(_sumMin, s);
     }
@@ -219,4 +219,6 @@ void CrossoverModel::computeSumResponse() {
         points.append( { _frequencyTable.at(i), 20 * log10(abs(_lowPassResponse.at(i)*lpFactor + (_invert ? -1.0 : 1.0) * _highPassResponse.at(i)*hpFactor)) } );
     }
     _sumSeries->replace(points);
+
+    emit frChanged(_fr);
 }

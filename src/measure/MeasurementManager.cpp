@@ -3,6 +3,8 @@
 #include "Measurement.h"
 #include "MeasurementService.h"
 
+#include <rxcpp/operators/rx-combine_latest.hpp>
+
 MeasurementManager& MeasurementManager::instance() {
     static MeasurementManager instance(MeasurementService::instance());
     return instance;
@@ -22,8 +24,24 @@ Measurement<float>* MeasurementManager::currentMeasurement() const {
     return _currentMeasurement;
 }
 
+void MeasurementManager::setFrCalibration(Calibration calibration) {
+    if (!_currentMeasurement) return;
+
+    _currentMeasurement->setFrCalibration(calibration);
+    emit calibratedFrChanged(_currentMeasurement->calibratedFr());
+
+    _calibratedFr.get_subscriber().on_next(_currentMeasurement->calibratedFr());
+}
+
+rxcpp::observable<std::vector<double>> MeasurementManager::calibratedFr() const {
+    return _calibratedFr.get_observable();
+}
+
 void MeasurementManager::onMeasurementAvailable(Measurement<float>* measurement) {
     _measurements.push_back(measurement);
     _currentMeasurement = measurement;
     emit currentMeasurementChangedF(_currentMeasurement);
+    emit calibratedFrChanged(_currentMeasurement->calibratedFr());
+
+    _calibratedFr.get_subscriber().on_next(_currentMeasurement->calibratedFr());
 }

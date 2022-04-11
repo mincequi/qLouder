@@ -37,15 +37,16 @@ public:
     void setIrWindowRight(double ms);
 
     // Frequency response related methods
-    const std::vector<T>& frequencies();
-    const std::vector<T>& fr();
+    const std::vector<double>& frequencies();
     void setFrChangedCallback(std::function<void()>);
 
-    const std::vector<T>& calibratedFr();
-    const std::vector<T>& frCalibration(Calibration calibration);
     void setFrCalibration(Calibration calibration);
+    const std::vector<double>& calibratedFr();
+    const std::vector<double>& frCalibration(Calibration calibration);
 
 private:
+    const std::vector<double>& fr();
+
     const std::vector<T>& ir();
     //void setInputSignal(const std::vector<T>& inputSignal);
     //void setInverseFilter(const std::vector<T>& inverseFilter);
@@ -55,7 +56,7 @@ private:
 
     void reset();
 
-    FrequencyTable<T> _table;
+    FrequencyTable<double> _table;
     int _sampleRate = 48000;
     double _fMin = 20.0;
     double _fMax = 20000.0;
@@ -67,15 +68,17 @@ private:
     std::vector<T> _winIr;
 
     std::function<void()> _frChangedCallback = nullptr;
-    std::vector<T> _fr;
+    std::vector<double> _fr;
 
     int _irMaxValueIndex = 0;
     int _irWindowLeft = 0;
     int _irWindowRight = 0;
 
     Calibration _calibration = CalibrationNone;
-    std::map<Calibration, std::vector<T>> _frCalibrations;
-    std::vector<T> _calibratedFr;
+    std::map<Calibration, std::vector<double>> _frCalibrations;
+    std::vector<double> _calibratedFr;
+
+    //friend class MeasurementManager;
 };
 
 #endif // MEASUREMENTSESSION_H

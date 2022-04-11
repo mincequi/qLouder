@@ -8,9 +8,10 @@
 class FilterModel : public QObject {
     Q_OBJECT
 
+    // Filter model needs to store response series, so that it can be identified
+    // and removed from the chart when this filter gets deleted.
     Q_PROPERTY(QtCharts::QAbstractSeries* response READ response CONSTANT)
 
-    Q_PROPERTY(QString name2 MEMBER _name CONSTANT)
     Q_PROPERTY(QString f READ f NOTIFY valuesChanged)
     Q_PROPERTY(double q READ q NOTIFY valuesChanged)
     Q_PROPERTY(double g MEMBER _g NOTIFY valuesChanged)

@@ -44,7 +44,7 @@ public:
 
     const std::vector<T>& frequencies();
 
-    std::vector<T> interpolate(const std::map<double, double>& in, bool shiftToZero = true);
+    std::vector<double> interpolate(const std::map<double, double>& in, bool shiftToZero = true);
 
     static const std::vector<T>& octaveBands();
 

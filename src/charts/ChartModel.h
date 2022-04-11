@@ -59,8 +59,6 @@ protected:
     virtual QtCharts::QXYSeries* handles();
 
 private:
-    void onCurrentMeasurementChanged(Measurement<float>* measurement);
-
     Type _type = ImpulseResponse;
     QtCharts::QXYSeries* _handles = nullptr;
 

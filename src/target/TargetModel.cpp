@@ -1,16 +1,6 @@
 #include "TargetModel.h"
 
-#include <utility>
-
-#include <QAudioDeviceInfo>
-#include <QDebug>
-#include <QSaveFile>
-#include <QTimer>
-#include <QUrl>
-#include <QVariant>
-
 #include "AudioFilter.h"
-#include "FrequencyTable.h"
 
 TargetModel::TargetModel(QObject *parent)
     : ChartModel(parent) {
@@ -21,6 +11,10 @@ TargetModel::TargetModel(QObject *parent)
 
 double TargetModel::loudness() const {
     return _loudness * 2.0;
+}
+
+rxcpp::observable<std::vector<double>> TargetModel::fr() const {
+    return _fr.get_observable();
 }
 
 void TargetModel::moveHandle(int index, double x, double y) {
@@ -122,10 +116,17 @@ void TargetModel::computeHarmanResponse() {
 void TargetModel::computeSumResponse() {
     if (!_sumSeries) return;
 
+    std::vector<double> fr;
+    fr.reserve(_frequencyTable.size());
+    for (int i = 0; i < _frequencyTable.size(); ++i) {
+        fr.push_back(20 * log10(abs(_loudnessResponse.at(i) /** _harmanResponse.at(i)*/ )));
+    }
+    _fr.get_subscriber().on_next(fr);
+
     QVector<QPointF> points;
     points.reserve(_frequencyTable.size());
     for (int i = 0; i < _frequencyTable.size(); ++i) {
-        points.append( { _frequencyTable.at(i), 20 * log10(abs(_loudnessResponse.at(i) /** _harmanResponse.at(i)*/)) } );
+        points.append( { _frequencyTable.at(i), fr.at(i) } );
     }
     _sumSeries->replace(points);
 
@@ -136,4 +137,6 @@ void TargetModel::computeSumResponse() {
         _sumMax = std::max(_sumMax, p.y());
         _sumMin = std::min(_sumMin, p.y());
     }
+
+    emit frChanged(fr);
 }

@@ -45,10 +45,10 @@ const std::vector<T>& FrequencyTable<T>::frequencies() {
 }
 
 template <class T>
-std::vector<T> FrequencyTable<T>::interpolate(const std::map<double, double>& in, bool shiftToZero) {
+std::vector<double> FrequencyTable<T>::interpolate(const std::map<double, double>& in, bool shiftToZero) {
     if (in.empty()) return {};
 
-    std::vector<T> out;
+    std::vector<double> out;
 	out.reserve(frequencies().size());
 	for (auto i = m_fMin; i <= m_fMax; i += m_stride) {
 
@@ -105,7 +105,7 @@ std::vector<T> FrequencyTable<T>::interpolate(const std::map<double, double>& in
 	}
 
     if (shiftToZero) {
-        T aMax = -144.0;
+        double aMax = -144.0;
         for (const auto& a : out) {
             aMax = std::max(a, aMax);
         }

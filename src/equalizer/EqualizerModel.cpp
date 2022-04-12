@@ -1,5 +1,6 @@
 #include "EqualizerModel.h"
 
+#include "AudioFilter.h"
 #include "FilterModel.h"
 #include <measure/MeasurementManager.h>
 #include <target/TargetModel.h>
@@ -11,13 +12,13 @@
 EqualizerModel::EqualizerModel(const TargetModel& targetModel,
                                QObject *parent)
     : ChartModel(parent),
-      _targetModel(targetModel) {
+      _targetModel(targetModel),
+      _range({3, 28}) {
     setType(FrequencyResponse);
     FrequencyTable<double> table;
     _frequencyTable = table.frequencies();
     FrequencyTable<double> rangeTable(3);
     _rangeTable = rangeTable.frequencies();
-    _maxFrequencySlider = _rangeTable.size()-3;
 
     MeasurementManager::instance().calibratedFr()
             .combine_latest([this](const auto& measurement, const auto& filter) {
@@ -29,6 +30,7 @@ EqualizerModel::EqualizerModel(const TargetModel& targetModel,
         return out;
     }, _sum.get_observable())
             .subscribe([this](const auto& filteredMeasurement) {
+        _filtered = filteredMeasurement;
         QVector<QPointF> points;
         points.reserve(_frequencyTable.size());
         for (int i = 0; i < _frequencyTable.size(); ++i) {
@@ -57,6 +59,7 @@ EqualizerModel::EqualizerModel(const TargetModel& targetModel,
         return out;
     }, _level.get_observable())
             .subscribe([this](const auto& sum) {
+        _target = sum;
         QVector<QPointF> points;
         points.reserve(_frequencyTable.size());
         for (int i = 0; i < _frequencyTable.size(); ++i) {
@@ -67,31 +70,35 @@ EqualizerModel::EqualizerModel(const TargetModel& targetModel,
 }
 
 double EqualizerModel::minFrequencySlider() const {
-    return _minFrequencySlider;
+    return _range.get_value().first;
 }
 
 double EqualizerModel::maxFrequencySlider() const {
-    return _maxFrequencySlider;
+    return _range.get_value().second;
 }
 
 void EqualizerModel::setMinFrequencySlider(double value) {
-    _minFrequencySlider = std::min(value, (double)(_rangeTable.size()-2));
-    if (_maxFrequencySlider <= _minFrequencySlider) {
-        _maxFrequencySlider = _minFrequencySlider + 1;
+    auto curr = _range.get_value();
+    curr.first = std::min(value, (double)(_rangeTable.size()-2));
+    if (curr.second <= curr.first) {
+        curr.second = curr.first + 1;
     }
+    _range.get_subscriber().on_next(curr);
     emit rangeChanged();
 }
 
 void EqualizerModel::setMaxFrequencySlider(double value) {
-    _maxFrequencySlider = std::max(value, 1.0);
-    if (_minFrequencySlider >= _maxFrequencySlider) {
-        _minFrequencySlider = _maxFrequencySlider - 1;
+    auto curr = _range.get_value();
+    curr.second = std::max(value, 1.0);
+    if (curr.first >= curr.second) {
+        curr.first = curr.second - 1;
     }
+    _range.get_subscriber().on_next(curr);
     emit rangeChanged();
 }
 
 QString EqualizerModel::minFrequencyReadout() const {
-    const auto f = _rangeTable.at(_minFrequencySlider);
+    const auto f = _rangeTable.at(_range.get_value().first);
     if (f > 3500.0) {
         return QString::number(f/1000.0, 'f', 0) + " kHz";
     } else if (f > 900.0) {
@@ -102,7 +109,7 @@ QString EqualizerModel::minFrequencyReadout() const {
 }
 
 QString EqualizerModel::maxFrequencyReadout() const {
-    const auto f = _rangeTable.at(_maxFrequencySlider);
+    const auto f = _rangeTable.at(_range.get_value().second);
     if (f > 3500.0) {
         return QString::number(f/1000.0, 'f', 0) + " kHz";
     } else if (f > 900.0) {
@@ -143,10 +150,16 @@ void EqualizerModel::setFilteredMeasurementSeries(QtCharts::QAbstractSeries* ser
 void EqualizerModel::addFilter(QtCharts::QAbstractSeries* response) {
     int f = 120;
     double g = -3.0;
+
+    double q = 3.0;
+    if (findMaxOvershoot(&f, &g)) {
+        findQ(f, g, &q);
+    }
+
     handles()->append(f, g);
-    handles()->append(f - 3, g / 2);
-    handles()->append(f + 3, g / 2);
-    _filters.append(new FilterModel(response));
+    handles()->append(f - q, g / 2);
+    handles()->append(f + q, g / 2);
+    _filters.append(new FilterModel(f, q, g, response));
     emit filtersChanged();
     computeSumResponse();
 }
@@ -271,4 +284,60 @@ void EqualizerModel::computeSumResponse() {
         _sumMin = std::min(_sumMin, s);
     }
     emit rangeChanged();
+}
+
+bool EqualizerModel::findMaxOvershoot(int* f, double* g) {
+    if (_filteredSeries->count() == 0) return false;
+
+    const int fRangeMin = _range.get_value().first * 8;
+    const int fRangeMax = _range.get_value().second * 8;
+
+    int fMax = 0;
+    double gMax = 0.0;
+    for (int i = fRangeMin; i < fRangeMax; ++i) {
+        double g_ = std::round((_filteredSeries->at(i).y() - _targetSeries->at(i).y()) * 5.0) / 5.0;
+        if (gMax < g_) {
+            fMax = i;
+            gMax = g_;
+        }
+    }
+
+    if (fMax != 0 && gMax != 0.0) {
+        *f = fMax;
+        *g = -gMax;
+        return true;
+    }
+
+    return false;
+}
+
+void EqualizerModel::findQ(int f, double g, double* q) {
+    const int fRangeMin = _range.get_value().first * 8; //std::max(_range.get_value().first * 8, f - 8);
+    const int fRangeMax = _range.get_value().second * 8; //std::min(_range.get_value().second * 8, f + 8);
+
+    double minDeviation = std::numeric_limits<double>::infinity();
+    for (int i = 1; i < 81; ++i) {
+        const auto pow2N = pow(2, i/12.0);
+        const auto q_ = sqrt(pow2N)/(pow2N - 1);
+
+        AudioFilter lp(FilterType::Peak, _frequencyTable.at(f), g, q_);
+        auto response = lp.response(_frequencyTable, 1);
+
+        double sumDiff = 0.0;
+        for (int j = fRangeMin; j < fRangeMax; ++j) {
+            sumDiff += abs(_filteredSeries->at(j).y() - _targetSeries->at(j).y() + 20 * log10(abs(response.at(j))));
+        }
+
+        if (sumDiff < minDeviation) {
+            minDeviation = sumDiff;
+        } else {
+            *q = std::max(i - 1, 1);
+            return;
+        }
+
+        if (i == 80) {
+            *q = 80;
+            return;
+        }
+    }
 }

@@ -17,7 +17,8 @@ class FilterModel : public QObject {
     Q_PROPERTY(double g MEMBER _g NOTIFY valuesChanged)
 
 public:
-    explicit FilterModel(QtCharts::QAbstractSeries* response,
+    explicit FilterModel(int f, double q, double g,
+                         QtCharts::QAbstractSeries* response,
                          QObject *parent = nullptr);
 
     QString f() const;

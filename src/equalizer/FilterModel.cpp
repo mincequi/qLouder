@@ -4,9 +4,13 @@
 #include "FrequencyTable.h"
 #include "ui/UiUtil.h"
 
-FilterModel::FilterModel(QtCharts::QAbstractSeries* response,
+FilterModel::FilterModel(int f, double q, double g,
+                         QtCharts::QAbstractSeries* response,
                          QObject *parent)
     : QObject{parent},
+      _f(f),
+      _q(q),
+      _g(g),
       _response(static_cast<QtCharts::QXYSeries*>(response)) {
     FrequencyTable<double> table;
     _frequencyTable = table.frequencies();

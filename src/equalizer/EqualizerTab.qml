@@ -117,7 +117,7 @@ Page {
                 iconName: "plus"
                 onClicked: {
                     var response = chart.chart.createSeries(ChartView.SeriesTypeLine, "Response", chart.xAxisLog, chart.yAxis)
-                    response.color = chart.axisLabelColor // colorWithAlpha(chart.foregroundColor, 0.33)
+                    response.color = Material.color(Material.Grey)
                     response.width = 1.0
                     EqualizerModel.addFilter(response)
 
@@ -139,6 +139,7 @@ Page {
         FrChart {
             id: chart
             model: EqualizerModel
+            property var areaSeries: chart.chart.createSeries(ChartView.SeriesTypeArea, "Area", chart.xAxisLog, chart.yAxis)
             property var sumSeries: chart.chart.createSeries(ChartView.SeriesTypeLine, "Sum", chart.xAxisLog, chart.yAxis)
             property var targetSeries: chart.chart.createSeries(ChartView.SeriesTypeLine, "Target", chart.xAxisLog, chart.yAxis)
             property var measurementSeries: chart.chart.createSeries(ChartView.SeriesTypeLine, "Measurement", chart.xAxisLog, chart.yAxis)
@@ -186,6 +187,12 @@ Page {
             ]
 
             Component.onCompleted: {
+                chart.areaSeries.upperSeries = chart.targetSeries
+                chart.areaSeries.lowerSeries = chart.measurementSeries
+                chart.areaSeries.borderColor = "transparent"
+                chart.areaSeries.borderWidth = 4.0
+                chart.areaSeries.color = colorWithAlpha(chart.accentColor, 0.33)
+
                 chart.handles.color = "transparent"
                 chart.handles.borderWidth = 1.0
                 chart.handles.borderColor = chart.foregroundColor

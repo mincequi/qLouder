@@ -59,26 +59,27 @@ private:
     void moveRightQHandle(int index, double x);
 
     void computeSumResponse();
+    bool findMaxOvershoot(int* f, double* g);
+    void findQ(int f, double g, double* q);
 
     const TargetModel& _targetModel;
     std::vector<double> _frequencyTable;
     std::vector<double> _rangeTable;
     rxcpp::subjects::subject<int> _level;
 
-    uint _minFrequencySlider = 3;
-    uint _maxFrequencySlider = 10;
-
     double _sumMax = -144.0;
     double _sumMin = 144.0;
 
     QtCharts::QXYSeries* _sumSeries = nullptr;
+    std::vector<double> _target;
     QtCharts::QXYSeries* _targetSeries = nullptr;
+    std::vector<double> _filtered;
     QtCharts::QXYSeries* _filteredSeries = nullptr;
 
     QObjectList _filters;
 
     rxcpp::subjects::subject<std::vector<double>> _sum;
-    rxcpp::subjects::subject<std::pair<int,int>> _range;
+    rxcpp::subjects::behavior<std::pair<int,int>> _range;
 
     rxcpp::observable<QtCharts::QXYSeries*> _filteredMeasurement;
 };

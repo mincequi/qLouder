@@ -38,6 +38,7 @@ public slots:
 
     void addFilter(QtCharts::QAbstractSeries* response);
     void removeFilter(int index);
+    void optimize();
 
     void stepF(int index, int f);
     void stepQ(int index, double q);
@@ -61,6 +62,8 @@ private:
     void computeSumResponse();
     bool findMaxOvershoot(int* f, double* g);
     void findQ(int f, double g, double* q);
+    double deviationWithFilter(int f, double g, int q);
+    double deviation();
 
     const TargetModel& _targetModel;
     std::vector<double> _frequencyTable;

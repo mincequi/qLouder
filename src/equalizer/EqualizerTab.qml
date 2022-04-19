@@ -105,6 +105,15 @@ Page {
             Item {
                 Layout.fillWidth: true
             }
+            SmallToolButton {
+                height: 24
+                implicitWidth: 96
+                text: "Optimize"
+                iconName: "arrow-all"
+                onClicked: {
+                    EqualizerModel.optimize()
+                }
+            }
             Rectangle {
                 height: 24
                 width: 1

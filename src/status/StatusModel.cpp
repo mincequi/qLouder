@@ -21,7 +21,7 @@ void StatusModel::clearMessage() {
 }
 
 void StatusModel::showMessage(const QString& text, int timeout) {
-    if (timeout) {
+    if (timeout == 0) {
         _timer.stop();
     } else {
         _timer.start(timeout);

@@ -1,11 +1,13 @@
 #include "EqualizerModel.h"
 
+#include <chrono>
+#include <rxcpp/operators/rx-combine_latest.hpp>
+
 #include "AudioFilter.h"
 #include "FilterModel.h"
 #include <measure/MeasurementManager.h>
+#include <status/StatusModel.h>
 #include <target/TargetModel.h>
-
-#include <rxcpp/operators/rx-combine_latest.hpp>
 
 // https://www.sonarworks.com/soundid-reference/blog/learn/eq-curves-defined/
 
@@ -312,21 +314,9 @@ bool EqualizerModel::findMaxOvershoot(int* f, double* g) {
 }
 
 void EqualizerModel::findQ(int f, double g, double* q) {
-    const int fRangeMin = _range.get_value().first * 8; //std::max(_range.get_value().first * 8, f - 8);
-    const int fRangeMax = _range.get_value().second * 8; //std::min(_range.get_value().second * 8, f + 8);
-
     double minDeviation = std::numeric_limits<double>::infinity();
     for (int i = 1; i < 81; ++i) {
-        const auto pow2N = pow(2, i/12.0);
-        const auto q_ = sqrt(pow2N)/(pow2N - 1);
-
-        AudioFilter lp(FilterType::Peak, _frequencyTable.at(f), g, q_);
-        auto response = lp.response(_frequencyTable, 1);
-
-        double sumDiff = 0.0;
-        for (int j = fRangeMin; j < fRangeMax; ++j) {
-            sumDiff += abs(_filteredSeries->at(j).y() - _targetSeries->at(j).y() + 20 * log10(abs(response.at(j))));
-        }
+        auto sumDiff = deviationWithFilter(f, g, i);
 
         if (sumDiff < minDeviation) {
             minDeviation = sumDiff;
@@ -340,4 +330,89 @@ void EqualizerModel::findQ(int f, double g, double* q) {
             return;
         }
     }
+}
+
+double EqualizerModel::deviationWithFilter(int f, double g, int q) {
+    const int fRangeMin = _range.get_value().first * 8;
+    const int fRangeMax = _range.get_value().second * 8;
+    const auto pow2N = pow(2, q/12.0);
+    const auto q_ = sqrt(pow2N)/(pow2N - 1);
+
+    AudioFilter lp(FilterType::Peak, _frequencyTable.at(f), g, q_);
+    auto response = lp.response(_frequencyTable, 1);
+
+    double sumDiff = 0.0;
+    for (int j = fRangeMin; j < fRangeMax; ++j) {
+        sumDiff += abs(_filteredSeries->at(j).y() - _targetSeries->at(j).y() + 20 * log10(abs(response.at(j))));
+    }
+
+    return sumDiff;
+}
+
+double EqualizerModel::deviation() {
+    const int fRangeMin = _range.get_value().first * 8;
+    const int fRangeMax = _range.get_value().second * 8;
+
+    double sumDiff = 0.0;
+    for (int j = fRangeMin; j < fRangeMax; ++j) {
+        sumDiff += abs(_filteredSeries->at(j).y() - _targetSeries->at(j).y());
+    }
+
+    return sumDiff;
+}
+
+void EqualizerModel::optimize() {
+    const auto t1 = std::chrono::high_resolution_clock::now();
+
+    for (int index = 0; index < _filters.size(); ++index) {
+        auto filter = static_cast<FilterModel*>(_filters.at(index));
+
+        double minDeviation = std::numeric_limits<double>::infinity();
+        const int minQ = std::max(1, (int)filter->_q - 2);
+        const int maxQ = std::min(80, (int)filter->_q + 2);
+        const int minF = std::max(8, (int)filter->_f - 2);
+        const int maxF = std::min(248, (int)filter->_f + 2);
+        const double minG = filter->_g - 0.4;
+        const double maxG = filter->_g + 0.401;
+
+        int f_ = 0;
+        int q_ = 0;
+        double g_ = 0.0;
+        for (int f = minF; f <= maxF; ++f) {
+            for (int q = minQ; q <= maxQ; ++q) {
+                for (double g = minG; g <= maxG; g += 0.2) {
+
+                    filter->_f = f;
+                    filter->_q = q;
+                    filter->_g = g;
+                    filter->computeResponse();
+                    computeSumResponse();
+
+                    auto sumDiff = deviation();
+                    if (sumDiff < minDeviation) {
+                        minDeviation = sumDiff;
+                        f_ = f;
+                        q_ = q;
+                        g_ = g;
+                    }
+                }
+            }
+        }
+
+        filter->_f = f_;
+        filter->_q = q_;
+        filter->_g = g_;
+        filter->computeResponse();
+        emit filter->valuesChanged();
+
+        handles()->replace(index*3 + 0, filter->_f, filter->_g);
+        handles()->replace(index*3 + 1, filter->_f - filter->_q, filter->_g / 2);
+        handles()->replace(index*3 + 2, filter->_f + filter->_q, filter->_g / 2);
+    }
+    const auto t2 = std::chrono::high_resolution_clock::now();
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+    StatusModel::instance()->showMessage("Optimize took " + QString::number(ms.count()) + " ms", 3000);
+
+    emit filtersChanged();
+    computeSumResponse();
 }

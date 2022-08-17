@@ -37,7 +37,7 @@ signals:
 	void outputDeviceChanged();
 
 private:
-    static void openInputDevice(const QAudioDeviceInfo& device);
+    void openInputDevice(const QAudioDeviceInfo& device);
 
 	MeasurementService& m_measurementService;
 
@@ -47,11 +47,11 @@ private:
 
 	QList<QAudioDeviceInfo> m_inputDevices;
 	int m_inputDeviceIndex = 0;
-	QList<int> m_inputSampleRates;
+    const QList<int> m_inputSampleRates = { 44100, 48000 };
 	int m_inputSampleRateIndex = 0;
 	QList<QAudioDeviceInfo> m_outputDevices;
 	int m_outputDeviceIndex = 0;
-	QList<int> m_outputSampleRates;
+    const QList<int> m_outputSampleRates = { 44100, 48000 };
 	int m_outputSampleRateIndex = 0;
 };
 

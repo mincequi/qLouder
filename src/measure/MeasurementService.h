@@ -8,6 +8,8 @@
 #include <QAudioOutput>
 
 #include "AudioBuffer.h"
+#include "ExcitationSignal.h"
+#include "InverseFilter.h"
 
 template <class T>
 class Measurement;
@@ -20,7 +22,7 @@ public:
 	void setInputDevice(const QAudioDeviceInfo& audioDevice, int sampleRate);
 	void setOutputDevice(const QAudioDeviceInfo& audioDevice, int sampleRate);
 
-    void start(int durationPerOctaveMs, int level, float fMin, float fMax);
+    void start(Signal::Channels channels, int durationPerOctaveMs, int level, double fMin, double fMax);
     void stop(bool clearResult = true);
 
     double progress() const;
@@ -31,7 +33,6 @@ public:
     QString errorDescription() const;
 
     const std::vector<float>& signal() const;
-	const std::vector<float>& result() const;
 
 signals:
     void progressChanged(double progress);
@@ -42,17 +43,9 @@ signals:
 private:
     explicit MeasurementService(QObject* parent = nullptr);
 
-	void generateSignal();
-
     void onOutputBufferEmpty();
 	void onInputStateChanged(QAudio::State state);
 	void onOutputStateChanged(QAudio::State state);
-
-    int m_durationPerOctaveMs = 0;
-    int m_signalLength = 0;
-    int m_outputLevel = 0;
-    double m_fMin = 0.0f;
-    double m_fMax = 0.0f;
 
     double m_progress = 0.0f;
     float m_inputLevel = -99.0f;
@@ -63,7 +56,9 @@ private:
 
 	AudioBuffer m_outputBuffer;
 	AudioBuffer m_inputBuffer;
-    std::vector<float> m_reverseFilter;
+
+    ExcitationSignal _excitationSignal;
+    InverseFilter _inverseFilter;
 
 	QAudioInput* m_input = nullptr;
 	QAudioOutput* m_output = nullptr;

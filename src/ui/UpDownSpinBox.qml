@@ -25,7 +25,7 @@ RowLayout {
         height: 24
         text: control.label
         leftPadding: 6
-        font.pointSize: 12
+        font.pixelSize: 12
     }
 
     Label {
@@ -34,7 +34,7 @@ RowLayout {
         color: control.valueColor
         horizontalAlignment: Qt.AlignRight
         Layout.rightMargin: buttonsVisible ? 0 : 6
-        font.pointSize: 12
+        font.pixelSize: 12
         font.bold: true
         Layout.fillWidth: true
     }

@@ -76,11 +76,11 @@ QStringList ProjectModel::inputDevices() {
 
 void ProjectModel::setInputDevice(int index) {
 	m_inputDeviceIndex = index;
-	m_inputSampleRateIndex = 0;
+    //m_inputSampleRateIndex = 0;
 	// TODO: only add the preferred sample rate for now. Others might cause glitches
-	m_inputSampleRates = { m_inputDevices.at(m_inputDeviceIndex).preferredFormat().sampleRate() };
-	//m_inputSampleRates = m_inputDevices.at(m_inputDeviceIndex).supportedSampleRates();
-	std::sort(m_inputSampleRates.begin(), m_inputSampleRates.end());
+    //m_inputSampleRates = { m_inputDevices.at(m_inputDeviceIndex).preferredFormat().sampleRate() };
+    //m_inputSampleRates = m_inputDevices.at(m_inputDeviceIndex).supportedSampleRates();
+    //std::sort(m_inputSampleRates.begin(), m_inputSampleRates.end());
 
     // Try to open input device to raise privacy popup from OS
     openInputDevice(m_inputDevices.at(m_inputDeviceIndex));
@@ -108,11 +108,11 @@ QStringList ProjectModel::outputDevices() {
 
 void ProjectModel::setOutputDevice(int index) {
 	m_outputDeviceIndex = index;
-	m_outputSampleRateIndex = 0;
+    //m_outputSampleRateIndex = 0;
 	// TODO: only add the preferred sample rate for now. Others might cause glitches
-	m_outputSampleRates = { m_outputDevices.at(m_outputDeviceIndex).preferredFormat().sampleRate() };
-	//m_outputSampleRates = m_outputDevices.at(m_outputDeviceIndex).supportedSampleRates();
-	std::sort(m_outputSampleRates.begin(), m_outputSampleRates.end());
+    //m_outputSampleRates = { m_outputDevices.at(m_outputDeviceIndex).preferredFormat().sampleRate() };
+    //m_outputSampleRates = m_outputDevices.at(m_outputDeviceIndex).supportedSampleRates();
+    //std::sort(m_outputSampleRates.begin(), m_outputSampleRates.end());
 	emit outputDeviceChanged();
 }
 
@@ -144,7 +144,7 @@ void ProjectModel::openInputDevice(const QAudioDeviceInfo& device) {
     inputFormat.setByteOrder(QAudioFormat::LittleEndian);
     inputFormat.setChannelCount(1);
     inputFormat.setCodec("audio/pcm");
-    inputFormat.setSampleRate(44100);
+    inputFormat.setSampleRate(m_inputSampleRates[m_inputSampleRateIndex]);
     inputFormat.setSampleSize(32);
     inputFormat.setSampleType(QAudioFormat::Float);
     QAudioInput input(device, inputFormat);

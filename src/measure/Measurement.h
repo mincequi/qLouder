@@ -58,8 +58,6 @@ private:
 
     FrequencyTable<double> _table;
     int _sampleRate = 48000;
-    double _fMin = 20.0;
-    double _fMax = 20000.0;
     std::vector<T> _inverseFilter;
     std::vector<T> _inputSignal;
 

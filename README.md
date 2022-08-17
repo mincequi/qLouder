@@ -32,10 +32,12 @@ optimal filter set and crossover for your DIY loudspeaker.
 * Crossover
 * House curve
 * Parametric equalizer
-
-# Planned features
 * Different sample rates for playback and recording
+
+# TODO
 * Persistent measurements
+* Persistent device settings
+* Fix crash when altering frequency range for measurement
 
 # Requirements
 * fftw3

@@ -17,9 +17,12 @@ pkg_check_modules(FFTW3F REQUIRED fftw3f)
 add_executable(fft_test
   FftTest.cpp
   ../src/FrequencyTable.cpp
+  ../src/measure/ExcitationSignal.cpp
   ../src/measure/Measurement.cpp
+  ../src/measure/Signal.cpp
   ../src/measure/SignalGenerator.cpp
   ../src/status/StatusModel.cpp
+  ${r8brain_SOURCE_DIR}/r8bbase.cpp
 )
 
 target_include_directories(fft_test
@@ -30,6 +33,7 @@ PRIVATE
 
 target_link_libraries(fft_test
 PRIVATE
+  pthread
   Qt${QT_VERSION_MAJOR}::Core
   Catch2::Catch2WithMain
   ${FFTW3F_LINK_LIBRARIES}

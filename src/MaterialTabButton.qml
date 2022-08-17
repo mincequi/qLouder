@@ -25,7 +25,7 @@ TabButton {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
             font.bold: true
-            font.pointSize: 12
+            font.pixelSize: 10
             color: !control.enabled ? control.Material.hintTextColor : control.down || control.checked ? control.Material.accentColor : control.Material.foreground
         }
     }

@@ -77,7 +77,7 @@ T.Switch {
 
     Label {
         y: control.topPadding + (control.availableHeight - height) / 2
-        font.pointSize: 12
+        font.pixelSize: 12
         leftPadding: 6
         text: "Invert"
     }

@@ -54,7 +54,7 @@ Page {
                 leftPadding: 9
                 height: 24
                 text: "Time per octave"
-                font.pointSize: 12
+                font.pixelSize: 12
             }
             SmallComboBox {
                 flat: true
@@ -71,7 +71,7 @@ Page {
             Label {
                 height: 24
                 text: "Level"
-                font.pointSize: 12
+                font.pixelSize: 12
             }
             SmallSpinBox {
                 value: -6
@@ -89,7 +89,7 @@ Page {
             Label {
                 height: 24
                 text: "Range"
-                font.pointSize: 12
+                font.pixelSize: 12
             }
             TextMetrics {
                 id: textMetrics
@@ -106,7 +106,7 @@ Page {
                     height: 24
                     anchors.right: parent.right
                     text: MeasureModel.minFrequencyReadout
-                    font.pointSize: 12
+                    font.pixelSize: 12
                     font.bold: true
                 }
             }
@@ -131,9 +131,26 @@ Page {
                     height: 24
                     anchors.right: parent.right
                     text: MeasureModel.maxFrequencyReadout
-                    font.pointSize: 12
+                    font.pixelSize: 12
                     font.bold: true
                 }
+            }
+
+            // Channels
+            ToolSeparator {
+                implicitHeight: 24
+                horizontalPadding: 9
+            }
+            Label {
+                height: 24
+                text: "Channels"
+                font.pixelSize: 12
+            }
+            SmallComboBox {
+                id: channelsComboBox
+                flat: true
+                model: MeasureModel.channels
+                onCurrentIndexChanged: MeasureModel.setChannels(currentIndex)
             }
 
             // Spacer item
@@ -228,7 +245,7 @@ Page {
                     height: 24
                     text: "Calibration"
                     leftPadding: 3
-                    font.pointSize: 12
+                    font.pixelSize: 12
                 },
                 SmallComboBox {
                     flat: true
@@ -261,7 +278,7 @@ Page {
         anchors.right: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         horizontalAlignment: Text.AlignRight
-        font.pointSize: 48
+        font.pixelSize: 48
         visible: MeasureModel.progress > 0.0
     }
     */

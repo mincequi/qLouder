@@ -31,8 +31,8 @@ float AudioBuffer::level() {
 qint64 AudioBuffer::readData(char* _data, qint64 maxlen) {
 	assert(maxlen % 4 == 0);
 
-	const auto len = std::min(static_cast<size_t>(maxlen), (data.size()-m_pos)*4);
-	std::memcpy(_data, data.data()+m_pos, len);
+    const auto len = std::min(static_cast<size_t>(maxlen), (data.size()-m_pos)*4);
+    std::memcpy(_data, data.data()+m_pos, len);
 	m_pos += len/4;
 
     if (len < 1) {
@@ -45,7 +45,7 @@ qint64 AudioBuffer::readData(char* _data, qint64 maxlen) {
 qint64 AudioBuffer::writeData(const char* _data, qint64 len) {
 	assert(len % 4 == 0);
 
-	data.resize(m_pos + len/4);
+    data.resize(m_pos + len/4);
     std::memcpy(data.data()+m_pos, _data, len);
     for (size_t i = m_pos; i < data.size(); ++i) {
         m_level = std::max(m_level, abs(data.at(i)));

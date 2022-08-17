@@ -14,6 +14,6 @@ ToolBar {
         height: 24
         verticalAlignment: Qt.AlignVCenter
         text: StatusModel.text
-        font.pointSize: 12
+        font.pixelSize: 12
     }
 }

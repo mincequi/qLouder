@@ -9,6 +9,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(rxcpp)
 
+FetchContent_Declare(
+  r8brain
+  GIT_REPOSITORY https://github.com/avaneev/r8brain-free-src.git
+  GIT_TAG        version-5.7
+)
+FetchContent_MakeAvailable(r8brain)
+
 project(qLouder VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -29,6 +36,7 @@ string(REPLACE "fftw3f" "fftw3f_threads" FFTW3F_THREADS_LINK_LIBRARIES ${FFTW3F_
 string(REPLACE "fftw3" "fftw3_threads" FFTW3_THREADS_LINK_LIBRARIES ${FFTW3_LINK_LIBRARIES})
 
 include_directories(
+    ${r8brain_SOURCE_DIR}
     src
 )
 
@@ -45,11 +53,15 @@ set(PROJECT_SOURCES
     src/equalizer/FilterModel.cpp
     src/measure/AudioBuffer.cpp
     src/measure/AudioDeviceInfo.cpp
+    src/measure/ExcitationSignal.cpp
+    src/measure/InverseFilter.cpp
     src/measure/MeasurementError.cpp
     src/measure/MeasureModel.cpp
     src/measure/Measurement.cpp
     src/measure/MeasurementManager.cpp
     src/measure/MeasurementService.cpp
+    src/measure/ResponseSignal.cpp
+    src/measure/Signal.cpp
     src/measure/SignalGenerator.cpp
     src/project/ProjectModel.cpp
     src/status/StatusModel.cpp
@@ -63,6 +75,7 @@ set(PROJECT_SOURCES
     src/main.cpp
     src/main.cpp
     src/qml.qrc
+    ${r8brain_SOURCE_DIR}/r8bbase.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -103,6 +116,7 @@ target_compile_definitions(qLouder
   PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 target_link_libraries(qLouder
 PRIVATE
+    pthread
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Quick
     Qt${QT_VERSION_MAJOR}::QuickControls2

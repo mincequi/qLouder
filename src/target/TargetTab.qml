@@ -31,7 +31,7 @@ Page {
                     padding: 6
                     text: "Loudness"
                     font.bold: true
-                    font.pointSize: 12
+                    font.pixelSize: 12
                 },
                 UpDownSpinBox {
                     //label: "F"
@@ -46,7 +46,7 @@ Page {
                     padding: 6
                     text: "Harman"
                     font.bold: true
-                    font.pointSize: 12
+                    font.pixelSize: 12
                 },
                 UpDownSpinBox {
                     value: TargetModel.harman
@@ -82,7 +82,7 @@ Page {
                     bottomPadding: 6
                     text: "Sum"
                     font.bold: true
-                    font.pointSize: 12
+                    font.pixelSize: 12
                 },
 
                 UpDownSpinBox {

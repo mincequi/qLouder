@@ -23,7 +23,7 @@ ColumnLayout {
             height: 24
             leftPadding: 6
             font.bold: true
-            font.pointSize: 12
+            font.pixelSize: 12
         }
         Item {
             Layout.fillWidth: true

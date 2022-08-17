@@ -193,13 +193,13 @@ Item {
             color: valueColor
             text: value.toFixed(0)
             font.bold: true
-            font.pointSize: 30
+            font.pixelSize: 30
         }
         Text {
             Layout.alignment: Qt.AlignLeft
             color: valueColor
             text: unit
-            font.pointSize: 24
+            font.pixelSize: 24
         }
         Text {
             id: readout2
@@ -208,7 +208,7 @@ Item {
             color: valueMaxColor
             text: valueMax.toFixed(0)
             font.bold: true
-            font.pointSize: 24
+            font.pixelSize: 24
         }
         Text {
             id: unit2
@@ -216,7 +216,7 @@ Item {
             Layout.alignment: Qt.AlignLeft
             color: valueMaxColor
             text: unit
-            font.pointSize: 18
+            font.pixelSize: 18
         }
     }
 

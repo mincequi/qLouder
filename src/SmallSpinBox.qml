@@ -10,7 +10,7 @@ SpinBox {
     editable: false
     implicitHeight: 24
     implicitWidth: 90
-    font.pointSize: 12
+    font.pixelSize: 12
     font.bold: true
     textFromValue: function(value, locale) {
         return qsTr("%1 dB").arg(value);

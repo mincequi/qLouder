@@ -21,8 +21,6 @@ Measurement<T>::Measurement(int sampleRate,
                             const std::map<double, double>& calibration90,
                             Calibration calibration)
     : _sampleRate(sampleRate),
-      _fMin(fMin),
-      _fMax(fMax),
       _inputSignal(inverseFilter.size()*2),
       _inverseFilter(inverseFilter.size()*2),
       _calibration(calibration),

@@ -34,6 +34,10 @@ QStringList MeasureModel::lengths() const {
     return { "¼ s", "½ s", "1 s", "2 s", "4 s" };
 }
 
+QStringList MeasureModel::channels() const {
+    return { "Left", "Right", "Stereo" };
+}
+
 void MeasureModel::setLength(int index) {
 	switch (index) {
     case 0: m_durationPerOctave = 250; break;
@@ -44,6 +48,10 @@ void MeasureModel::setLength(int index) {
 	default:
 		break;
 	}
+}
+
+void MeasureModel::setChannels(int index) {
+    _channels = static_cast<Signal::Channels>(index);
 }
 
 void MeasureModel::setLevel(int value) {
@@ -138,7 +146,7 @@ void MeasureModel::onMeasureButtonClicked() {
 	switch (m_state) {
 	case State::Idle:
 		m_state = State::Measuring;
-        m_measurementService.start(m_durationPerOctave, m_level, m_frequencyTable.at(m_minFrequencySlider), m_frequencyTable.at(m_maxFrequencySlider));
+        m_measurementService.start(_channels, m_durationPerOctave, m_level, m_frequencyTable.at(m_minFrequencySlider), m_frequencyTable.at(m_maxFrequencySlider));
 		break;
 	case State::Measuring:
 		m_measurementService.stop();

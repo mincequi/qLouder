@@ -41,7 +41,7 @@ Page {
                     padding: 6
                     text: "Low pass"
                     font.bold: true
-                    font.pointSize: 12
+                    font.pixelSize: 12
                 },
                 UpDownSpinBox {
                     label: "F"
@@ -81,7 +81,7 @@ Page {
                     padding: 6
                     text: "High pass"
                     font.bold: true
-                    font.pointSize: 12
+                    font.pixelSize: 12
                 },
                 UpDownSpinBox {
                     label: "F"
@@ -131,7 +131,7 @@ Page {
                     bottomPadding: 6
                     text: "Sum deviation"
                     font.bold: true
-                    font.pointSize: 12
+                    font.pixelSize: 12
                 },
 
                 UpDownSpinBox {

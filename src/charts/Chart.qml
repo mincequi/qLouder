@@ -87,7 +87,7 @@ RowLayout {
             tickInterval: model.tickInterval
             tickType: ValueAxis.TicksDynamic
             labelFormat: "%.0f"
-            labelsFont.pointSize: 10
+            labelsFont.pixelSize: 10
             labelsFont.bold: false
         }
 
@@ -103,7 +103,7 @@ RowLayout {
             minorGridLineColor: gridLineColor
             minorGridLinePen: gridLinePen
             labelFormat: "%d"
-            labelsFont.pointSize: 10
+            labelsFont.pixelSize: 10
             labelsFont.bold: false
         }
 
@@ -121,7 +121,7 @@ RowLayout {
             tickInterval: 6.0
             labelsColor: control.axisLabelColor
             //labelFormat: "%2.1f"
-            labelsFont.pointSize: 10
+            labelsFont.pixelSize: 10
             labelsFont.bold: false
         }
 

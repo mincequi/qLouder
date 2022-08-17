@@ -16,7 +16,7 @@ ToolButton {
     implicitWidth: text.length ? textMetrics.width + 36 : 24
     leftPadding: icon.size
     rightPadding: 0
-    font.pointSize: 12
+    font.pixelSize: 12
     font.capitalization: Font.MixedCase
     spacing: 0
 

@@ -1,9 +1,9 @@
 #ifndef AUDIOBUFFER_H
 #define AUDIOBUFFER_H
 
-#include <QAudioFormat>
 #include <QIODevice>
 #include <QVector>
+#include <QtMultimedia/QAudioBuffer>
 
 class AudioBuffer : public QIODevice {
 	Q_OBJECT
@@ -13,7 +13,7 @@ public:
 	void start();
 	void stop();
 
-	std::vector<float> data;
+    std::vector<float> data;
 
     float level();
 

@@ -6,12 +6,15 @@
 
 #include <vector>
 
+#include "Signal.h"
+
 class MeasurementService;
 
 class MeasureModel : public QObject {
 	Q_OBJECT
     // Signal properties
 	Q_PROPERTY(QStringList lengths READ lengths CONSTANT)
+    Q_PROPERTY(QStringList channels READ channels CONSTANT)
     Q_PROPERTY(std::vector<qreal> frequencies MEMBER m_frequencyTable CONSTANT)
 	Q_PROPERTY(double minFrequencySlider READ minFrequencySlider NOTIFY rangeChanged)
 	Q_PROPERTY(double maxFrequencySlider READ maxFrequencySlider NOTIFY rangeChanged)
@@ -40,6 +43,8 @@ public:
     // Signal properties
 	QStringList lengths() const;
 	Q_INVOKABLE void setLength(int index);
+    QStringList channels() const;
+    Q_INVOKABLE void setChannels(int index);
     Q_INVOKABLE void setLevel(int value);
 	double minFrequencySlider() const;
 	double maxFrequencySlider() const;
@@ -70,6 +75,7 @@ signals:
 private:
     void onServiceProgressChanged(double progress);
     int m_durationPerOctave = 250;
+    Signal::Channels _channels = Signal::Channels::Left;
     int m_level = 0;
     std::vector<double> m_frequencyTable;
 	uint m_minFrequencySlider = 0;

@@ -8,14 +8,14 @@ ComboBox {
     property var sizeModel: null
 
     id: control
-    implicitWidth: modelWidth + 42
+    implicitWidth: modelWidth + 45
     implicitHeight: 24
     topInset: 0
     bottomInset: 0
     padding: -6
     flat: false
 
-    font.pointSize: 12
+    font.pixelSize: 12
     font.bold: true
 
     popup.width: control.implicitWidth

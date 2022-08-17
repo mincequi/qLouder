@@ -30,14 +30,14 @@ Page {
 
             Label {
                 text: "Project directory"
-                font.pointSize: 12
+                font.pixelSize: 12
             }
             Label {
                 id: projectDir
                 Layout.fillWidth: true
                 leftPadding: 6
                 rightPadding: 6
-                font.pointSize: 12
+                font.pixelSize: 12
                 text: ProjectModel.projectDir
                 background: Rectangle {
                     y: -4.5
@@ -54,14 +54,14 @@ Page {
 
             Label {
                 text: "Microphone calibration file 0°"
-                font.pointSize: 12
+                font.pixelSize: 12
             }
             Label {
                 id: micFile0
                 Layout.fillWidth: true
                 leftPadding: 6
                 rightPadding: 6
-                font.pointSize: 12
+                font.pixelSize: 12
                 text: ProjectModel.micCalibration0
                 elide: Text.ElideLeft
                 background: Rectangle {
@@ -83,14 +83,14 @@ Page {
 
             Label {
                 text: "Microphone calibration file 90°"
-                font.pointSize: 12
+                font.pixelSize: 12
             }
             Label {
                 id: micFile90
                 Layout.fillWidth: true
                 leftPadding: 6
                 rightPadding: 6
-                font.pointSize: 12
+                font.pixelSize: 12
                 text: ProjectModel.micCalibration90
                 elide: Text.ElideLeft
                 background: Rectangle {
@@ -118,7 +118,7 @@ Page {
 
             Label {
                 text: "Audio input device"
-                font.pointSize: 12
+                font.pixelSize: 12
             }
             SmallComboBox {
                 id: inputDevices
@@ -129,7 +129,7 @@ Page {
             Label {
                 Layout.leftMargin: 24
                 text: "Sample rate"
-                font.pointSize: 12
+                font.pixelSize: 12
             }
             SmallComboBox {
                 model: ProjectModel.inputSampleRates
@@ -139,7 +139,7 @@ Page {
 
             Label {
                 text: "Audio output device"
-                font.pointSize: 12
+                font.pixelSize: 12
             }
             SmallComboBox {
                 model: ProjectModel.outputDevices
@@ -149,7 +149,7 @@ Page {
             Label {
                 Layout.leftMargin: 24
                 text: "Sample rate"
-                font.pointSize: 12
+                font.pixelSize: 12
             }
             SmallComboBox {
                 model: ProjectModel.outputSampleRates

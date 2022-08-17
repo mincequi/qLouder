@@ -74,7 +74,7 @@ Chart {
             height: 24
             text: "Left window"
             leftPadding: 3
-            font.pointSize: 12
+            font.pixelSize: 12
         },
         RowLayout {
             spacing: 0
@@ -92,7 +92,7 @@ Chart {
                 height: 24
                 text: model.irWindowLeftReadout
                 horizontalAlignment: Qt.AlignRight
-                font.pointSize: 12
+                font.pixelSize: 12
                 font.bold: true
                 Layout.fillWidth: true
             }
@@ -116,7 +116,7 @@ Chart {
             height: 24
             text: "Right window"
             leftPadding: 3
-            font.pointSize: 12
+            font.pixelSize: 12
         },
         RowLayout {
             spacing: 0
@@ -134,7 +134,7 @@ Chart {
                 height: 24
                 text: model.irWindowRightReadout
                 horizontalAlignment: Qt.AlignRight
-                font.pointSize: 12
+                font.pixelSize: 12
                 font.bold: true
                 Layout.fillWidth: true
             }

@@ -34,7 +34,7 @@ Page {
                 height: 24
                 leftPadding: 9
                 text: "Level"
-                font.pointSize: 12
+                font.pixelSize: 12
             }
             SmallSpinBox {
                 value: -12
@@ -54,7 +54,7 @@ Page {
             Label {
                 height: 24
                 text: "Range"
-                font.pointSize: 12
+                font.pixelSize: 12
             }
             TextMetrics {
                 id: textMetrics
@@ -71,7 +71,7 @@ Page {
                     height: 24
                     anchors.right: parent.right
                     text: EqualizerModel.minFrequencyReadout
-                    font.pointSize: 12
+                    font.pixelSize: 12
                     font.bold: true
                 }
             }
@@ -96,7 +96,7 @@ Page {
                     height: 24
                     anchors.right: parent.right
                     text: EqualizerModel.maxFrequencyReadout
-                    font.pointSize: 12
+                    font.pixelSize: 12
                     font.bold: true
                 }
             }
@@ -178,7 +178,7 @@ Page {
                     bottomPadding: 6
                     text: "Sum"
                     font.bold: true
-                    font.pointSize: 12
+                    font.pixelSize: 12
                 },
                 UpDownSpinBox {
                     label: "Min"

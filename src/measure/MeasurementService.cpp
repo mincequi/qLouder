@@ -8,6 +8,7 @@
 #include "FrequencyTable.h"
 #include "Measurement.h"
 #include "MeasurementError.h"
+#include "ResponseSignal.h"
 #include "SignalGenerator.h"
 #include <status/StatusModel.h>
 
@@ -21,8 +22,9 @@ MeasurementService& MeasurementService::instance() {
 
 MeasurementService::MeasurementService(QObject *parent)
     : QObject{parent},
-    m_inputBuffer(QIODevice::WriteOnly),
-    m_outputBuffer(QIODevice::ReadOnly) {
+      m_outputBuffer(QIODevice::ReadOnly),
+      m_inputBuffer(QIODevice::WriteOnly),
+      _excitationSignal(&m_outputBuffer) {
     s_inputFormat.setByteOrder(QAudioFormat::LittleEndian);
     s_inputFormat.setChannelCount(1);
     s_inputFormat.setCodec("audio/pcm");
@@ -81,23 +83,37 @@ void MeasurementService::setOutputDevice(const QAudioDeviceInfo& audioDevice, in
     });
 }
 
-void MeasurementService::start(int durationPerOctaveMs, int volume, float fMin, float fMax) {
-    if (m_durationPerOctaveMs != durationPerOctaveMs ||
-            m_outputLevel != volume ||
-            m_fMin != fMin ||
-            m_fMax != fMax) {
-        m_durationPerOctaveMs = durationPerOctaveMs;
-        m_outputLevel = volume;
-        m_fMin = fMin;
-        m_fMax = fMax;
-        m_signalLength = log2(fMax/fMin) * durationPerOctaveMs / 1000.0f * s_outputFormat.sampleRate();
-        m_inputBuffer.data.clear();
-        m_outputBuffer.data.clear();
+void MeasurementService::start(Signal::Channels channels, int durationPerOctaveMs, int volume, double fMin, double fMax) {
+
+    if (_excitationSignal.samplesPerOctave() != durationPerOctaveMs / 1000.0f * s_outputFormat.sampleRate() ||
+            _excitationSignal.channels() != channels ||
+            _excitationSignal.volume() != volume ||
+            _excitationSignal.minF() != fMin ||
+            _excitationSignal.maxF() != fMax) {
+
         qlStatus->showMessage("Generating excitation signal");
-        generateSignal();
+
+        // "Optimizing the exponential sine sweep (ESS) signal for in situ measurements on noise barriers"
+        // https://www.conforg.fr/euronoise2015/proceedings/data/articles/000420.pdf
+        // Fade-In: 1 octave, Fade-Out: 1/24th octave
+        _excitationSignal = SignalFactory::createSineSweep(&m_outputBuffer,
+                                                           channels,
+                                                           s_outputFormat.sampleRate(),
+                                                           fMin,
+                                                           fMax,
+                                                           durationPerOctaveMs / 1000.0f * s_outputFormat.sampleRate(),
+                                                           s_outputFormat.sampleRate(),
+                                                           s_outputFormat.sampleRate());
+        _excitationSignal.fadeIn(durationPerOctaveMs * s_outputFormat.sampleRate() / 1000);
+        _excitationSignal.fadeOut(durationPerOctaveMs * s_outputFormat.sampleRate() / 24000);
+
+        _inverseFilter = InverseFilter::from(_excitationSignal);
+
+        _excitationSignal.setVolume(volume);
     }
 
-    qlStatus->showMessage("Measuring", (m_signalLength / s_outputFormat.sampleRate() + 1)*1000);
+    auto signalLength = log2(fMax/fMin) * durationPerOctaveMs;
+    qlStatus->showMessage("Measuring", signalLength + 1);
     qDebug() << "output buffer size: " << m_output->bufferSize() << ", period size: " << m_output->periodSize();
     m_progress = 0.0f;
     m_inputLevel = -99.0f;
@@ -126,11 +142,15 @@ void MeasurementService::stop(bool clearResult) {
         m_inputBuffer.data.resize(0);
     } else {
         qlStatus->clearMessage();
-        auto measurement = new Measurement<float>(s_inputFormat.sampleRate(),
-                                                  m_fMin,
-                                                  m_fMax,
-                                                  m_inputBuffer.data,
-                                                  m_reverseFilter,
+
+        auto signal = ResponseSignal(&m_inputBuffer, s_inputFormat.sampleRate());
+        signal.resample(s_outputFormat.sampleRate());
+
+        auto measurement = new Measurement<float>(s_outputFormat.sampleRate(),
+                                                  _excitationSignal.minF(),
+                                                  _excitationSignal.maxF(),
+                                                  signal.data(),
+                                                  _inverseFilter.data(),
                                                   cfg->calibration0,
                                                   cfg->calibration90,
                                                   cfg->calibration);
@@ -165,49 +185,6 @@ QString MeasurementService::errorDescription() const {
 
 const std::vector<float>& MeasurementService::signal() const {
     return m_outputBuffer.data;
-}
-
-const std::vector<float>& MeasurementService::result() const {
-    return m_reverseFilter;
-}
-
-void MeasurementService::generateSignal() {
-    m_outputBuffer.data.clear();
-    m_outputBuffer.data.resize((m_signalLength+s_outputFormat.sampleRate()) *2);
-
-    // "Optimizing the exponential sine sweep (ESS) signal for in situ measurements on noise barriers"
-    // https://www.conforg.fr/euronoise2015/proceedings/data/articles/000420.pdf
-    // Fade-In: 1 octave, Fade-Out: 1/24th octave
-    const auto minIndex = FrequencyTable<double>::octaveBandsIndex(m_fMin);
-    const auto maxIndex = FrequencyTable<double>::octaveBandsIndex(m_fMax);
-
-    SignalGenerator::sineSweep(m_outputBuffer.data.begin()+s_outputFormat.sampleRate(),
-                               m_outputBuffer.data.end()-s_outputFormat.sampleRate(),
-                               SignalGenerator::Channels::Left,
-                               s_outputFormat.sampleRate(),
-                               FrequencyTable<double>::octaveBands().at(minIndex),
-                               FrequencyTable<double>::octaveBands().at(maxIndex));
-
-    SignalGenerator::fadeIn(m_outputBuffer.data.begin()+s_outputFormat.sampleRate(),
-                            SignalGenerator::Channels::Left,
-                            SignalGenerator::WindowFunction::Hann,
-                            m_durationPerOctaveMs * s_outputFormat.sampleRate() / 1000);
-
-    SignalGenerator::fadeOut(m_outputBuffer.data.end()-s_outputFormat.sampleRate(),
-                            SignalGenerator::Channels::Left,
-                            SignalGenerator::WindowFunction::Hann,
-                            m_durationPerOctaveMs * s_outputFormat.sampleRate() / 24000);
-
-    const auto outSize = m_outputBuffer.data.size()/2;
-    m_reverseFilter.resize(outSize);
-    for (size_t i = 0; i < outSize; ++i) {
-        m_reverseFilter[outSize-1-i] = m_outputBuffer.data[i*2];
-    }
-    SignalGenerator::volumeEnvelope(m_reverseFilter.begin(), m_reverseFilter.end(), 20.0, 20000.0);
-
-    SignalGenerator::volume(m_outputBuffer.data,
-                            SignalGenerator::Channels::Left,
-                            m_outputLevel);
 }
 
 void MeasurementService::onOutputBufferEmpty() {

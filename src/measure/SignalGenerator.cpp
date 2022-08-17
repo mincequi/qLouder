@@ -3,13 +3,15 @@
 #include <iterator>
 #include <math.h>
 
-SignalGenerator::SignalGenerator(QObject *parent)
+#include "AudioBuffer.h"
+
+SignalFactory::SignalFactory(QObject *parent)
     : QObject{parent} {
 }
 
-void SignalGenerator::sineSweep(std::vector<float>::iterator begin,
+void SignalFactory::sineSweep(std::vector<float>::iterator begin,
                                 std::vector<float>::iterator end,
-                                Channels channels,
+                                Signal::Channels channels,
                                 int sampleRate,
                                 double fMin,
                                 double fMax) {
@@ -26,6 +28,53 @@ void SignalGenerator::sineSweep(std::vector<float>::iterator begin,
     }
 }
 
+ExcitationSignal SignalFactory::createSineSweep(AudioBuffer* buffer,
+                                                Signal::Channels channels,
+                                                int sampleRate,
+                                                double fMin,
+                                                double fMax,
+                                                int samplesPerOctave,
+                                                int samplesOffsetFront,
+                                                int samplesOffsetBack) {
+    const int signalLength = log2(fMax/fMin) * samplesPerOctave;
+    const double T = (double)signalLength/sampleRate;
+    const double fRangeLn = log(fMax/fMin);
+    const double K = 2.0 * M_PI * fMin * T / fRangeLn;
+
+    ExcitationSignal signal(buffer);
+    signal._sampleRate = sampleRate;
+    signal._channels = channels;
+    signal._minF = fMin;
+    signal._maxF = fMax;
+    signal._samplesPerOctave = samplesPerOctave;
+    signal._samplesOffsetFront = samplesOffsetFront;
+    signal._samplesOffsetBack = samplesOffsetBack;
+    signal._buffer->data.clear();
+    signal._buffer->data.resize(2 * (signalLength + samplesOffsetFront + samplesOffsetBack));
+
+    auto it = signal._buffer->data.begin() + samplesOffsetFront * 2;
+    for (int i = 0; i < signalLength; ++i) {
+        double v = sin(K * (exp(i/(signalLength / fRangeLn)) - 1.0));
+        switch (channels) {
+        case Signal::Channels::Left:
+            *it++ = v;
+            *it++ = 0.0;
+            break;
+        case Signal::Channels::Right:
+            *it++ = 0.0;
+            *it++ = v;
+            break;
+        case Signal::Channels::Stereo:
+            *it++ = v;
+            *it++ = v;
+            break;
+        }
+    }
+
+    return signal;
+}
+
+/*
 void SignalGenerator::sineSweep(std::vector<float>& buffer,
                                 int durationPerOctaveMs,
                                 int sampleRate,
@@ -42,10 +91,11 @@ void SignalGenerator::sineSweep(std::vector<float>& buffer,
         buffer[i] = sin(K * (exp(i/(signalLength / fRangeLn)) - 1.0));
     }
 }
+*/
 
-void SignalGenerator::window(std::vector<float>::iterator begin,
+void SignalFactory::window(std::vector<float>::iterator begin,
                              std::vector<float>::iterator end,
-                             Channels channels,
+                             Signal::Channels channels,
                              WindowFunction function,
                              int K) {
     auto it = begin;
@@ -63,8 +113,8 @@ void SignalGenerator::window(std::vector<float>::iterator begin,
     }
 }
 
-void SignalGenerator::fadeIn(std::vector<float>::iterator begin,
-                             Channels channels,
+void SignalFactory::fadeIn(std::vector<float>::iterator begin,
+                             Signal::Channels channels,
                              WindowFunction,
                              int K) {
     auto it = begin;
@@ -75,8 +125,8 @@ void SignalGenerator::fadeIn(std::vector<float>::iterator begin,
     }
 }
 
-void SignalGenerator::fadeOut(std::vector<float>::iterator end,
-                              Channels channels,
+void SignalFactory::fadeOut(std::vector<float>::iterator end,
+                              Signal::Channels channels,
                               WindowFunction,
                               int K) {
     auto it = end - 2*K;
@@ -88,8 +138,8 @@ void SignalGenerator::fadeOut(std::vector<float>::iterator end,
     }
 }
 
-void SignalGenerator::volume(std::vector<float>& buffer,
-                             Channels channels,
+void SignalFactory::volume(std::vector<float>& buffer,
+                             Signal::Channels channels,
                              int levelDb) {
     // Apply volume
     if (levelDb != 0) {
@@ -101,7 +151,7 @@ void SignalGenerator::volume(std::vector<float>& buffer,
     }
 }
 
-void SignalGenerator::volumeEnvelope(std::vector<float>::iterator begin,
+void SignalFactory::volumeEnvelope(std::vector<float>::iterator begin,
                                      std::vector<float>::iterator end,
                                      double fMin,
                                      double fMax) {

@@ -23,7 +23,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(r8brain)
 
-project(qLouder VERSION 0.1 LANGUAGES CXX)
+project(qLouder VERSION 0.2 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

@@ -30,13 +30,15 @@ optimal filter set and crossover for your DIY loudspeaker.
 * Time gating of measured impulse response
 * Microphone calibration
 * Crossover
-* House curve
+* Loudness based house curve
 * Parametric equalizer
 * Different sample rates for playback and recording
 
 # TODO
+* SPL meter
 * Persistent measurements
-* Persistent device settings
+* Harman house curve
+* Simple music player to track results
 
 # Requirements
 * fftw3

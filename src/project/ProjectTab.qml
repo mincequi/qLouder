@@ -123,8 +123,9 @@ Page {
             SmallComboBox {
                 id: inputDevices
                 model: ProjectModel.inputDevices
-                sizeModel: ProjectModel.outputDevices
+                sizeModel: ProjectModel.outputDevices   // Yes, the outputDevices to have a common width with input devices
                 onCurrentIndexChanged: ProjectModel.setInputDevice(currentIndex)
+                Component.onCompleted: currentIndex = ProjectModel.savedInputDevice
             }
             Label {
                 Layout.leftMargin: 24
@@ -133,8 +134,9 @@ Page {
             }
             SmallComboBox {
                 model: ProjectModel.inputSampleRates
-                sizeModel: ProjectModel.outputSampleRates
+                sizeModel: ProjectModel.inputSampleRates
                 onCurrentIndexChanged: ProjectModel.setInputSampleRate(currentIndex)
+                Component.onCompleted: currentIndex = ProjectModel.savedInputSampleRate
             }
 
             Label {
@@ -143,8 +145,9 @@ Page {
             }
             SmallComboBox {
                 model: ProjectModel.outputDevices
-                sizeModel: ProjectModel.inputDevices
+                sizeModel: ProjectModel.outputDevices
                 onCurrentIndexChanged: ProjectModel.setOutputDevice(currentIndex)
+                Component.onCompleted: currentIndex = ProjectModel.savedOutputDevice
             }
             Label {
                 Layout.leftMargin: 24
@@ -155,6 +158,7 @@ Page {
                 model: ProjectModel.outputSampleRates
                 sizeModel: ProjectModel.inputSampleRates
                 onCurrentIndexChanged: ProjectModel.setOutputSampleRate(currentIndex)
+                Component.onCompleted: currentIndex = ProjectModel.savedOutputSampleRate
             }
 
             Item {

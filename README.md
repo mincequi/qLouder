@@ -37,7 +37,6 @@ optimal filter set and crossover for your DIY loudspeaker.
 # TODO
 * Persistent measurements
 * Persistent device settings
-* Fix crash when altering frequency range for measurement
 
 # Requirements
 * fftw3

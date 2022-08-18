@@ -316,7 +316,7 @@ void EqualizerModel::findQ(int f, double g, double* q) {
     for (int i = 1; i < 81; ++i) {
         auto sumDiff = deviationWithFilter(f, g, i);
 
-        if (sumDiff < minDeviation) {
+        if (sumDiff <= minDeviation) {
             minDeviation = sumDiff;
         } else {
             *q = std::max(i - 1, 1);

@@ -24,7 +24,7 @@ Measurement<T>::Measurement(int sampleRate,
       _inputSignal(inverseFilter.size()*2),
       _inverseFilter(inverseFilter.size()*2),
       _calibration(calibration),
-      _table(24, fMin, fMax),
+      //_table(24, fMin, fMax), // Let's try with a fixed table size. Should make things easier.
       _irWindowLeft(-100 * sampleRate / 1000),
       _irWindowRight(400 * sampleRate / 1000) {
     _frCalibrations[Calibration0] = _table.interpolate(calibration0, false);

@@ -28,8 +28,6 @@ signals:
     void currentMeasurementChangedF(Measurement<float>* measurement);
     void currentMeasurementChangedD(Measurement<double>* measurement);
 
-    void calibratedFrChanged(const std::vector<double>& fr);
-
 private:
     explicit MeasurementManager(const MeasurementService& measurementService, QObject *parent = nullptr);
     void onMeasurementAvailable(Measurement<float>* measurement);

@@ -28,7 +28,6 @@ void MeasurementManager::setFrCalibration(Calibration calibration) {
     if (!_currentMeasurement) return;
 
     _currentMeasurement->setFrCalibration(calibration);
-    emit calibratedFrChanged(_currentMeasurement->calibratedFr());
 
     _calibratedFr.get_subscriber().on_next(_currentMeasurement->calibratedFr());
 }
@@ -41,7 +40,6 @@ void MeasurementManager::onMeasurementAvailable(Measurement<float>* measurement)
     _measurements.push_back(measurement);
     _currentMeasurement = measurement;
     emit currentMeasurementChangedF(_currentMeasurement);
-    emit calibratedFrChanged(_currentMeasurement->calibratedFr());
 
     _calibratedFr.get_subscriber().on_next(_currentMeasurement->calibratedFr());
 }

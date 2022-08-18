@@ -59,7 +59,7 @@ private:
     void moveLeftQHandle(int index, double x);
     void moveRightQHandle(int index, double x);
 
-    void computeSumResponse();
+    void computeFilterSum();
     bool findMaxOvershoot(int* f, double* g);
     void findQ(int f, double g, double* q);
     double deviationWithFilter(int f, double g, int q);
@@ -73,15 +73,13 @@ private:
     double _sumMax = -144.0;
     double _sumMin = 144.0;
 
-    QtCharts::QXYSeries* _sumSeries = nullptr;
-    std::vector<double> _target;
+    QtCharts::QXYSeries* _filterSumSeries = nullptr;
     QtCharts::QXYSeries* _targetSeries = nullptr;
-    std::vector<double> _filtered;
-    QtCharts::QXYSeries* _filteredSeries = nullptr;
+    QtCharts::QXYSeries* _filteredResponseSeries = nullptr;
 
     QObjectList _filters;
 
-    rxcpp::subjects::subject<std::vector<double>> _sum;
+    rxcpp::subjects::subject<std::vector<double>> _filterSum;
     rxcpp::subjects::behavior<std::pair<int,int>> _range;
 
     rxcpp::observable<QtCharts::QXYSeries*> _filteredMeasurement;

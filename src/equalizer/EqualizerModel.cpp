@@ -30,25 +30,24 @@ EqualizerModel::EqualizerModel(const TargetModel& targetModel,
             out.push_back(measurement.at(i) + filter.at(i));
         }
         return out;
-    }, _sum.get_observable())
+    }, _filterSum.get_observable())
             .subscribe([this](const auto& filteredMeasurement) {
-        _filtered = filteredMeasurement;
         QVector<QPointF> points;
         points.reserve(_frequencyTable.size());
         for (int i = 0; i < _frequencyTable.size(); ++i) {
             points.append( { _frequencyTable.at(i), filteredMeasurement.at(i) } );
         }
-        _filteredSeries->replace(points);
+        _filteredResponseSeries->replace(points);
     });
 
-    _sum.get_observable()
+    _filterSum.get_observable()
             .subscribe([this](const auto& sum) {
         QVector<QPointF> points;
         points.reserve(_frequencyTable.size());
         for (int i = 0; i < _frequencyTable.size(); ++i) {
             points.append( { _frequencyTable.at(i), sum.at(i) } );
         }
-        _sumSeries->replace(points);
+        _filterSumSeries->replace(points);
     });
 
     _targetModel.fr()
@@ -61,7 +60,6 @@ EqualizerModel::EqualizerModel(const TargetModel& targetModel,
         return out;
     }, _level.get_observable())
             .subscribe([this](const auto& sum) {
-        _target = sum;
         QVector<QPointF> points;
         points.reserve(_frequencyTable.size());
         for (int i = 0; i < _frequencyTable.size(); ++i) {
@@ -127,8 +125,8 @@ QObjectList EqualizerModel::filters() const {
 
 void EqualizerModel::setFilterSumSeries(QtCharts::QAbstractSeries* series) {
     if (series) {
-        _sumSeries = static_cast<QtCharts::QXYSeries*>(series);
-        computeSumResponse();
+        _filterSumSeries = static_cast<QtCharts::QXYSeries*>(series);
+        computeFilterSum();
         emit rangeChanged();
     }
 }
@@ -136,15 +134,15 @@ void EqualizerModel::setFilterSumSeries(QtCharts::QAbstractSeries* series) {
 void EqualizerModel::setTargetSeries(QtCharts::QAbstractSeries* series) {
     if (series) {
         _targetSeries = static_cast<QtCharts::QXYSeries*>(series);
-        computeSumResponse();
+        computeFilterSum();
         emit rangeChanged();
     }
 }
 
 void EqualizerModel::setFilteredMeasurementSeries(QtCharts::QAbstractSeries* series) {
     if (series) {
-        _filteredSeries = static_cast<QtCharts::QXYSeries*>(series);
-        computeSumResponse();
+        _filteredResponseSeries = static_cast<QtCharts::QXYSeries*>(series);
+        computeFilterSum();
         emit rangeChanged();
     }
 }
@@ -163,7 +161,7 @@ void EqualizerModel::addFilter(QtCharts::QAbstractSeries* response) {
     handles()->append(f + q, g / 2);
     _filters.append(new FilterModel(f, q, g, response));
     emit filtersChanged();
-    computeSumResponse();
+    computeFilterSum();
 }
 
 void EqualizerModel::removeFilter(int index) {
@@ -173,7 +171,7 @@ void EqualizerModel::removeFilter(int index) {
     _filters.removeAt(index);
     obj->deleteLater();
     emit filtersChanged();
-    computeSumResponse();
+    computeFilterSum();
 }
 
 void EqualizerModel::stepF(int index, int f) {
@@ -184,7 +182,7 @@ void EqualizerModel::stepF(int index, int f) {
     handles()->replace(index*3 + 1, filter->_f - filter->_q, filter->_g / 2);
     handles()->replace(index*3 + 2, filter->_f + filter->_q, filter->_g / 2);
 
-    computeSumResponse();
+    computeFilterSum();
 }
 
 void EqualizerModel::stepQ(int index, double q) {
@@ -194,7 +192,7 @@ void EqualizerModel::stepQ(int index, double q) {
     handles()->replace(index*3 + 1, filter->_f - filter->_q, filter->_g / 2);
     handles()->replace(index*3 + 2, filter->_f + filter->_q, filter->_g / 2);
 
-    computeSumResponse();
+    computeFilterSum();
 }
 
 void EqualizerModel::stepG(int index, double g) {
@@ -205,7 +203,7 @@ void EqualizerModel::stepG(int index, double g) {
     handles()->replace(index*3 + 1, filter->_f - filter->_q, filter->_g / 2);
     handles()->replace(index*3 + 2, filter->_f + filter->_q, filter->_g / 2);
 
-    computeSumResponse();
+    computeFilterSum();
 }
 
 void EqualizerModel::setLevel(int value) {
@@ -235,7 +233,7 @@ void EqualizerModel::moveHandle(int index, double x, double y) {
     handles()->replace(index + 2, xIndex + filter->_q, yIndex / 2);
 
     filter->moveHandle(xIndex, yIndex);
-    computeSumResponse();
+    computeFilterSum();
 }
 
 void EqualizerModel::moveLeftQHandle(int index, double x) {
@@ -244,7 +242,7 @@ void EqualizerModel::moveLeftQHandle(int index, double x) {
 
     auto q = abs(filter->_f - xIndex);
     filter->setQ(q);
-    computeSumResponse();
+    computeFilterSum();
 
     handles()->replace(index + 0, filter->_f - q, filter->_g / 2); //filter->_g / 2);
     handles()->replace(index + 1, filter->_f + q, filter->_g / 2); //filter->_g / 2);
@@ -256,14 +254,14 @@ void EqualizerModel::moveRightQHandle(int index, double x) {
 
     auto q = abs(filter->_f - xIndex);
     filter->setQ(q);
-    computeSumResponse();
+    computeFilterSum();
 
     handles()->replace(index - 1, filter->_f - q, filter->_g / 2); //filter->_g / 2);
     handles()->replace(index + 0, filter->_f + q, filter->_g / 2); //filter->_g / 2);
 }
 
-void EqualizerModel::computeSumResponse() {
-    if (!_sumSeries) return;
+void EqualizerModel::computeFilterSum() {
+    if (!_filterSumSeries) return;
 
     std::vector<double> sum;
     sum.reserve(_frequencyTable.size());
@@ -277,7 +275,7 @@ void EqualizerModel::computeSumResponse() {
         }
         sum.push_back(fSum);
     }
-    _sum.get_subscriber().on_next(sum);
+    _filterSum.get_subscriber().on_next(sum);
 
     _sumMax = -144.0;
     _sumMin = 144.0;
@@ -289,7 +287,7 @@ void EqualizerModel::computeSumResponse() {
 }
 
 bool EqualizerModel::findMaxOvershoot(int* f, double* g) {
-    if (_filteredSeries->count() == 0) return false;
+    if (_filteredResponseSeries->count() == 0) return false;
 
     const int fRangeMin = _range.get_value().first * 8;
     const int fRangeMax = _range.get_value().second * 8;
@@ -297,7 +295,7 @@ bool EqualizerModel::findMaxOvershoot(int* f, double* g) {
     int fMax = 0;
     double gMax = 0.0;
     for (int i = fRangeMin; i < fRangeMax; ++i) {
-        double g_ = std::round((_filteredSeries->at(i).y() - _targetSeries->at(i).y()) * 5.0) / 5.0;
+        double g_ = std::round((_filteredResponseSeries->at(i).y() - _targetSeries->at(i).y()) * 5.0) / 5.0;
         if (gMax < g_) {
             fMax = i;
             gMax = g_;
@@ -343,7 +341,7 @@ double EqualizerModel::deviationWithFilter(int f, double g, int q) {
 
     double sumDiff = 0.0;
     for (int j = fRangeMin; j < fRangeMax; ++j) {
-        sumDiff += abs(_filteredSeries->at(j).y() - _targetSeries->at(j).y() + 20 * log10(abs(response.at(j))));
+        sumDiff += abs(_filteredResponseSeries->at(j).y() - _targetSeries->at(j).y() + 20 * log10(abs(response.at(j))));
     }
 
     return sumDiff;
@@ -355,7 +353,7 @@ double EqualizerModel::deviation() {
 
     double sumDiff = 0.0;
     for (int j = fRangeMin; j < fRangeMax; ++j) {
-        sumDiff += abs(_filteredSeries->at(j).y() - _targetSeries->at(j).y());
+        sumDiff += abs(_filteredResponseSeries->at(j).y() - _targetSeries->at(j).y());
     }
 
     return sumDiff;
@@ -386,7 +384,7 @@ void EqualizerModel::optimize() {
                     filter->_q = q;
                     filter->_g = g;
                     filter->computeResponse();
-                    computeSumResponse();
+                    computeFilterSum();
 
                     auto sumDiff = deviation();
                     if (sumDiff < minDeviation) {
@@ -414,5 +412,5 @@ void EqualizerModel::optimize() {
     StatusModel::instance()->showMessage("Optimize took " + QString::number(ms.count()) + " ms", 3000);
 
     emit filtersChanged();
-    computeSumResponse();
+    computeFilterSum();
 }

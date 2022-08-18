@@ -11,6 +11,13 @@
 #include "measure/MeasurementService.h"
 #include "util/FrFile.h"
 
+static const QString calibration0Key("calibration0");
+static const QString calibration90Key("calibration90");
+static const QString inputDeviceKey("inputDevice");
+static const QString inputSampleRateKey("inputSampleRate");
+static const QString outputDeviceKey("outputDevice");
+static const QString outputSampleRateKey("outputSampleRate");
+
 QStringList sampleRatesToStringList(const QList<int>& in) {
 	QStringList out;
 
@@ -35,6 +42,18 @@ QStringList sampleRatesToStringList(const QList<int>& in) {
 	return out;
 }
 
+int findDevice(const QList<QAudioDeviceInfo>& list, const QString& name) {
+    int i = 0;
+    for (const auto& d : list) {
+        if (d.deviceName() == name)
+            return i;
+        else
+            ++i;
+    }
+
+    return 0;
+}
+
 ProjectModel::ProjectModel(MeasurementService& measurementService, QObject *parent)
 	: QObject{parent},
 	  m_measurementService(measurementService) {
@@ -43,13 +62,25 @@ ProjectModel::ProjectModel(MeasurementService& measurementService, QObject *pare
 	m_outputDevices = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);
 
     QSettings settings;
-    auto calibration0 = settings.value("calibration0").toString();
+    auto calibration0 = settings.value(calibration0Key).toString();
     if (!calibration0.isEmpty()) {
         openCalibrationFile(0, calibration0);
     }
-    auto calibration90 = settings.value("calibration90").toString();
+    auto calibration90 = settings.value(calibration90Key).toString();
     if (!calibration90.isEmpty()) {
         openCalibrationFile(90, calibration90);
+    }
+
+    const auto inputDevice = settings.value(inputDeviceKey).toString();
+    if (!inputDevice.isEmpty()) {
+        setInputDevice(findDevice(m_inputDevices, inputDevice));
+        setInputSampleRate(settings.value(inputSampleRateKey, 0).toInt());
+    }
+
+    const auto outputDevice = settings.value(outputDeviceKey).toString();
+    if (!outputDevice.isEmpty()) {
+        setOutputDevice(findDevice(m_outputDevices, outputDevice));
+        setOutputSampleRate(settings.value(outputSampleRateKey, 0).toInt());
     }
 }
 
@@ -58,11 +89,17 @@ ProjectModel::~ProjectModel() {
     if (m_micCalibration0.startsWith("Error")) {
         m_micCalibration0.clear();
     }
-    settings.setValue("calibration0", m_micCalibration0);
+    settings.setValue(calibration0Key, m_micCalibration0);
+
     if (m_micCalibration90.startsWith("Error")) {
         m_micCalibration90.clear();
     }
-    settings.setValue("calibration90", m_micCalibration90);
+    settings.setValue(calibration90Key, m_micCalibration90);
+
+    settings.setValue(inputDeviceKey, m_inputDeviceIndex ? m_inputDevices.at(m_inputDeviceIndex).deviceName() : "");
+    settings.setValue(outputDeviceKey, m_outputDeviceIndex ? m_outputDevices.at(m_outputDeviceIndex).deviceName() : "");
+    settings.setValue(inputSampleRateKey, m_inputDeviceIndex ? m_inputSampleRateIndex : 0);
+    settings.setValue(outputSampleRateKey, m_outputDeviceIndex ? m_outputSampleRateIndex : 0);
 }
 
 QStringList ProjectModel::inputDevices() {

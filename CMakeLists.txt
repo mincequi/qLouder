@@ -9,6 +9,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(rxcpp)
 
+#FetchContent_Declare(
+#  rpp
+#  GIT_REPOSITORY https://github.com/victimsnino/ReactivePlusPlus.git
+#  GIT_TAG        v0.0.5
+#)
+#FetchContent_MakeAvailable(rpp)
+
 FetchContent_Declare(
   r8brain
   GIT_REPOSITORY https://github.com/avaneev/r8brain-free-src.git
@@ -129,6 +136,7 @@ PRIVATE
     #${FFTW3F_THREADS_LINK_LIBRARIES}
     #${FFTW3_THREADS_LINK_LIBRARIES}
     rxcpp
+    #rpp
 )
 
 set_target_properties(qLouder PROPERTIES

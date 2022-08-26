@@ -12,9 +12,13 @@ class ProjectModel : public QObject {
 	Q_PROPERTY(QString micCalibration0 MEMBER m_micCalibration0 NOTIFY modelChanged)
 	Q_PROPERTY(QString micCalibration90 MEMBER m_micCalibration90 NOTIFY modelChanged)
 	Q_PROPERTY(QStringList inputDevices READ inputDevices NOTIFY modelChanged)
-	Q_PROPERTY(QStringList inputSampleRates READ inputSampleRates NOTIFY inputDeviceChanged)
+    Q_PROPERTY(int savedInputDevice READ savedInputDevice)
+    Q_PROPERTY(QStringList inputSampleRates READ inputSampleRates NOTIFY inputDeviceChanged)
+    Q_PROPERTY(int savedInputSampleRate READ savedInputSampleRate)
 	Q_PROPERTY(QStringList outputDevices READ outputDevices NOTIFY modelChanged)
-	Q_PROPERTY(QStringList outputSampleRates READ outputSampleRates NOTIFY outputDeviceChanged)
+    Q_PROPERTY(int savedOutputDevice READ savedOutputDevice)
+    Q_PROPERTY(QStringList outputSampleRates READ outputSampleRates NOTIFY outputDeviceChanged)
+    Q_PROPERTY(int savedOutputSampleRate READ savedOutputSampleRate)
 
 public:
 	explicit ProjectModel(MeasurementService& measurementService, QObject *parent = nullptr);
@@ -22,12 +26,19 @@ public:
 
 	QStringList inputDevices();
 	Q_INVOKABLE void setInputDevice(int index);
+    int savedInputDevice() const;
+
 	QStringList inputSampleRates();
 	Q_INVOKABLE void setInputSampleRate(int index);
+    int savedInputSampleRate() const;
+
 	QStringList outputDevices();
 	Q_INVOKABLE void setOutputDevice(int index);
-	QStringList outputSampleRates();
+    int savedOutputDevice() const;
+
+    QStringList outputSampleRates();
 	Q_INVOKABLE void setOutputSampleRate(int index);
+    int savedOutputSampleRate() const;
 
     Q_INVOKABLE void openCalibrationFile(int degrees, const QString& fileName);
 

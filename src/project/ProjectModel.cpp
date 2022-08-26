@@ -70,18 +70,6 @@ ProjectModel::ProjectModel(MeasurementService& measurementService, QObject *pare
     if (!calibration90.isEmpty()) {
         openCalibrationFile(90, calibration90);
     }
-
-    const auto inputDevice = settings.value(inputDeviceKey).toString();
-    if (!inputDevice.isEmpty()) {
-        setInputDevice(findDevice(m_inputDevices, inputDevice));
-        setInputSampleRate(settings.value(inputSampleRateKey, 0).toInt());
-    }
-
-    const auto outputDevice = settings.value(outputDeviceKey).toString();
-    if (!outputDevice.isEmpty()) {
-        setOutputDevice(findDevice(m_outputDevices, outputDevice));
-        setOutputSampleRate(settings.value(outputSampleRateKey, 0).toInt());
-    }
 }
 
 ProjectModel::~ProjectModel() {
@@ -96,8 +84,8 @@ ProjectModel::~ProjectModel() {
     }
     settings.setValue(calibration90Key, m_micCalibration90);
 
-    settings.setValue(inputDeviceKey, m_inputDeviceIndex ? m_inputDevices.at(m_inputDeviceIndex).deviceName() : "");
-    settings.setValue(outputDeviceKey, m_outputDeviceIndex ? m_outputDevices.at(m_outputDeviceIndex).deviceName() : "");
+    settings.setValue(inputDeviceKey, m_inputDeviceIndex ? m_inputDevices.at(m_inputDeviceIndex).deviceName() : "<invalid>");
+    settings.setValue(outputDeviceKey, m_outputDeviceIndex ? m_outputDevices.at(m_outputDeviceIndex).deviceName() : "<invalid>");
     settings.setValue(inputSampleRateKey, m_inputDeviceIndex ? m_inputSampleRateIndex : 0);
     settings.setValue(outputSampleRateKey, m_outputDeviceIndex ? m_outputSampleRateIndex : 0);
 }
@@ -125,6 +113,12 @@ void ProjectModel::setInputDevice(int index) {
 	emit inputDeviceChanged();
 }
 
+int ProjectModel::savedInputDevice() const {
+    QSettings settings;
+    const auto idx = findDevice(m_inputDevices, settings.value(inputDeviceKey).toString());
+    return idx;
+}
+
 QStringList ProjectModel::inputSampleRates() {
 	return sampleRatesToStringList(m_inputSampleRates);
 }
@@ -132,6 +126,12 @@ QStringList ProjectModel::inputSampleRates() {
 void ProjectModel::setInputSampleRate(int index) {
 	m_inputSampleRateIndex = index;
 	m_measurementService.setInputDevice(m_inputDevices.at(m_inputDeviceIndex), m_inputSampleRates.at(m_inputSampleRateIndex));
+}
+
+int ProjectModel::savedInputSampleRate() const {
+    QSettings settings;
+    const int idx = settings.value(inputSampleRateKey, 0).toInt();
+    return idx;
 }
 
 QStringList ProjectModel::outputDevices() {
@@ -153,6 +153,12 @@ void ProjectModel::setOutputDevice(int index) {
 	emit outputDeviceChanged();
 }
 
+int ProjectModel::savedOutputDevice() const {
+    QSettings settings;
+    const auto idx = findDevice(m_outputDevices, settings.value(outputDeviceKey).toString());
+    return idx;
+}
+
 QStringList ProjectModel::outputSampleRates() {
 	return sampleRatesToStringList(m_outputSampleRates);
 }
@@ -160,6 +166,12 @@ QStringList ProjectModel::outputSampleRates() {
 void ProjectModel::setOutputSampleRate(int index) {
 	m_outputSampleRateIndex = index;
 	m_measurementService.setOutputDevice(m_outputDevices.at(m_outputDeviceIndex), m_outputSampleRates.at(m_outputSampleRateIndex));
+}
+
+int ProjectModel::savedOutputSampleRate() const {
+    QSettings settings;
+    const int idx = settings.value(outputSampleRateKey, 0).toInt();
+    return idx;
 }
 
 void ProjectModel::openCalibrationFile(int degrees, const QString& fileName) {

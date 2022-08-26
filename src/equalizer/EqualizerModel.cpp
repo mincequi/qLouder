@@ -11,9 +11,11 @@
 
 // https://www.sonarworks.com/soundid-reference/blog/learn/eq-curves-defined/
 
-EqualizerModel::EqualizerModel(const TargetModel& targetModel,
+EqualizerModel::EqualizerModel(const EqualizerLogic& logic,
+                               const TargetModel& targetModel,
                                QObject *parent)
     : ChartModel(parent),
+      _logic(logic),
       _targetModel(targetModel),
       _range({3, 28}) {
     setType(FrequencyResponse);

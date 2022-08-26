@@ -4,6 +4,8 @@ import QtQuick.Controls.Material 2.15
 import QtQuick.Layouts 1.15
 
 SpinBox {
+    property string unit: "dB"
+
     id: control
     topPadding: 0
     bottomPadding: 0
@@ -13,7 +15,7 @@ SpinBox {
     font.pixelSize: 12
     font.bold: true
     textFromValue: function(value, locale) {
-        return qsTr("%1 dB").arg(value);
+        return qsTr("%1 %2").arg(value).arg(unit);
     }
 
     contentItem: TextInput {

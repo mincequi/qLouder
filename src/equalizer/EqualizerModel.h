@@ -5,6 +5,7 @@
 
 #include <rxcpp/rx-lite.hpp>
 
+class EqualizerLogic;
 class TargetModel;
 
 class EqualizerModel : public ChartModel {
@@ -22,7 +23,7 @@ class EqualizerModel : public ChartModel {
     Q_PROPERTY(double sumMax MEMBER _sumMax NOTIFY rangeChanged)
 
 public:
-    explicit EqualizerModel(const TargetModel& targetModel, QObject *parent = nullptr);
+    explicit EqualizerModel(const EqualizerLogic& logic, const TargetModel& targetModel, QObject *parent = nullptr);
 
     double minFrequencySlider() const;
     double maxFrequencySlider() const;
@@ -65,6 +66,7 @@ private:
     double deviationWithFilter(int f, double g, int q);
     double deviation();
 
+    const EqualizerLogic& _logic;
     const TargetModel& _targetModel;
     std::vector<double> _frequencyTable;
     std::vector<double> _rangeTable;

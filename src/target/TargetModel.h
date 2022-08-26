@@ -28,6 +28,7 @@ public slots:
 
     void moveHandle(int index, double x, double y) override;
     void stepParam(int index, double x, double y);
+    void setLoudness(int phon);
 
 signals:
     void valuesChanged();

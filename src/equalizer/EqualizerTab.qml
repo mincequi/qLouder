@@ -10,6 +10,7 @@ import "../charts"
 import "../ui"
 
 import EqualizerModel 1.0
+import TargetModel 1.0
 
 Page {
     function colorWithAlpha(color, alpha) {
@@ -99,6 +100,26 @@ Page {
                     font.pixelSize: 12
                     font.bold: true
                 }
+            }
+
+            // Loudness
+            ToolSeparator {
+                implicitHeight: 24
+                horizontalPadding: 9
+            }
+            Label {
+                height: 24
+                text: "Loudness"
+                font.pixelSize: 12
+            }
+            SmallSpinBox {
+                value: 0
+                from: 0
+                to: 40
+                unit: "phon"
+                implicitWidth: 96
+                onValueModified: TargetModel.setLoudness(value)
+                Component.onCompleted: TargetModel.setLoudness(value)
             }
 
             // Spacer item

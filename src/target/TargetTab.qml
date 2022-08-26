@@ -36,8 +36,8 @@ Page {
                 UpDownSpinBox {
                     //label: "F"
                     value: TargetModel.loudness.toFixed(1) + " phon"
-                    onValueUp: TargetModel.stepParam(0, 0, +0.25)
-                    onValueDown: TargetModel.stepParam(0, 0, -0.25)
+                    onValueUp: TargetModel.stepParam(0, 0, +0.5)
+                    onValueDown: TargetModel.stepParam(0, 0, -0.5)
                 },
 
                 /*

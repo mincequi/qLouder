@@ -55,6 +55,15 @@ void TargetModel::stepParam(int index, double x, double y) {
     }
 }
 
+void TargetModel::setLoudness(int phon) {
+    _loudness = phon/2.0;
+    //handles()->replace(0, handles()->at(0).x(), _loudness);
+    computeLoudnessResponse();
+    computeSumResponse();
+    emit valuesChanged();
+}
+
+
 void TargetModel::setLoudnessSeries(QtCharts::QAbstractSeries* series) {
     if (series) {
         _loudnessSeries = static_cast<QtCharts::QXYSeries*>(series);

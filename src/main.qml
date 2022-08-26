@@ -55,10 +55,10 @@ ApplicationWindow {
             text: "Measure"
             icon.name: "microphone-variant"
         }
-        MaterialTabButton {
-            text: "Target"
-            icon.name: "bullseye"
-        }
+        //MaterialTabButton {
+        //    text: "Target"
+        //    icon.name: "bullseye"
+        //}
         MaterialTabButton {
             text: "Equalizer"
             icon.name: "tune-vertical"
@@ -83,11 +83,12 @@ ApplicationWindow {
         }
         MeasureTab {
         }
-        TargetTab {
-        }
         EqualizerTab {
         }
         CrossoverTab {
+        }
+
+        TargetTab {
         }
     }
 

@@ -56,6 +56,7 @@ set(PROJECT_SOURCES
     src/charts/LogChart.cpp
     src/charts/TimeTable.cpp
     src/crossover/CrossoverModel.cpp
+    src/equalizer/EqualizerLogic.cpp
     src/equalizer/EqualizerModel.cpp
     src/equalizer/FilterModel.cpp
     src/measure/AudioBuffer.cpp

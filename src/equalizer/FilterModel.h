@@ -12,7 +12,7 @@ class FilterModel : public QObject {
     // and removed from the chart when this filter gets deleted.
     Q_PROPERTY(QtCharts::QAbstractSeries* response READ response CONSTANT)
 
-    Q_PROPERTY(QString f READ f NOTIFY valuesChanged)
+    Q_PROPERTY(QString f READ fAsString NOTIFY valuesChanged)
     Q_PROPERTY(double q READ q NOTIFY valuesChanged)
     Q_PROPERTY(double g MEMBER _g NOTIFY valuesChanged)
 
@@ -21,8 +21,10 @@ public:
                          QtCharts::QAbstractSeries* response,
                          QObject *parent = nullptr);
 
-    QString f() const;
+    QString fAsString() const;
+    double f() const;
     double q() const;
+    double g() const;
 
     QtCharts::QAbstractSeries* response() const;
 

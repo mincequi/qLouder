@@ -17,13 +17,21 @@ FilterModel::FilterModel(int f, double q, double g,
     computeResponse();
 }
 
-QString FilterModel::f() const {
+QString FilterModel::fAsString() const {
     return UiUtil::fToStr(_frequencyTable.at(_f));
+}
+
+double FilterModel::f() const {
+    return _frequencyTable.at(_f);
 }
 
 double FilterModel::q() const {
     auto pow2N = pow(2, _q/12.0);
     return sqrt(pow2N)/(pow2N - 1);
+}
+
+double FilterModel::g() const {
+    return _g;
 }
 
 QtCharts::QAbstractSeries* FilterModel::response() const {

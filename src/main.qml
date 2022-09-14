@@ -7,8 +7,9 @@ import Qt.labs.settings 1.0
 
 import "crossover"
 import "equalizer"
-import "project"
 import "measure"
+import "player"
+import "project"
 import "status"
 import "target"
 
@@ -99,9 +100,16 @@ ApplicationWindow {
         Material.elevation: 0
     }
 
-    StatusBar {
+    PlayerBar {
         anchors.left: bar.right
         anchors.leftMargin: 1
+        anchors.right: statusBar.left
+        anchors.bottom: parent.bottom
+    }
+
+    StatusBar {
+        id: statusBar
+        width: 192
         anchors.right: parent.right
         anchors.bottom: parent.bottom
     }

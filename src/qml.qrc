@@ -25,5 +25,6 @@
         <file>target/TargetTab.qml</file>
         <file>equalizer/EqualizerTab.qml</file>
         <file>equalizer/FilterItem.qml</file>
+        <file>player/PlayerBar.qml</file>
     </qresource>
 </RCC>

@@ -7,12 +7,25 @@ import QtQuick.Controls.Material.impl 2.15
 
 T.RangeSlider {
     id: control
+    property double progress: -1.0
+
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset,
                             first.implicitHandleWidth + leftPadding + rightPadding,
                             second.implicitHandleWidth + leftPadding + rightPadding)
     implicitHeight: 24
-
     padding: 6
+
+    // progress indicator
+    Rectangle {
+        visible: control.progress >= 0.0
+        x: control.leftPadding + control.progress * (control.availableWidth - width)
+        y: control.topPadding + (control.availableHeight - height) / 2
+        z: 50
+        implicitWidth: 2
+        implicitHeight: 9
+        color: control.Material.accentColor
+    }
+
     first.handle: Rectangle {
         x: control.leftPadding + (control.horizontal ? control.first.visualPosition * (control.availableWidth - width) : (control.availableWidth - width) / 2)
         y: control.topPadding + (control.horizontal ? (control.availableHeight - height) / 2 : control.first.visualPosition * (control.availableHeight - height))

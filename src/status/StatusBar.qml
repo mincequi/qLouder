@@ -12,6 +12,7 @@ ToolBar {
     Label {
         leftPadding: 12
         height: 24
+        horizontalAlignment: Qt.AlignRight
         verticalAlignment: Qt.AlignVCenter
         text: StatusModel.text
         font.pixelSize: 12

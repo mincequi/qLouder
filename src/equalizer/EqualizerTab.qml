@@ -130,7 +130,8 @@ Page {
                 height: 24
                 implicitWidth: 96
                 text: "Optimize"
-                iconName: "arrow-all"
+                //iconName: "arrow-all"
+                iconName: "auto-fix"
                 onClicked: {
                     EqualizerModel.optimize()
                 }

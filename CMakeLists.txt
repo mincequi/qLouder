@@ -23,6 +23,16 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(r8brain)
 
+set (CINDER_DISABLE_ANTTWEAKBAR ON CACHE INTERNAL "CINDER_DISABLE_ANTTWEAKBAR")
+set (CINDER_DISABLE_IMGUI ON CACHE INTERNAL "CINDER_DISABLE_IMGUI")
+set (CINDER_DISABLE_VIDEO ON CACHE INTERNAL "CINDER_DISABLE_VIDEO")
+FetchContent_Declare(
+  cinder
+  GIT_REPOSITORY https://github.com/cinder/Cinder.git
+  GIT_TAG        bfd055817bc6f04b4ff6a410932618c7eef0d78c
+)
+FetchContent_MakeAvailable(cinder)
+
 project(qLouder VERSION 0.2 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -71,6 +81,9 @@ set(PROJECT_SOURCES
     src/measure/ResponseSignal.cpp
     src/measure/Signal.cpp
     src/measure/SignalGenerator.cpp
+    src/player/EqualizerNode.cpp
+    src/player/PlayerModel.cpp
+    src/player/PlayerModelPrivate.cpp
     src/project/ProjectModel.cpp
     src/status/StatusModel.cpp
     src/target/TargetModel.cpp
@@ -138,6 +151,7 @@ PRIVATE
     #${FFTW3_THREADS_LINK_LIBRARIES}
     rxcpp
     #rpp
+    cinder
 )
 
 set_target_properties(qLouder PROPERTIES

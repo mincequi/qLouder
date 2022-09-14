@@ -33,12 +33,12 @@ optimal filter set and crossover for your DIY loudspeaker.
 * Loudness based house curve
 * Parametric equalizer
 * Different sample rates for playback and recording
+* Simple music player
 
 # TODO
 * SPL meter
 * Persistent measurements
 * Harman house curve
-* Simple music player to track results
 
 # Requirements
 * fftw3

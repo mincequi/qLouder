@@ -16,31 +16,12 @@ Page {
         return Qt.rgba(color.r, color.g, color.b, alpha)
     }
 
-    //Layout.fillWidth: parent
-    //Layout.fillHeight: parent
-
-    //anchors.fill: parent
-
     header: ToolBar {
         height: 24
         width: parent.width
         Material.elevation: 0
         leftPadding: 0
         spacing: 3
-
-        // Progress bar
-        Rectangle {
-            y: 23
-            width: parent.width - 96
-            height: (MeasureModel.progress > 0.0 && MeasureModel.progress < 1.0) ? 1 : 0
-            color: colorWithAlpha(Material.accentColor, 0.33)
-            Rectangle {
-                y: -1
-                width: parent.width * MeasureModel.progress
-                height: 2
-                color: Material.accentColor
-            }
-        }
 
         // Tool bar
         RowLayout {
@@ -80,62 +61,6 @@ Page {
                 onValueChanged: MeasureModel.setLevel(value)
             }
 
-            // Frequency range
-            ToolSeparator {
-                leftPadding: 0
-                implicitHeight: 24
-                horizontalPadding: 9
-            }
-            Label {
-                height: 24
-                text: "Range"
-                font.pixelSize: 12
-            }
-            TextMetrics {
-                id: textMetrics
-                font: minFrequencyReadout.font
-                text: "250 Hz"
-            }
-            Item {
-                height: 24
-                width: textMetrics.width + 6
-
-                Label {
-                    id: minFrequencyReadout
-                    topPadding: 5
-                    height: 24
-                    anchors.right: parent.right
-                    text: MeasureModel.minFrequencyReadout
-                    font.pixelSize: 12
-                    font.bold: true
-                }
-            }
-            SmallRangeSlider {
-                implicitWidth: 96
-                from: 0
-                to: MeasureModel.frequencies.length-1
-                snapMode: RangeSlider.SnapAlways
-                stepSize: 1
-                first.value: MeasureModel.minFrequencySlider
-                second.value: MeasureModel.maxFrequencySlider
-                first.onVisualPositionChanged: MeasureModel.setMinFrequencySlider(first.value)
-                second.onVisualPositionChanged: MeasureModel.setMaxFrequencySlider(second.value)
-            }
-            Item {
-                id: maxFrequencyReadout
-                height: 24
-                width: textMetrics.width + 6
-
-                Label {
-                    topPadding: 5
-                    height: 24
-                    anchors.right: parent.right
-                    text: MeasureModel.maxFrequencyReadout
-                    font.pixelSize: 12
-                    font.bold: true
-                }
-            }
-
             // Channels
             ToolSeparator {
                 implicitHeight: 24
@@ -172,21 +97,6 @@ Page {
                 height: 24
                 width: 1
                 color: Material.background
-            }
-
-            SmallToolButton {
-                id: measureButton
-                TextMetrics {
-                    id: measureButtonMetrics
-                    font: measureButton.font
-                    text: "Measure"
-                }
-
-                implicitWidth: 96 //measureButtonMetrics.width + 36
-                text: MeasureModel.measureButtonText
-                iconName: MeasureModel.measureButtonIcon
-                iconColor: Material.color(Material.Red, Material.Shade300)
-                onClicked: MeasureModel.onMeasureButtonClicked()
             }
         }
     }
@@ -268,39 +178,6 @@ Page {
                     Layout.fillHeight: true
                 }
             ]
-        }
-    }
-
-    /*
-    Label {
-        text: MeasureModel.level
-        color: Material.accent
-        anchors.right: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        horizontalAlignment: Text.AlignRight
-        font.pixelSize: 48
-        visible: MeasureModel.progress > 0.0
-    }
-    */
-
-    Rectangle {
-        color: colorWithAlpha(Material.background, 0.66)
-        opacity: MeasureModel.progress > 0.0 ? 1.0 : 0.0
-        anchors.fill: parent
-
-        Gauge {
-            id: gauge
-            radius: 72
-            anchors.centerIn: parent
-            anchors.horizontalCenterOffset: -48
-            value: MeasureModel.level
-            valueMax: MeasureModel.levelMax
-            valueWarning: 0.0
-            valueRangeMin: -96.0
-            valueRangeMax: 12.0
-            opacity: MeasureModel.progress > 0.0 ? 1.0 : 0.0
-
-            Behavior on opacity { SmoothedAnimation { duration: 250; velocity: -1; easing.type: "OutQuart" } }
         }
     }
 

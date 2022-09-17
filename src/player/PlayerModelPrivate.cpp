@@ -70,27 +70,31 @@ void PlayerModelPrivate::stop() {
     _bufferPlayer->seek(pos);
 }
 
-double PlayerModelPrivate::begin() const {
-    return _bufferPlayer->getLoopBeginTime() / _bufferPlayer->getNumSeconds();
+double PlayerModelPrivate::loopBeginTime() const {
+    return _bufferPlayer->getLoopBeginTime();
 }
 
-void PlayerModelPrivate::setBegin(double value) {
-    if (value > progress()) {
-        _bufferPlayer->seekToTime(value * _bufferPlayer->getNumSeconds());
+void PlayerModelPrivate::setLoopBeginTime(double value) {
+    if (value > progressTime()) {
+        _bufferPlayer->seekToTime(value);
     }
-    _bufferPlayer->setLoopBeginTime(_bufferPlayer->getNumSeconds()*value);
+    _bufferPlayer->setLoopBeginTime(value);
 }
 
-double PlayerModelPrivate::end() const {
-    return _bufferPlayer->getLoopEndTime() / _bufferPlayer->getNumSeconds();
+double PlayerModelPrivate::loopEndTime() const {
+    return _bufferPlayer->getLoopEndTime();
 }
 
-void PlayerModelPrivate::setEnd(double value) {
-    _bufferPlayer->setLoopEndTime(_bufferPlayer->getNumSeconds()*value);
+void PlayerModelPrivate::setLoopEndTime(double value) {
+    _bufferPlayer->setLoopEndTime(value);
 }
 
-double PlayerModelPrivate::progress() const {
-    return _bufferPlayer->getReadPositionTime() / _bufferPlayer->getNumSeconds();
+double PlayerModelPrivate::progressTime() const {
+    return _bufferPlayer->getReadPositionTime();
+}
+
+double PlayerModelPrivate::totalTime() const {
+    return _bufferPlayer->getNumSeconds();
 }
 
 void PlayerModelPrivate::setFilters(const std::vector<cinder::audio::EqualizerNode::Filter>& filters) {

@@ -25,13 +25,14 @@ public:
     void play();
     void stop();
 
-    double begin() const;
-    void setBegin(double value);
+    double loopBeginTime() const;
+    void setLoopBeginTime(double value);
 
-    double end() const;
-    void setEnd(double value);
+    double loopEndTime() const;
+    void setLoopEndTime(double value);
 
-    double progress() const;
+    double progressTime() const;
+    double totalTime() const;
 
     void setFilters(const std::vector<cinder::audio::EqualizerNode::Filter>& filters);
 

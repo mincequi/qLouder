@@ -7,7 +7,7 @@
 LogChart::LogChart() {
     _xMin = 20.0;
     _xMax = 20000.0;
-    _yMin = -48.0;
+    _yMin = -36.0;
     _yMax = 6.0;
     _tickInterval = 10;
 

@@ -6,6 +6,7 @@ import QtQuick.Layouts 1.15
 
 import ".."
 
+import PlayerModel 1.0
 import ProjectModel 1.0
 
 Page {
@@ -48,6 +49,7 @@ Page {
                 }
             }
             SmallToolButton {
+                implicitWidth: 84
                 iconName: "folder"
                 text: "Open..."
             }
@@ -73,6 +75,7 @@ Page {
                 }
             }
             SmallToolButton {
+                implicitWidth: 84
                 iconName: "file"
                 text: "Open..."
                 onClicked: {
@@ -102,11 +105,41 @@ Page {
                 }
             }
             SmallToolButton {
+                implicitWidth: 84
                 iconName: "file"
                 text: "Open..."
                 onClicked: {
                     fileDialog.degrees = 90
                     fileDialog.open()
+                }
+            }
+
+            Label {
+                text: "Sample audio file"
+                font.pixelSize: 12
+            }
+            Label {
+                id: sampleFile
+                Layout.fillWidth: true
+                leftPadding: 6
+                rightPadding: 6
+                font.pixelSize: 12
+                text: PlayerModel.file
+                elide: Text.ElideLeft
+                background: Rectangle {
+                    y: -4.5
+                    height: 24
+                    color: "transparent"
+                    border.color: Material.frameColor
+                    border.width: 1
+                }
+            }
+            SmallToolButton {
+                implicitWidth: 84
+                iconName: "file-music"
+                text: "Open..."
+                onClicked: {
+                    sampleFileDialog.open()
                 }
             }
         }
@@ -182,6 +215,21 @@ Page {
             // unescape html codes like '%23' for '#'
             var cleanPath = decodeURIComponent(path);
             ProjectModel.openCalibrationFile(degrees, cleanPath)
+        }
+    }
+
+    FileDialog {
+        id: sampleFileDialog
+        title: "Music file"
+        folder: shortcuts.music
+        nameFilters: PlayerModel.supportedFileExtensions
+        onAccepted: {
+            var path = sampleFileDialog.fileUrl.toString();
+            // remove prefixed "file:///"
+            path = path.replace(/^(file:\/{3})/,"/");
+            // unescape html codes like '%23' for '#'
+            var cleanPath = decodeURIComponent(path);
+            PlayerModel.setFile(cleanPath)
         }
     }
 }

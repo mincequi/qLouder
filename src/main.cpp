@@ -15,6 +15,7 @@
 #include "measure/MeasureModel.h"
 #include "measure/MeasurementService.h"
 #include "measure/SignalGenerator.h"
+#include "player/PlayerBarModel.h"
 #include "player/PlayerModel.h"
 #include "project/ProjectModel.h"
 #include "status/StatusModel.h"
@@ -66,6 +67,10 @@ int main(int argc, char *argv[]) {
     auto playerModel = new PlayerModel(*equalizerModel);
     qmlRegisterSingletonType<PlayerModel>("PlayerModel", 1, 0, "PlayerModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {
         return playerModel;
+    });
+    auto playerBarModel = new PlayerBarModel(*measureModel, *playerModel);
+    qmlRegisterSingletonType<PlayerModel>("PlayerBarModel", 1, 0, "PlayerBarModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {
+        return playerBarModel;
     });
 
     qmlRegisterType<ChartModel>("ChartModel", 1, 0, "ChartModel");

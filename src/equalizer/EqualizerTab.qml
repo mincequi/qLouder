@@ -126,38 +126,39 @@ Page {
             Item {
                 Layout.fillWidth: true
             }
-            SmallToolButton {
-                height: 24
-                implicitWidth: 96
-                text: "Optimize"
-                //iconName: "arrow-all"
-                iconName: "auto-fix"
-                onClicked: {
-                    EqualizerModel.optimize()
-                }
-            }
-            Rectangle {
-                height: 24
-                width: 1
-                color: Material.background
-            }
-            SmallToolButton {
-                height: 24
-                implicitWidth: 96
-                text: "Add filter"
-                iconName: "plus"
-                onClicked: {
-                    var response = chart.chart.createSeries(ChartView.SeriesTypeLine, "Response", chart.xAxisLog, chart.yAxis)
-                    response.color = Material.color(Material.Grey)
-                    response.width = 1.0
-                    EqualizerModel.addFilter(response)
+            RowLayout {
+                spacing: 6
+                // Add filter button
+                SmallToolButton {
+                    height: 24
+                    //implicitWidth: 96
+                    text: "Add filter"
+                    font.pixelSize: 10
+                    iconName: "plus"
+                    onClicked: {
+                        var response = chart.chart.createSeries(ChartView.SeriesTypeLine, "Response", chart.xAxisLog, chart.yAxis)
+                        response.color = Material.color(Material.Grey)
+                        response.width = 1.0
+                        EqualizerModel.addFilter(response)
 
-                    // TODO: we have to delete sumSeries each filter creation to keep z ordering
-                    chart.chart.removeSeries(chart.sumSeries)
-                    chart.sumSeries = chart.chart.createSeries(ChartView.SeriesTypeLine, "Sum", chart.xAxisLog, chart.yAxis)
-                    chart.sumSeries.color = chart.accentColor
-                    chart.sumSeries.width = 1.0
-                    EqualizerModel.setFilterSumSeries(chart.sumSeries)
+                        // TODO: we have to delete sumSeries each filter creation to keep z ordering
+                        chart.chart.removeSeries(chart.sumSeries)
+                        chart.sumSeries = chart.chart.createSeries(ChartView.SeriesTypeLine, "Sum", chart.xAxisLog, chart.yAxis)
+                        chart.sumSeries.color = chart.accentColor
+                        chart.sumSeries.width = 1.0
+                        EqualizerModel.setFilterSumSeries(chart.sumSeries)
+                    }
+                }
+                // Optimize button
+                SmallToolButton {
+                    height: 24
+                    //implicitWidth: 96
+                    text: "Optimize"
+                    font.pixelSize: 10
+                    iconName: "auto-fix"
+                    onClicked: {
+                        EqualizerModel.optimize()
+                    }
                 }
             }
         }

@@ -33,7 +33,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cinder)
 
-project(qLouder VERSION 0.2 LANGUAGES CXX)
+#FetchContent_Declare(
+#  taglib
+#  GIT_REPOSITORY https://github.com/taglib/taglib.git
+#  GIT_TAG        v1.12
+#)
+#FetchContent_MakeAvailable(taglib)
+
+project(qLouder VERSION 0.3 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -82,6 +89,7 @@ set(PROJECT_SOURCES
     src/measure/Signal.cpp
     src/measure/SignalGenerator.cpp
     src/player/EqualizerNode.cpp
+    src/player/PlayerBarModel.cpp
     src/player/PlayerModel.cpp
     src/player/PlayerModelPrivate.cpp
     src/project/ProjectModel.cpp

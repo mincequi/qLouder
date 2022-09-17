@@ -15,7 +15,7 @@ class MeasureModel : public QObject {
     // Signal properties
 	Q_PROPERTY(QStringList lengths READ lengths CONSTANT)
     Q_PROPERTY(QStringList channels READ channels CONSTANT)
-    Q_PROPERTY(std::vector<qreal> frequencies MEMBER m_frequencyTable CONSTANT)
+    Q_PROPERTY(std::vector<qreal> frequencies MEMBER m_frequencyTable NOTIFY measureStateChanged)
 	Q_PROPERTY(double minFrequencySlider READ minFrequencySlider NOTIFY rangeChanged)
 	Q_PROPERTY(double maxFrequencySlider READ maxFrequencySlider NOTIFY rangeChanged)
 	Q_PROPERTY(QString minFrequencyReadout READ minFrequencyReadout NOTIFY rangeChanged)
@@ -27,6 +27,7 @@ class MeasureModel : public QObject {
     // Measure button properties
 	Q_PROPERTY(QString measureButtonIcon READ measureButtonIcon NOTIFY measureStateChanged)
 	Q_PROPERTY(QString measureButtonText READ measureButtonText NOTIFY measureStateChanged)
+    Q_PROPERTY(bool isMeasuring READ isMeasuring NOTIFY measureStateChanged)
 
     // Current measurement properties
 	Q_PROPERTY(double progress READ progress NOTIFY progressChanged)
@@ -39,6 +40,7 @@ class MeasureModel : public QObject {
 
 public:
 	explicit MeasureModel(MeasurementService& measurementService, QObject *parent = nullptr);
+    ~MeasureModel();
 
     // Signal properties
 	QStringList lengths() const;
@@ -55,6 +57,7 @@ public:
 
     QString measureButtonIcon() const;
 	QString measureButtonText() const;
+    bool isMeasuring() const;
 	Q_INVOKABLE void onMeasureButtonClicked();
 
     Q_INVOKABLE void saveFile(const QUrl& fileName);

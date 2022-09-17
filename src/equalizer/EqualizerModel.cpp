@@ -213,7 +213,7 @@ void EqualizerModel::setLevel(int value) {
 }
 
 double EqualizerModel::yMin() const {
-    return -48.0;
+    return -36.0;
 }
 
 double EqualizerModel::yMax() const {

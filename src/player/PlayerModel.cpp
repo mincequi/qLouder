@@ -2,23 +2,38 @@
 
 #include <iostream>
 
+#include <QSettings>
+
 #include <equalizer/EqualizerModel.h>
 #include <equalizer/FilterModel.h>
+#include <measure/MeasureModel.h>
 #include <player/EqualizerNode.h>
 
 #include "PlayerModelPrivate.h"
 
+static const QString sampleKey("sample");
+
 using namespace cinder::audio;
 
-PlayerModel::PlayerModel(const EqualizerModel& equalizerModel, QObject *parent)
+PlayerModel::PlayerModel(const EqualizerModel& equalizerModel,
+                         QObject *parent)
     : QObject{parent},
       _equalizerModel(equalizerModel),
       _d(new PlayerModelPrivate) {
     connect(&_timer, &QTimer::timeout, this, &PlayerModel::progressChanged);
-    connect(&equalizerModel, &EqualizerModel::rangeChanged, this, &PlayerModel::onFiltersChanged);
+    connect(&_equalizerModel, &EqualizerModel::rangeChanged, this, &PlayerModel::onFiltersChanged);
+
+    QSettings settings;
+    auto sample = settings.value(sampleKey).toString();
+    if (!sample.isEmpty()) {
+        setFile(sample);
+    }
 }
 
 PlayerModel::~PlayerModel() {
+    QSettings settings;
+    settings.setValue(sampleKey, _file);
+
     delete _d;
 }
 
@@ -36,21 +51,33 @@ bool PlayerModel::isPlaying() const {
     return _d->isPlaying();
 }
 
-double PlayerModel::begin() const {
-    return _d->begin();
+double PlayerModel::loopBeginTime() const {
+    return _d->loopBeginTime();
 }
 
-double PlayerModel::end() const {
-    return _d->end();
+double PlayerModel::loopEndTime() const {
+    return _d->loopEndTime();
+}
+
+double PlayerModel::totalTime() const {
+    return _d->totalTime();
 }
 
 double PlayerModel::progress() const {
-    return _d->progress();
+    return (_d->progressTime() - _d->loopBeginTime()) /
+            (_d->loopEndTime() - _d->loopBeginTime());
+}
+
+QString PlayerModel::title() const {
+    return _title;
 }
 
 void PlayerModel::setFile(const QString& file) {
     if (_d->setFile(file.toStdString())) {
-        emit loopChanged();
+        _title = file.mid(file.lastIndexOf("/")+1);
+        _file = file;
+        emit fileChanged();
+        emit statusChanged();
     }
 }
 
@@ -66,16 +93,18 @@ void PlayerModel::togglePlayPause() {
         _d->play();
         _timer.start(100);
     }
-    emit isPlayingChanged();
+    emit statusChanged();
     emit progressChanged();
 }
 
 void PlayerModel::setBegin(double value) {
-    _d->setBegin(value);
+    _d->setLoopBeginTime(value);
+    emit statusChanged();
 }
 
 void PlayerModel::setEnd(double value) {
-    _d->setEnd(value);
+    _d->setLoopEndTime(value);
+    emit statusChanged();
 }
 
 void PlayerModel::onFiltersChanged() {

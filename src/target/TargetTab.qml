@@ -40,29 +40,26 @@ Page {
                     onValueDown: TargetModel.stepParam(0, 0, -0.5)
                 },
 
-                /*
-                Label {
-                    height: 24
-                    padding: 6
-                    text: "Harman"
-                    font.bold: true
-                    font.pixelSize: 12
-                },
-                UpDownSpinBox {
-                    value: TargetModel.harman
-                    onValueUp: TargetModel.stepParam(1, 0, +0.25)
-                    onValueDown: TargetModel.stepParam(1, 0, -0.25)
-                },
-
-                ToolSeparator {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    topPadding: 6
-                    bottomPadding: 6
-                    orientation: Qt.Horizontal
-                },
-                */
-
+                //Label {
+                //    height: 24
+                //    padding: 6
+                //    text: "Harman"
+                //    font.bold: true
+                //    font.pixelSize: 12
+                //},
+                //UpDownSpinBox {
+                //    value: TargetModel.harman
+                //    onValueUp: TargetModel.stepParam(1, 0, +0.25)
+                //    onValueDown: TargetModel.stepParam(1, 0, -0.25)
+                //},
+//
+                //ToolSeparator {
+                //    anchors.left: parent.left
+                //    anchors.right: parent.right
+                //    topPadding: 6
+                //    bottomPadding: 6
+                //    orientation: Qt.Horizontal
+                //},
 
                 // spacer item
                 Item {

@@ -30,6 +30,9 @@ MeasureModel::MeasureModel(MeasurementService& measurementService, QObject *pare
     //timer->start(100);
 }
 
+MeasureModel::~MeasureModel() {
+}
+
 QStringList MeasureModel::lengths() const {
     return { "¼ s", "½ s", "1 s", "2 s", "4 s" };
 }
@@ -140,6 +143,10 @@ QString MeasureModel::measureButtonText() const {
 	case State::Measuring:
 		return "Abort";
 	}
+}
+
+bool MeasureModel::isMeasuring() const {
+    return m_state == State::Measuring;
 }
 
 void MeasureModel::onMeasureButtonClicked() {

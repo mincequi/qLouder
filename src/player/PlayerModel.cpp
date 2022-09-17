@@ -4,6 +4,8 @@
 
 #include <QSettings>
 
+#include <taglib/fileref.h>
+
 #include <equalizer/EqualizerModel.h>
 #include <equalizer/FilterModel.h>
 #include <measure/MeasureModel.h>
@@ -73,8 +75,16 @@ QString PlayerModel::title() const {
 }
 
 void PlayerModel::setFile(const QString& file) {
-    if (_d->setFile(file.toStdString())) {
+    // Create title from tags. Print file name if something goes wrong.
+    TagLib::FileRef f(file.toStdString().c_str(), false);
+    if (f.tag() == nullptr || f.tag()->artist().isEmpty() || f.tag()->title().isEmpty()) {
         _title = file.mid(file.lastIndexOf("/")+1);
+    } else {
+        _title = QString::fromWCharArray(f.tag()->artist().toCWString()) + " - "
+                 + QString::fromWCharArray(f.tag()->title().toCWString());
+    }
+
+    if (_d->setFile(file.toStdString())) {
         _file = file;
         emit fileChanged();
         emit statusChanged();

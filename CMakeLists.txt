@@ -33,13 +33,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cinder)
 
-#FetchContent_Declare(
-#  taglib
-#  GIT_REPOSITORY https://github.com/taglib/taglib.git
-#  GIT_TAG        v1.12
-#)
-#FetchContent_MakeAvailable(taglib)
-
 project(qLouder VERSION 0.3 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -56,6 +49,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 Multimed
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FFTW3F REQUIRED fftw3f)
 pkg_check_modules(FFTW3 REQUIRED fftw3)
+pkg_check_modules(TAGLIB REQUIRED taglib)
 string(REPLACE "fftw3f" "fftw3f_threads" FFTW3F_THREADS_LINK_LIBRARIES ${FFTW3F_LINK_LIBRARIES})
 string(REPLACE "fftw3" "fftw3_threads" FFTW3_THREADS_LINK_LIBRARIES ${FFTW3_LINK_LIBRARIES})
 
@@ -139,10 +133,13 @@ endif()
 target_include_directories(qLouder
 PRIVATE
     ${FFTW3_INCLUDE_DIRS}
+    ${TAGLIB_INCLUDE_DIRS}
 )
 
 target_compile_definitions(qLouder
-  PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
+  PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>
+)
+
 target_link_libraries(qLouder
 PRIVATE
     pthread
@@ -155,6 +152,7 @@ PRIVATE
     Qt${QT_VERSION_MAJOR}::Xml
     ${FFTW3F_LINK_LIBRARIES}
     ${FFTW3_LINK_LIBRARIES}
+    ${TAGLIB_LINK_LIBRARIES}
     #${FFTW3F_THREADS_LINK_LIBRARIES}
     #${FFTW3_THREADS_LINK_LIBRARIES}
     rxcpp

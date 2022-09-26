@@ -16,13 +16,9 @@ pkg_check_modules(FFTW3F REQUIRED fftw3f)
 # Fft test
 add_executable(fft_test
   FftTest.cpp
+  ../src/Config.cpp
   ../src/FrequencyTable.cpp
-  ../src/measure/ExcitationSignal.cpp
-  ../src/measure/Measurement.cpp
-  ../src/measure/Signal.cpp
-  ../src/measure/SignalGenerator.cpp
   ../src/status/StatusModel.cpp
-  ${r8brain_SOURCE_DIR}/r8bbase.cpp
 )
 
 target_include_directories(fft_test
@@ -38,6 +34,7 @@ PRIVATE
   Catch2::Catch2WithMain
   ${FFTW3F_LINK_LIBRARIES}
   ${FFTW3_LINK_LIBRARIES}
+  measure
 )
 
 # FrequencyTable test

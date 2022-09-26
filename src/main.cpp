@@ -3,8 +3,6 @@
 #include <QQuickStyle>
 #include <QThread>
 
-#include <fftw3.h>
-
 #include "charts/ChartModel.h"
 #include "charts/FrChartModel.h"
 #include "charts/IrChartModel.h"

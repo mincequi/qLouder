@@ -65,17 +65,31 @@ ToolBar {
     }
 
     Label {
+        id: rightReadout
         height: 24
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.rightMargin: 12
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignRight
-        //implicitHeight: 24
         Layout.fillHeight: true
         text: PlayerBarModel.rightReadout
         font.pixelSize: 12
         font.bold: true
+    }
+
+    SmallToolButton {
+        id: deleteFilter
+        visible: PlayerModel.isPlaying
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.rightMargin: 72
+        iconName: "tune-vertical"
+        iconColor: PlayerModel.isEqualizerEnabled ? Material.accent : Material.foreground
+        flat: true
+        onClicked: {
+            PlayerModel.toggleEqualizer()
+        }
     }
 
     Label {
@@ -85,7 +99,6 @@ ToolBar {
         anchors.right: parent.right
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
-        //implicitHeight: 24
         Layout.fillWidth: true
         Layout.fillHeight: true
         text: PlayerBarModel.title

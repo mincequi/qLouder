@@ -39,10 +39,15 @@ optimal filter set and crossover for your DIY loudspeaker.
 * SPL meter
 * Persistent measurements
 * Harman house curve
+* Remove QtMultimedia and use Cinder instead
+* Remove PulseAudio as hard dependency for Cinder
+* Detect hot plugged audio devices
 
 # Requirements
 * fftw3
 * Qt 5.x or 6.x (Core Quick QuickControls2 Multimedia Charts Svg Xml)
+* libqt5multimedia5-plugins
+* PulseAudio is running
 
 # Download and compile
 ```

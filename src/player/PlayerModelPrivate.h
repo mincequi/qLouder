@@ -36,6 +36,9 @@ public:
 
     void setFilters(const std::vector<cinder::audio::EqualizerNode::Filter>& filters);
 
+    void toggleEqualizer();
+    bool isEqualizerEnabled();
+
 private:
     std::shared_ptr<cinder::audio::BufferPlayerNode> _bufferPlayer;
     std::shared_ptr<cinder::audio::EqualizerNode> _equalizer;

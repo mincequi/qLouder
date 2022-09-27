@@ -17,6 +17,7 @@ class PlayerModel : public QObject {
     Q_PROPERTY(double progress READ progress NOTIFY progressChanged)
     Q_PROPERTY(QString file MEMBER _file NOTIFY fileChanged)
     Q_PROPERTY(QString title READ title NOTIFY fileChanged)
+    Q_PROPERTY(bool isEqualizerEnabled READ isEqualizerEnabled NOTIFY statusChanged)
 
 public:
     explicit PlayerModel(const EqualizerModel& equalizerModel,
@@ -30,6 +31,7 @@ public:
     double totalTime() const;
     double progress() const;
     QString title() const;
+    bool isEqualizerEnabled() const;
 
 public slots:
     void setFile(const QString& file);
@@ -37,6 +39,7 @@ public slots:
     void togglePlayPause();
     void setBegin(double value);
     void setEnd(double value);
+    void toggleEqualizer();
 
 signals:
     void statusChanged();

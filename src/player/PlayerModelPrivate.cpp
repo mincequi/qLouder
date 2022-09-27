@@ -24,7 +24,8 @@ PlayerModelPrivate::PlayerModelPrivate() {
         deviceNames.push_back(name);
         std::cerr << "name: " << name << std::endl;
     }
-    assert(deviceNames.size());
+    // TODO: this fails on linux without pulseaudio running
+    //assert(deviceNames.size());
 
     _bufferPlayer = ctx->makeNode<BufferPlayerNode>();
     _bufferPlayer->setLoopEnabled(true);
@@ -99,4 +100,12 @@ double PlayerModelPrivate::totalTime() const {
 
 void PlayerModelPrivate::setFilters(const std::vector<cinder::audio::EqualizerNode::Filter>& filters) {
     _equalizer->setFilters(filters);
+}
+
+void PlayerModelPrivate::toggleEqualizer() {
+    _equalizer->setEnabled(!_equalizer->isEnabled());
+}
+
+bool PlayerModelPrivate::isEqualizerEnabled() {
+    return _equalizer->isEnabled();
 }

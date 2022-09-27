@@ -22,7 +22,7 @@ set (CINDER_DISABLE_VIDEO ON CACHE INTERNAL "CINDER_DISABLE_VIDEO")
 FetchContent_Declare(
   cinder
   GIT_REPOSITORY https://github.com/mincequi/Cinder.git
-  GIT_TAG        fcdcab0b85656cdfb18b055faf42d69d1c400580
+  GIT_TAG        e0c2494de524673e131afe45f19c511dbdae6cc3
 )
 FetchContent_MakeAvailable(cinder)
 

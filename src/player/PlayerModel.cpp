@@ -74,6 +74,10 @@ QString PlayerModel::title() const {
     return _title;
 }
 
+bool PlayerModel::isEqualizerEnabled() const {
+    return _d->isEqualizerEnabled();
+}
+
 void PlayerModel::setFile(const QString& file) {
     // Create title from tags. Print file name if something goes wrong.
     TagLib::FileRef f(file.toStdString().c_str(), false);
@@ -114,6 +118,11 @@ void PlayerModel::setBegin(double value) {
 
 void PlayerModel::setEnd(double value) {
     _d->setLoopEndTime(value);
+    emit statusChanged();
+}
+
+void PlayerModel::toggleEqualizer() {
+    _d->toggleEqualizer();
     emit statusChanged();
 }
 

@@ -8,8 +8,6 @@ import MeasureModel 1.0
 import PlayerModel 1.0
 import PlayerBarModel 1.0
 
-import ".."
-
 ToolBar {
     height: 48
     Material.elevation: 0

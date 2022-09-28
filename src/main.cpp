@@ -24,29 +24,29 @@ int main(int argc, char *argv[]) {
     //fftw_plan_with_nthreads(QThread::idealThreadCount());
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
-	QApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     QCoreApplication::setOrganizationName("mincequi");
     QCoreApplication::setApplicationName("qLouder");
 
-	// Set material design
-	QQuickStyle::setStyle("Material");
+    // Set material design
+    QQuickStyle::setStyle("Material");
 
-	// Instantiate and register models
+    // Instantiate and register models
     auto crossoverModel = new CrossoverModel();
     qmlRegisterSingletonType<CrossoverModel>("CrossoverModel", 1, 0, "CrossoverModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {
         return crossoverModel;
     });
     auto measureModel = new MeasureModel(MeasurementService::instance());
-	qmlRegisterSingletonType<ProjectModel>("MeasureModel", 1, 0, "MeasureModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {
-		return measureModel;
-	});
+    qmlRegisterSingletonType<ProjectModel>("MeasureModel", 1, 0, "MeasureModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {
+        return measureModel;
+    });
     auto projectModel = new ProjectModel(MeasurementService::instance());
-	qmlRegisterSingletonType<ProjectModel>("ProjectModel", 1, 0, "ProjectModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {
-		return projectModel;
-	});
+    qmlRegisterSingletonType<ProjectModel>("ProjectModel", 1, 0, "ProjectModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {
+        return projectModel;
+    });
     qmlRegisterSingletonType<StatusModel>("StatusModel", 1, 0, "StatusModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {
         return StatusModel::instance();
     });
@@ -75,14 +75,14 @@ int main(int argc, char *argv[]) {
     qmlRegisterType<FrChartModel>("FrChartModel", 1, 0, "FrChartModel");
     qmlRegisterType<IrChartModel>("IrChartModel", 1, 0, "IrChartModel");
 
-	QQmlApplicationEngine engine;
-	const QUrl url(QStringLiteral("qrc:/main.qml"));
-	QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-					 &app, [url](QObject *obj, const QUrl &objUrl) {
-		if (!obj && url == objUrl)
-			QCoreApplication::exit(-1);
-	}, Qt::QueuedConnection);
-	engine.load(url);
+    QQmlApplicationEngine engine;
+    const QUrl url(QStringLiteral("qrc:/ui/main.qml"));
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
+                     &app, [url](QObject *obj, const QUrl &objUrl) {
+        if (!obj && url == objUrl)
+            QCoreApplication::exit(-1);
+    }, Qt::QueuedConnection);
+    engine.load(url);
 
-	return app.exec();
+    return app.exec();
 }

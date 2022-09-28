@@ -4,8 +4,6 @@ import QtQuick.Controls.Material 2.0
 import QtQuick.Layouts 1.0
 import QtCharts 2.0
 
-import ".."
-
 import ChartModel 1.0
 import FrChartModel 1.0
 

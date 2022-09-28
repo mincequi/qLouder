@@ -19,27 +19,27 @@ static const QString outputDeviceKey("outputDevice");
 static const QString outputSampleRateKey("outputSampleRate");
 
 QStringList sampleRatesToStringList(const QList<int>& in) {
-	QStringList out;
+    QStringList out;
 
-	/*
-	int s = 0;
-	foreach (s, in) {
-		if (s % 1000) {
-			out << QString::number(s/1000.0, 'f', 1) + " kHz";
-		} else {
-			out << QString::number(s/1000) + " kHz";
-		}
-	}
-	*/
+    /*
+    int s = 0;
+    foreach (s, in) {
+        if (s % 1000) {
+            out << QString::number(s/1000.0, 'f', 1) + " kHz";
+        } else {
+            out << QString::number(s/1000) + " kHz";
+        }
+    }
+    */
 
-	int s = 0;
-	foreach (s, in) {
-		//out << QString::number(s) + " Hz";
-		//out << QString::number(s/1000.0, 'f', 1) + " kHz";
-		out << QString::number(s/1000) + " kHz";
-	}
+    int s = 0;
+    foreach (s, in) {
+        //out << QString::number(s) + " Hz";
+        //out << QString::number(s/1000.0, 'f', 1) + " kHz";
+        out << QString::number(s/1000) + " kHz";
+    }
 
-	return out;
+    return out;
 }
 
 int findDevice(const QList<QAudioDeviceInfo>& list, const QString& name) {
@@ -55,11 +55,11 @@ int findDevice(const QList<QAudioDeviceInfo>& list, const QString& name) {
 }
 
 ProjectModel::ProjectModel(MeasurementService& measurementService, QObject *parent)
-	: QObject{parent},
-	  m_measurementService(measurementService) {
-	m_projectDir = QStandardPaths::displayName(QStandardPaths::DocumentsLocation);
-	m_inputDevices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
-	m_outputDevices = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);
+    : QObject{parent},
+      m_measurementService(measurementService) {
+    m_projectDir = QStandardPaths::displayName(QStandardPaths::DocumentsLocation);
+    m_inputDevices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
+    m_outputDevices = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);
 
     QSettings settings;
     auto calibration0 = settings.value(calibration0Key).toString();
@@ -91,26 +91,27 @@ ProjectModel::~ProjectModel() {
 }
 
 QStringList ProjectModel::inputDevices() {
-	QStringList out;
-	QAudioDeviceInfo device;
-	foreach (device, m_inputDevices) {
-		out << device.deviceName();
-	}
-	return out;
+    QStringList out;
+    QAudioDeviceInfo device;
+    foreach (device, m_inputDevices) {
+        out << device.deviceName();
+    }
+    return out;
 }
 
 void ProjectModel::setInputDevice(int index) {
-	m_inputDeviceIndex = index;
+    m_inputDeviceIndex = index;
     //m_inputSampleRateIndex = 0;
-	// TODO: only add the preferred sample rate for now. Others might cause glitches
+    // TODO: only add the preferred sample rate for now. Others might cause glitches
     //m_inputSampleRates = { m_inputDevices.at(m_inputDeviceIndex).preferredFormat().sampleRate() };
     //m_inputSampleRates = m_inputDevices.at(m_inputDeviceIndex).supportedSampleRates();
     //std::sort(m_inputSampleRates.begin(), m_inputSampleRates.end());
 
     // Try to open input device to raise privacy popup from OS
     openInputDevice(m_inputDevices.at(m_inputDeviceIndex));
+    m_measurementService.setInputDevice(m_inputDevices.at(m_inputDeviceIndex), m_inputSampleRates.at(m_inputSampleRateIndex));
 
-	emit inputDeviceChanged();
+    emit inputDeviceChanged();
 }
 
 int ProjectModel::savedInputDevice() const {
@@ -120,12 +121,12 @@ int ProjectModel::savedInputDevice() const {
 }
 
 QStringList ProjectModel::inputSampleRates() {
-	return sampleRatesToStringList(m_inputSampleRates);
+    return sampleRatesToStringList(m_inputSampleRates);
 }
 
 void ProjectModel::setInputSampleRate(int index) {
-	m_inputSampleRateIndex = index;
-	m_measurementService.setInputDevice(m_inputDevices.at(m_inputDeviceIndex), m_inputSampleRates.at(m_inputSampleRateIndex));
+    m_inputSampleRateIndex = index;
+    m_measurementService.setInputDevice(m_inputDevices.at(m_inputDeviceIndex), m_inputSampleRates.at(m_inputSampleRateIndex));
 }
 
 int ProjectModel::savedInputSampleRate() const {
@@ -135,22 +136,23 @@ int ProjectModel::savedInputSampleRate() const {
 }
 
 QStringList ProjectModel::outputDevices() {
-	QStringList out;
-	QAudioDeviceInfo device;
-	foreach (device, m_outputDevices) {
-		out << device.deviceName();
-	}
-	return out;
+    QStringList out;
+    QAudioDeviceInfo device;
+    foreach (device, m_outputDevices) {
+        out << device.deviceName();
+    }
+    return out;
 }
 
 void ProjectModel::setOutputDevice(int index) {
-	m_outputDeviceIndex = index;
+    m_outputDeviceIndex = index;
     //m_outputSampleRateIndex = 0;
-	// TODO: only add the preferred sample rate for now. Others might cause glitches
+    // TODO: only add the preferred sample rate for now. Others might cause glitches
     //m_outputSampleRates = { m_outputDevices.at(m_outputDeviceIndex).preferredFormat().sampleRate() };
     //m_outputSampleRates = m_outputDevices.at(m_outputDeviceIndex).supportedSampleRates();
     //std::sort(m_outputSampleRates.begin(), m_outputSampleRates.end());
-	emit outputDeviceChanged();
+    m_measurementService.setOutputDevice(m_outputDevices.at(m_outputDeviceIndex), m_outputSampleRates.at(m_outputSampleRateIndex));
+    emit outputDeviceChanged();
 }
 
 int ProjectModel::savedOutputDevice() const {
@@ -160,12 +162,12 @@ int ProjectModel::savedOutputDevice() const {
 }
 
 QStringList ProjectModel::outputSampleRates() {
-	return sampleRatesToStringList(m_outputSampleRates);
+    return sampleRatesToStringList(m_outputSampleRates);
 }
 
 void ProjectModel::setOutputSampleRate(int index) {
-	m_outputSampleRateIndex = index;
-	m_measurementService.setOutputDevice(m_outputDevices.at(m_outputDeviceIndex), m_outputSampleRates.at(m_outputSampleRateIndex));
+    m_outputSampleRateIndex = index;
+    m_measurementService.setOutputDevice(m_outputDevices.at(m_outputDeviceIndex), m_outputSampleRates.at(m_outputSampleRateIndex));
 }
 
 int ProjectModel::savedOutputSampleRate() const {

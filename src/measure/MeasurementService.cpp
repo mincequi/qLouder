@@ -64,6 +64,7 @@ void MeasurementService::setInputDevice(const QAudioDeviceInfo& audioDevice, int
         m_inputLevelMax = std::max(m_inputLevelMax, m_inputLevel);
         emit levelChanged();
     });
+    qDebug() << "audio input device set to:" << audioDevice.deviceName();
 }
 
 void MeasurementService::setOutputDevice(const QAudioDeviceInfo& audioDevice, int sampleRate) {
@@ -81,6 +82,7 @@ void MeasurementService::setOutputDevice(const QAudioDeviceInfo& audioDevice, in
         m_progress = (usecs/1000000.0)/(m_outputBuffer.data.size()*0.5/s_outputFormat.sampleRate());
         emit progressChanged(m_progress);
     });
+    qDebug() << "audio output device set to:" << audioDevice.deviceName();
 }
 
 void MeasurementService::start(Signal::Channels channels, int durationPerOctaveMs, int volume, double fMin, double fMax) {

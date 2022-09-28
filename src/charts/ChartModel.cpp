@@ -7,10 +7,10 @@
 #include <measure/Measurement.h>
 #include <measure/MeasurementManager.h>
 #include <status/StatusModel.h>
+#include <ui/MaterialDesignIcon.h>
 
 #include "LinChart.h"
 #include "LogChart.h"
-#include "MaterialDesignIcon.h"
 #include "TimeTable.h"
 
 ChartModel::ChartModel(QObject *parent)

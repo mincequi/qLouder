@@ -4,8 +4,6 @@ import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.12
 import QtQuick.Layouts 1.15
 
-import ".."
-
 import PlayerModel 1.0
 import ProjectModel 1.0
 

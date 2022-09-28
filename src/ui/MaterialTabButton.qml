@@ -10,7 +10,7 @@ TabButton {
     id: control
 
     width: 72
-    implicitHeight: 56  // must override implicitHeight. If overriding height, parent layout collapses
+    implicitHeight: 60  // must override implicitHeight. If overriding height, parent layout collapses
 
     padding: 0
 

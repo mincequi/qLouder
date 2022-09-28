@@ -24,6 +24,6 @@ Item {
 
     FontLoader {
         id: materialFont
-        source: "qrc:/materialdesignicons-webfont.ttf"
+        source: "qrc:/ui/materialdesignicons-webfont.ttf"
     }
 }

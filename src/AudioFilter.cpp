@@ -94,6 +94,11 @@ AudioFilter::AudioFilter(FilterType type, double f, double g, double q) :
     }
 
     case FilterType::Invalid:
+        _biquad.b0 = 1.0;
+        _biquad.b1 = 0.0;
+        _biquad.b2 = 0.0;
+        _biquad.a1 = 0.0;
+        _biquad.a2 = 0.0;
         break;
 
     case FilterType::Loudness:

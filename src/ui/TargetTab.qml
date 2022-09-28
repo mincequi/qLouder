@@ -5,10 +5,6 @@ import QtQuick.Controls.Material 2.15
 import QtQuick.Layouts 1.15
 import QtCharts 2.15
 
-import ".."
-import "../charts"
-import "../ui"
-
 import TargetModel 1.0
 
 Page {
@@ -84,13 +80,15 @@ Page {
 
                 UpDownSpinBox {
                     label: "Min"
-                    value: TargetModel.sumMin.toFixed(1) + " dB"
+                    value: TargetModel.sumMin.toFixed(1)
+                    unit: "dB"
                     valueColor: Material.accent
                     buttonsVisible: false
                 },
                 UpDownSpinBox {
                     label: "Max"
-                    value: TargetModel.sumMax.toFixed(1) + " dB"
+                    value: TargetModel.sumMax.toFixed(1)
+                    unit: "dB"
                     valueColor: Material.accent
                     buttonsVisible: false
                     Layout.bottomMargin: 6

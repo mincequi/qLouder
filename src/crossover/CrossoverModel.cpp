@@ -25,12 +25,20 @@ QString CrossoverModel::lowPassFrequencyReadout() const {
     return UiUtil::fToStr(_frequencyTable.at(_lowPassF));
 }
 
+QString CrossoverModel::lowPassFrequencyUnitReadout() const {
+    return UiUtil::fToUnit(_frequencyTable.at(_lowPassF));
+}
+
 double CrossoverModel::lowPassQ() const {
     return pow(10, _lowPassQ/20.0);
 }
 
 QString CrossoverModel::highPassFrequencyReadout() const {
     return UiUtil::fToStr(_frequencyTable.at(_highPassF));
+}
+
+QString CrossoverModel::highPassFrequencyUnitReadout() const {
+    return UiUtil::fToUnit(_frequencyTable.at(_highPassF));
 }
 
 double CrossoverModel::highPassQ() const {
@@ -40,9 +48,9 @@ double CrossoverModel::highPassQ() const {
 QString CrossoverModel::ripple() const {
     double ripple = abs(_sumMax - _sumMin);
     if (ripple < 10.0) {
-        return QString::number(ripple, 'f', 1) + " dB";
+        return QString::number(ripple, 'f', 1);
     } else {
-        return QString::number(ripple, 'f', 0) + " dB";
+        return QString::number(ripple, 'f', 0);
     }
 }
 

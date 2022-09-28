@@ -65,12 +65,12 @@ set(PROJECT_SOURCES
     src/project/ProjectModel.cpp
     src/status/StatusModel.cpp
     src/target/TargetModel.cpp
+    src/ui/MaterialDesignIcon.cpp
     src/ui/UiUtil.cpp
     src/util/FrFile.cpp
     src/AudioFilter.cpp
     src/Config.cpp
     src/FrequencyTable.cpp
-    src/MaterialDesignIcon.cpp
     src/main.cpp
     src/main.cpp
     src/qml.qrc

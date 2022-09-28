@@ -11,6 +11,7 @@ class TargetModel;
 class EqualizerModel : public ChartModel {
     Q_OBJECT
 
+    Q_PROPERTY(QStringList types READ types CONSTANT)
     Q_PROPERTY(std::vector<qreal> frequencies MEMBER _rangeTable CONSTANT)
     Q_PROPERTY(double minFrequencySlider READ minFrequencySlider NOTIFY rangeChanged)
     Q_PROPERTY(double maxFrequencySlider READ maxFrequencySlider NOTIFY rangeChanged)
@@ -25,6 +26,7 @@ class EqualizerModel : public ChartModel {
 public:
     explicit EqualizerModel(const EqualizerLogic& logic, const TargetModel& targetModel, QObject *parent = nullptr);
 
+    static const QStringList& types();
     double minFrequencySlider() const;
     double maxFrequencySlider() const;
     QString minFrequencyReadout() const;
@@ -41,6 +43,7 @@ public slots:
     void removeFilter(int index);
     void optimize();
 
+    void setType(int index, int type);
     void stepF(int index, int f);
     void stepQ(int index, double q);
     void stepG(int index, double g);
@@ -60,6 +63,7 @@ private:
     void moveLeftQHandle(int index, double x);
     void moveRightQHandle(int index, double x);
 
+    void updateHandles(int index);
     void computeFilterSum();
     bool findMaxOvershoot(int* f, double* g);
     void findQ(int f, double g, double* q);

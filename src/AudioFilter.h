@@ -3,19 +3,19 @@
 #include <complex>
 #include <vector>
 
-enum class FilterType : uint8_t {
+enum class FilterType : int8_t {
     Invalid     = 0,
 
     // Linear filters
     Peak        = 1,
-    LowPass,
-    HighPass,
-    LowShelf,
-    HighShelf,
+    LowPass     = 2,
+    HighPass    = 3,
+    LowShelf    = 4,
+    HighShelf   = 5,
     AllPass,
 
     // Special filters
-    Loudness = 128
+    Loudness = 64
 };
 
 class AudioFilter {

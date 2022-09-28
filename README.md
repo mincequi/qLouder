@@ -37,6 +37,7 @@ optimal filter set and crossover for your DIY loudspeaker.
 * Simple music player
 
 # TODO
+* Correct mouse handles for low, high pass and shelving filters
 * SPL meter
 * Persistent measurements
 * Harman house curve

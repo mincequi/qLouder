@@ -5,10 +5,6 @@ import QtQuick.Controls.Material 2.15
 import QtQuick.Layouts 1.15
 import QtCharts 2.15
 
-import ".."
-import "../charts"
-import "../ui"
-
 import CrossoverModel 1.0
 
 Page {
@@ -40,12 +36,12 @@ Page {
                     height: 24
                     padding: 6
                     text: "Low pass"
-                    font.bold: true
                     font.pixelSize: 12
                 },
                 UpDownSpinBox {
                     label: "F"
                     value: CrossoverModel.lowPassFrequencyReadout
+                    unit: CrossoverModel.lowPassFrequencyUnitReadout
                     onValueUp: CrossoverModel.stepParam(0, +1, 0)
                     onValueDown: CrossoverModel.stepParam(0, -1, 0)
                 },
@@ -57,7 +53,8 @@ Page {
                 },
                 UpDownSpinBox {
                     label: "G"
-                    value: CrossoverModel.lowPassG.toFixed(1) + " dB"
+                    value: CrossoverModel.lowPassG.toFixed(1)
+                    unit: "dB"
                     onValueUp: CrossoverModel.stepParam(2, 0, +0.2)
                     onValueDown: CrossoverModel.stepParam(2, 0, -0.2)
                 },
@@ -80,12 +77,12 @@ Page {
                     height: 24
                     padding: 6
                     text: "High pass"
-                    font.bold: true
                     font.pixelSize: 12
                 },
                 UpDownSpinBox {
                     label: "F"
                     value: CrossoverModel.highPassFrequencyReadout
+                    unit: CrossoverModel.highPassFrequencyUnitReadout
                     onValueUp: CrossoverModel.stepParam(1, +1, 0)
                     onValueDown: CrossoverModel.stepParam(1, -1, 0)
                 },
@@ -97,7 +94,8 @@ Page {
                 },
                 UpDownSpinBox {
                     label: "G"
-                    value: CrossoverModel.highPassG.toFixed(1) + " dB"
+                    value: CrossoverModel.highPassG.toFixed(1)
+                    unit: "dB"
                     onValueUp: CrossoverModel.stepParam(3, 0, +0.2)
                     onValueDown: CrossoverModel.stepParam(3, 0, -0.2)
                 },
@@ -129,26 +127,29 @@ Page {
                     leftPadding: 6
                     topPadding: 6
                     bottomPadding: 6
-                    text: "Sum deviation"
+                    text: "Deviation"
                     font.bold: true
                     font.pixelSize: 12
                 },
 
                 UpDownSpinBox {
                     label: "Min"
-                    value: CrossoverModel.sumMin.toFixed(1) + " dB"
+                    value: CrossoverModel.sumMin.toFixed(1)
+                    unit: "dB"
                     valueColor: Material.accent
                     buttonsVisible: false
                 },
                 UpDownSpinBox {
                     label: "Max"
-                    value: CrossoverModel.sumMax.toFixed(1) + " dB"
+                    value: CrossoverModel.sumMax.toFixed(1)
+                    unit: "dB"
                     valueColor: Material.accent
                     buttonsVisible: false
                 },
                 UpDownSpinBox {
                     label: "Ripple"
                     value: CrossoverModel.ripple
+                    unit: "dB"
                     valueColor: Material.accent
                     buttonsVisible: false
                     Layout.bottomMargin: 6

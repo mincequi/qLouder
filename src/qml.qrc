@@ -1,30 +1,30 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
-        <file>project/ProjectTab.qml</file>
-        <file>measure/MeasureTab.qml</file>
-        <file>VerticalTabBar.qml</file>
-        <file>MaterialDesignIcon.qml</file>
-        <file>MaterialTabButton.qml</file>
-        <file>MaterialDesignIconGlyphs.js</file>
-        <file>materialdesignicons-webfont.ttf</file>
-        <file>SmallToolButton.qml</file>
-        <file>SmallComboBox.qml</file>
-        <file>SmallRangeSlider.qml</file>
-        <file>SmallSpinBox.qml</file>
-        <file>measure/Gauge.qml</file>
-        <file>measure/GaugePointer.qml</file>
-        <file>status/StatusBar.qml</file>
-        <file>materialdesignicons-webfont.svg</file>
-        <file>charts/FrChart.qml</file>
-        <file>charts/IrChart.qml</file>
-        <file>charts/Chart.qml</file>
-        <file>crossover/CrossoverTab.qml</file>
+        <file>ui/main.qml</file>
+        <file>ui/ProjectTab.qml</file>
+        <file>ui/MeasureTab.qml</file>
+        <file>ui/VerticalTabBar.qml</file>
+        <file>ui/MaterialDesignIcon.qml</file>
+        <file>ui/MaterialTabButton.qml</file>
+        <file>ui/MaterialDesignIconGlyphs.js</file>
+        <file>ui/materialdesignicons-webfont.ttf</file>
+        <file>ui/SmallToolButton.qml</file>
+        <file>ui/SmallComboBox.qml</file>
+        <file>ui/SmallRangeSlider.qml</file>
+        <file>ui/SmallSpinBox.qml</file>
+        <file>ui/Gauge.qml</file>
+        <file>ui/GaugePointer.qml</file>
+        <file>ui/StatusBar.qml</file>
+        <file>ui/materialdesignicons-webfont.svg</file>
+        <file>ui/FrChart.qml</file>
+        <file>ui/IrChart.qml</file>
+        <file>ui/Chart.qml</file>
+        <file>ui/CrossoverTab.qml</file>
         <file>ui/UpDownSpinBox.qml</file>
         <file>ui/SmallSwitch.qml</file>
-        <file>target/TargetTab.qml</file>
-        <file>equalizer/EqualizerTab.qml</file>
-        <file>equalizer/FilterItem.qml</file>
-        <file>player/PlayerBar.qml</file>
+        <file>ui/TargetTab.qml</file>
+        <file>ui/EqualizerTab.qml</file>
+        <file>ui/FilterItem.qml</file>
+        <file>ui/PlayerBar.qml</file>
     </qresource>
 </RCC>

@@ -5,9 +5,6 @@ import QtQuick.Controls.Material 2.15
 import QtQuick.Layouts 1.15
 import QtCharts 2.15
 
-import ".."
-import "../charts"
-
 import FrChartModel 1.0
 import MeasureModel 1.0
 
@@ -33,6 +30,7 @@ Page {
             // Time per octave
             Label {
                 leftPadding: 9
+                rightPadding: 3
                 height: 24
                 text: "Time per octave"
                 font.pixelSize: 12
@@ -51,6 +49,7 @@ Page {
             }
             Label {
                 height: 24
+                rightPadding: 3
                 text: "Level"
                 font.pixelSize: 12
             }
@@ -68,6 +67,7 @@ Page {
             }
             Label {
                 height: 24
+                rightPadding: 3
                 text: "Channels"
                 font.pixelSize: 12
             }

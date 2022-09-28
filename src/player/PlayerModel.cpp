@@ -126,13 +126,33 @@ void PlayerModel::toggleEqualizer() {
     emit statusChanged();
 }
 
+EqualizerNode::Filter::Mode toCinder(int type_) {
+    FilterType type = (FilterType)type_;
+    switch (type) {
+    case FilterType::Peak: return EqualizerNode::Filter::Mode::PEAKING;
+    case FilterType::LowPass: return EqualizerNode::Filter::Mode::LOWPASS;
+    case FilterType::HighPass: return EqualizerNode::Filter::Mode::HIGHPASS;
+    case FilterType::LowShelf: return EqualizerNode::Filter::Mode::LOWSHELF;
+    case FilterType::HighShelf: return EqualizerNode::Filter::Mode::HIGHSHELF;
+    case FilterType::AllPass: return EqualizerNode::Filter::Mode::ALLPASS;
+    default: return EqualizerNode::Filter::Mode::ALLPASS;
+    }
+
+    return EqualizerNode::Filter::Mode::ALLPASS;
+}
+
 void PlayerModel::onFiltersChanged() {
     std::vector<EqualizerNode::Filter> filters;
 
     QObject* p;
     foreach (p, _equalizerModel.filters()) {
         const auto f = static_cast<FilterModel*>(p);
-        filters.push_back(EqualizerNode::Filter(EqualizerNode::Filter::Mode::PEAKING, f->f(), f->q(), f->g()));
+        if (f->type() != 0) {
+            filters.push_back(EqualizerNode::Filter(toCinder(f->type()), f->f(), f->q(), f->g()));
+        } else {
+            // If invalid type, we pass a pass through biquad (peaking with q and gain of 0 dB)
+            filters.push_back(EqualizerNode::Filter(EqualizerNode::Filter::Mode::PEAKING, -1.0, 0.0, 0.0));
+        }
     }
 
     _d->setFilters(filters);

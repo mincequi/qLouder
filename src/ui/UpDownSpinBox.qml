@@ -3,8 +3,6 @@ import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
 import QtQuick.Layouts 1.0
 
-import ".."
-
 RowLayout {
     id: control
     spacing: 0
@@ -13,6 +11,7 @@ RowLayout {
 
     property string label
     property string value
+    property string unit
     property color valueColor: Material.foreground
     property bool buttonsVisible: true
 
@@ -25,7 +24,8 @@ RowLayout {
         height: 24
         text: control.label
         leftPadding: 6
-        font.pixelSize: 12
+        font.pixelSize: 10
+        Layout.alignment: Qt.AlignBaseline
     }
 
     Label {
@@ -33,10 +33,23 @@ RowLayout {
         text: control.value
         color: control.valueColor
         horizontalAlignment: Qt.AlignRight
-        Layout.rightMargin: buttonsVisible ? 0 : 6
+        Layout.rightMargin: unitLabel.visible ? 3 : 0
         font.pixelSize: 12
         font.bold: true
         Layout.fillWidth: true
+        Layout.alignment: Qt.AlignBaseline
+    }
+
+    Label {
+        id: unitLabel
+        height: 24
+        visible: control.unit
+        text: control.unit
+        color: control.valueColor
+        horizontalAlignment: Qt.AlignRight
+        Layout.rightMargin: buttonsVisible ? 0 : 6
+        font.pixelSize: 10
+        Layout.alignment: Qt.AlignBaseline
     }
 
     ColumnLayout {

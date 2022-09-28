@@ -5,14 +5,6 @@ import QtQuick.Layouts 1.15
 import QtQuick.Window 2.12
 import Qt.labs.settings 1.0
 
-import "crossover"
-import "equalizer"
-import "measure"
-import "player"
-import "project"
-import "status"
-import "target"
-
 import MeasureModel 1.0
 import PlayerBarModel 1.0
 

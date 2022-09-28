@@ -136,7 +136,8 @@ EqualizerNode::Filter::Filter(Mode mode, float freq, float q, float gain) :
 
 EqualizerNode::Filter& EqualizerNode::Filter::operator=(const Filter& other)
 {
-    if (mFreq != other.mFreq || mQ != other.mQ || mGain != other.mGain) {
+    if (mMode != other.mMode || mFreq != other.mFreq || mQ != other.mQ || mGain != other.mGain) {
+        mMode = other.mMode;
         mFreq = other.mFreq;
         mQ = other.mQ;
         mGain = other.mGain;

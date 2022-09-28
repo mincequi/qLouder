@@ -7,10 +7,12 @@ class CrossoverModel : public ChartModel {
 	Q_OBJECT
 
     Q_PROPERTY(QString lowPassFrequencyReadout READ lowPassFrequencyReadout NOTIFY rangeChanged)
+    Q_PROPERTY(QString lowPassFrequencyUnitReadout READ lowPassFrequencyUnitReadout NOTIFY rangeChanged)
     Q_PROPERTY(double lowPassQ READ lowPassQ NOTIFY rangeChanged)
     Q_PROPERTY(double lowPassG MEMBER _lowPassG NOTIFY rangeChanged)
 
     Q_PROPERTY(QString highPassFrequencyReadout READ highPassFrequencyReadout NOTIFY rangeChanged)
+    Q_PROPERTY(QString highPassFrequencyUnitReadout READ highPassFrequencyUnitReadout NOTIFY rangeChanged)
     Q_PROPERTY(double highPassQ READ highPassQ NOTIFY rangeChanged)
     Q_PROPERTY(double highPassG MEMBER _highPassG NOTIFY rangeChanged)
 
@@ -22,8 +24,10 @@ public:
     explicit CrossoverModel(QObject *parent = nullptr);
 
     QString lowPassFrequencyReadout() const;
+    QString lowPassFrequencyUnitReadout() const;
     double lowPassQ() const;
     QString highPassFrequencyReadout() const;
+    QString highPassFrequencyUnitReadout() const;
     double highPassQ() const;
 
     QString ripple() const;

@@ -5,10 +5,6 @@ import QtQuick.Controls.Material 2.15
 import QtQuick.Layouts 1.15
 import QtCharts 2.15
 
-import ".."
-import "../charts"
-import "../ui"
-
 import EqualizerModel 1.0
 import TargetModel 1.0
 
@@ -205,13 +201,15 @@ Page {
                 },
                 UpDownSpinBox {
                     label: "Min"
-                    value: EqualizerModel.sumMin.toFixed(1) + " dB"
+                    value: EqualizerModel.sumMin.toFixed(1)
+                    unit: "dB"
                     valueColor: Material.accent
                     buttonsVisible: false
                 },
                 UpDownSpinBox {
                     label: "Max"
-                    value: EqualizerModel.sumMax.toFixed(1) + " dB"
+                    value: EqualizerModel.sumMax.toFixed(1)
+                    unit: "dB"
                     valueColor: Material.accent
                     buttonsVisible: false
                     Layout.bottomMargin: 6

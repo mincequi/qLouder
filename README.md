@@ -3,12 +3,13 @@ A tool to measure and design loudspeakers.
 
 It is loosely inspired by the famous [Room EQ Wizard](https://www.roomeqwizard.com).
 However, it aims to provide a better user experience as well as pleasing aesthetics.
-qLouder can also be considered as the successor of qloud:
-http://gaydenko.com/qloud/
+qLouder can also be considered as the successor of qloud:  
+http://gaydenko.com/qloud/  
 https://github.com/molke-productions/qloud/
 
-<img width="992" alt="qLouder v0.0.1" src="https://user-images.githubusercontent.com/1805183/160924496-d879493e-a46a-47d0-a49e-e64d4e891b1a.png">
+<img src="https://user-images.githubusercontent.com/1805183/160924496-d879493e-a46a-47d0-a49e-e64d4e891b1a.png" width="480">
 
+<img src="https://user-images.githubusercontent.com/1805183/192761720-a34e9364-b5f3-4c61-bf78-8d4831ef311f.png" width="480">
 
 # Target use
 The measurement and design features of qLouder can help you to create an 

@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include <player/EqualizerNode.h>
+#include <cinder/audio/EqualizerNode.h>
 
 namespace cinder {
 namespace audio {

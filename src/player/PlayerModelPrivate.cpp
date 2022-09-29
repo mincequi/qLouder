@@ -3,12 +3,10 @@
 #include <cinder/app/AppBase.h>
 #include <cinder/audio/Context.h>
 #include <cinder/audio/Device.h>
-#include <cinder/audio/FilterNode.h>
+#include <cinder/audio/EqualizerNode.h>
 #include <cinder/audio/OutputNode.h>
 #include <cinder/audio/Source.h>
 #include <cinder/audio/Voice.h>
-
-#include "EqualizerNode.h"
 
 #define ctx cinder::audio::master()
 

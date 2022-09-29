@@ -1,7 +1,9 @@
 #include "AudioFilter.h"
 
 #include <cmath>
-#include <numbers>
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264338327950288
+#endif
 
 AudioFilter::AudioFilter(FilterType type, double f, double g, double q) :
     _type(type),
@@ -11,7 +13,7 @@ AudioFilter::AudioFilter(FilterType type, double f, double g, double q) :
     switch (type) {
     case FilterType::Peak: {
         double A = pow(10, _g/40.0);
-        double w0 = 2.0 * std::numbers::pi * _f /48000.0;
+        double w0 = 2.0 * M_PI * _f /48000.0;
         double alpha = sin(w0) * 0.5 / _q;
 
         double alpha1 = alpha*A;
@@ -26,7 +28,7 @@ AudioFilter::AudioFilter(FilterType type, double f, double g, double q) :
         break;
     }
     case FilterType::LowPass: {
-        double w0 = 2*std::numbers::pi * _f / 48000.0;
+        double w0 = 2*M_PI * _f / 48000.0;
         double alpha = sin(w0)*0.5/_q;
         double a0    = 1.0 + alpha;
 
@@ -38,7 +40,7 @@ AudioFilter::AudioFilter(FilterType type, double f, double g, double q) :
         break;
     }
     case FilterType::HighPass: {
-        double w0 = 2.0 * std::numbers::pi * _f / 48000.0;
+        double w0 = 2.0 * M_PI * _f / 48000.0;
         double alpha = sin(w0)*0.5/_q;
         double a0    = 1.0 + alpha;
 
@@ -51,7 +53,7 @@ AudioFilter::AudioFilter(FilterType type, double f, double g, double q) :
     }
     case FilterType::LowShelf: {
         double A = pow(10, _g/40.0);
-        double w0 = 2.0 * std::numbers::pi * _f / 48000.0;
+        double w0 = 2.0 * M_PI * _f / 48000.0;
         double cos_w0 = cos(w0);
         double alpha = sin(w0)*0.5/_q;
         double alpha2 = 2*sqrt(A)*alpha;
@@ -66,7 +68,7 @@ AudioFilter::AudioFilter(FilterType type, double f, double g, double q) :
     }
     case FilterType::HighShelf: {
         double A = pow(10, _g/40.0);
-        double w0 = 2.0 * std::numbers::pi * _f / 48000.0;
+        double w0 = 2.0 * M_PI * _f / 48000.0;
         double cos_w0 = cos(w0);
         double alpha = sin(w0)*0.5/_q;
         double alpha2 = 2*sqrt(A)*alpha;
@@ -80,7 +82,7 @@ AudioFilter::AudioFilter(FilterType type, double f, double g, double q) :
         break;
     }
     case FilterType::AllPass: {
-        double w0 = 2.0 * std::numbers::pi * _f / 48000.0;
+        double w0 = 2.0 * M_PI * _f / 48000.0;
         double cos_w0 = cos(w0);
         double alpha = sin(w0)*0.5/_q;
         double a0 = 1 + alpha;
@@ -132,7 +134,7 @@ std::vector<std::complex<double>> AudioFilter::response(const std::vector<double
     }
 
     for (int i = 0; i < fs.size(); ++i) {
-        double w = 2.0 * std::numbers::pi * fs.at(i)/48000;
+        double w = 2.0 * M_PI * fs.at(i)/48000;
         std::complex<double> z(cos(w), sin(w));
         std::complex<double> numerator = _biquad.b0 + (_biquad.b1 + _biquad.b2*z)*z;
         std::complex<double> denominator = 1.0 + (_biquad.a1 + _biquad.a2*z)*z;

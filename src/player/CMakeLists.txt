@@ -1,5 +1,5 @@
 add_library(player STATIC
-    EqualizerNode.cpp
+    #EqualizerNode.cpp
     PlayerBarModel.cpp
     PlayerModel.cpp
     PlayerModelPrivate.cpp

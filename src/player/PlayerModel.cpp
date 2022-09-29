@@ -5,11 +5,11 @@
 #include <QSettings>
 
 #include <taglib/fileref.h>
+#include <cinder/audio/EqualizerNode.h>
 
 #include <equalizer/EqualizerModel.h>
 #include <equalizer/FilterModel.h>
 #include <measure/MeasureModel.h>
-#include <player/EqualizerNode.h>
 
 #include "PlayerModelPrivate.h"
 

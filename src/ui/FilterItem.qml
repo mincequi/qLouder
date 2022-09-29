@@ -64,6 +64,7 @@ ColumnLayout {
 
     UpDownSpinBox {
         label: "F"
+        enabled: model.isFrequencyAvailable
         value: model.f
         unit: model.fUnit
         onValueUp: EqualizerModel.stepF(index, +1)
@@ -71,13 +72,14 @@ ColumnLayout {
     }
     UpDownSpinBox {
         label: "Q"
+        enabled: model.isQAvailable
         value: model.q.toPrecision(3)
         onValueUp: EqualizerModel.stepQ(index, -0.5)
         onValueDown: EqualizerModel.stepQ(index, +0.5)
     }
     UpDownSpinBox {
         label: "G"
-        enabled: model.isGainEnabled
+        enabled: model.isGainAvailable
         value: model.g.toFixed(1)
         unit: "dB"
         onValueUp: EqualizerModel.stepG(index, +0.2)

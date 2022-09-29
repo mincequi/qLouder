@@ -22,7 +22,7 @@ set (CINDER_DISABLE_VIDEO ON CACHE INTERNAL "CINDER_DISABLE_VIDEO")
 FetchContent_Declare(
   cinder
   GIT_REPOSITORY https://github.com/mincequi/Cinder.git
-  GIT_TAG        e0c2494de524673e131afe45f19c511dbdae6cc3
+  GIT_TAG        4d88e1e6208d715643f5852c5d844578d0095e03
 )
 FetchContent_MakeAvailable(cinder)
 
@@ -59,9 +59,6 @@ set(PROJECT_SOURCES
     src/charts/LogChart.cpp
     src/charts/TimeTable.cpp
     src/crossover/CrossoverModel.cpp
-    src/equalizer/EqualizerLogic.cpp
-    src/equalizer/EqualizerModel.cpp
-    src/equalizer/FilterModel.cpp
     src/project/ProjectModel.cpp
     src/status/StatusModel.cpp
     src/target/TargetModel.cpp
@@ -76,6 +73,7 @@ set(PROJECT_SOURCES
     src/qml.qrc
 )
 
+add_subdirectory(src/equalizer)
 add_subdirectory(src/measure)
 add_subdirectory(src/player)
 
@@ -123,8 +121,9 @@ PRIVATE
     Qt${QT_VERSION_MAJOR}::Charts
     Qt${QT_VERSION_MAJOR}::Svg
     Qt${QT_VERSION_MAJOR}::Xml
-    rxcpp
+    rxcpp # TODO: remove, still needed for TargetModel.cpp
     #rpp
+    equalizer
     player
     measure
 )

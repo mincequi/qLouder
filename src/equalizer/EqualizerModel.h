@@ -5,7 +5,7 @@
 
 #include <rxcpp/rx-lite.hpp>
 
-class EqualizerLogic;
+class FilterModel;
 class TargetModel;
 
 class EqualizerModel : public ChartModel {
@@ -24,7 +24,7 @@ class EqualizerModel : public ChartModel {
     Q_PROPERTY(double sumMax MEMBER _sumMax NOTIFY rangeChanged)
 
 public:
-    explicit EqualizerModel(const EqualizerLogic& logic, const TargetModel& targetModel, QObject *parent = nullptr);
+    explicit EqualizerModel(const TargetModel& targetModel, QObject *parent = nullptr);
 
     static const QStringList& types();
     double minFrequencySlider() const;
@@ -60,17 +60,15 @@ private:
     double yMin() const override;
     double yMax() const override;
     void moveHandle(int index, double x, double y) override;
-    void moveLeftQHandle(int index, double x);
-    void moveRightQHandle(int index, double x);
+    void moveLeftHandle(int index, double x);
+    void moveRightHandle(int index, double x);
 
-    void updateHandles(int index);
     void computeFilterSum();
     bool findMaxOvershoot(int* f, double* g);
     void findQ(int f, double g, double* q);
     double deviationWithFilter(int f, double g, int q);
     double deviation();
 
-    const EqualizerLogic& _logic;
     const TargetModel& _targetModel;
     std::vector<double> _frequencyTable;
     std::vector<double> _rangeTable;
@@ -89,4 +87,6 @@ private:
     rxcpp::subjects::behavior<std::pair<int,int>> _range;
 
     rxcpp::observable<QtCharts::QXYSeries*> _filteredMeasurement;
+
+    friend class AbstractStrategy;
 };

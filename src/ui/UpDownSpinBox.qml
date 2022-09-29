@@ -31,7 +31,6 @@ RowLayout {
     Label {
         height: 24
         text: control.value
-        color: control.valueColor
         horizontalAlignment: Qt.AlignRight
         Layout.rightMargin: unitLabel.visible ? 3 : 0
         font.pixelSize: 12
@@ -45,7 +44,6 @@ RowLayout {
         height: 24
         visible: control.unit
         text: control.unit
-        color: control.valueColor
         horizontalAlignment: Qt.AlignRight
         Layout.rightMargin: buttonsVisible ? 0 : 6
         font.pixelSize: 10

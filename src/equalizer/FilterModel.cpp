@@ -1,113 +1,119 @@
 #include "FilterModel.h"
 
+#include <QDebug>
+
 #include "FrequencyTable.h"
+#include "FilterInterface.h"
 #include "ui/UiUtil.h"
 
-FilterModel::FilterModel(FilterType t, int f, double q, double g,
+FilterModel::FilterModel(EqualizerModel& eq,
+                         FilterType t, int f, double q, double g,
                          QtCharts::QAbstractSeries* response,
                          QObject *parent)
-    : QObject{parent},
+    : _eq(eq),
       _type(t),
-      _f(f),
+      _fIndex(f),
       _qIndex(q),
       _g(g),
-      _response(static_cast<QtCharts::QXYSeries*>(response)) {
+      _response(static_cast<QtCharts::QXYSeries*>(response)),
+      _lowHighPassStrategy(_eq, *this),
+      _noneStrategy(_eq, *this),
+      _peakingStrategy(_eq, *this),
+      _shelvingStrategy(_eq, *this),
+      _strategy(_noneStrategy) {
     FrequencyTable<double> table;
     _frequencyTable = table.frequencies();
-    computeResponse();
 }
 
 int FilterModel::type() const {
     return (int)_type;
 }
 
-QString FilterModel::fAsString() const {
-    return UiUtil::fToStr(_frequencyTable.at(_f));
-}
+void FilterModel::setType(FilterType type) {
+    _type = type;
 
-QString FilterModel::fUnit() const {
-    return UiUtil::fToUnit(_frequencyTable.at(_f));
-}
+    std::reference_wrapper<AbstractStrategy> previousStrategy(_strategy);
 
-double FilterModel::f() const {
-    return _frequencyTable.at(_f);
-}
-
-double FilterModel::q() const {
-    switch (_type) {
+    switch (type) {
+    case FilterType::Peak:
+        _strategy = _peakingStrategy;
+        break;
     case FilterType::LowPass:
     case FilterType::HighPass:
-        return pow(10, _qIndex/20.0);
-    case FilterType::Peak:
+        _strategy = _lowHighPassStrategy;
+        break;
+    case FilterType::LowShelf:
+    case FilterType::HighShelf:
+        _strategy = _shelvingStrategy;
+        break;
     default:
+        _strategy = _noneStrategy;
         break;
     }
 
-    auto pow2N = pow(2, _qIndex/12.0);
-    return sqrt(pow2N)/(pow2N - 1);
+    _strategy.get().init(previousStrategy);
+
+    emit valuesChanged();
+    computeResponse();
+}
+
+QString FilterModel::fAsString() const {
+    return UiUtil::fToStr(_frequencyTable.at(_fIndex));
+}
+
+QString FilterModel::fUnit() const {
+    return UiUtil::fToUnit(_frequencyTable.at(_fIndex));
+}
+
+double FilterModel::f() const {
+    return _frequencyTable.at(_fIndex);
+}
+
+double FilterModel::q() const {
+    return _strategy.get().q();
 }
 
 double FilterModel::g() const {
     return _g;
 }
 
-bool FilterModel::isGainEnabled() const {
-    switch (_type) {
-    case FilterType::LowPass:
-    case FilterType::HighPass:
-        return false;
-    case FilterType::Peak:
-    default:
-        return true;
-    }
+bool FilterModel::isFrequencyAvailable() const {
+    return _strategy.get().isFrequencyAvailable();
+}
+
+bool FilterModel::isQAvailable() const {
+    return _strategy.get().isQAvailable();
+}
+
+bool FilterModel::isGainAvailable() const {
+    return _strategy.get().isGainAvailable();
 }
 
 QtCharts::QAbstractSeries* FilterModel::response() const {
     return _response;
 }
 
-void FilterModel::moveHandle(int xIndex, double yIndex) {
-    switch (_type) {
-    case FilterType::LowPass:
-    case FilterType::HighPass:
-        if (_f != xIndex || _qIndex != yIndex) {
-            _f = xIndex;
-            _qIndex = yIndex;
-            emit valuesChanged();
-            computeResponse();
-        }
-        break;
-    case FilterType::Peak:
-    default:
-        if (_f != xIndex || _g != yIndex) {
-            _f = xIndex;
-            _g = yIndex;
-            emit valuesChanged();
-            computeResponse();
-        }
-        break;
-    }
-}
-
-void FilterModel::setType(FilterType type) {
-    if (_type == type) {
-        return;
-    }
-
-    _type = type;
-    switch (_type) {
-    case FilterType::LowPass:
-    case FilterType::HighPass:
-        _qIndex = -3;
-        break;
-    case FilterType::Peak:
-    default:
-        _qIndex = 12;
-        break;
-    }
-
+void FilterModel::onMainHandleMoved(int xIndex, double yIndex) {
+    _strategy.get().onMainHandleMoved(xIndex, yIndex);
+    _strategy.get().updateHandles();
     emit valuesChanged();
     computeResponse();
+}
+
+void FilterModel::onLeftHandleMoved(double qIndex) {
+    auto q = abs(_fIndex - qIndex);
+    setQ(q);
+    //qDebug() << "q: " << q;
+
+    _strategy.get().updateHandles();
+}
+
+void FilterModel::onRightHandleMoved(double qIndex) {
+    auto q = abs(_fIndex - qIndex);
+    setQ(q);
+    //qDebug() << "q: " << q;
+
+    _strategy.get().updateHandles();
 }
 
 void FilterModel::setQ(double q) {
@@ -118,26 +124,32 @@ void FilterModel::setQ(double q) {
     }
 }
 
+void FilterModel::init(const FilterInterface&) {
+}
+
 void FilterModel::stepF(int index) {
-    _f += index;
+    _fIndex += index;
     emit valuesChanged();
     computeResponse();
+    _strategy.get().updateHandles();
 }
 
 void FilterModel::stepQ(double d) {
-    _qIndex += d;
+    _strategy.get().stepQ(d);
     emit valuesChanged();
     computeResponse();
+    _strategy.get().updateHandles();
 }
 
 void FilterModel::stepG(double d) {
     _g += d;
     emit valuesChanged();
     computeResponse();
+    _strategy.get().updateHandles();
 }
 
 void FilterModel::computeResponse() {
-    AudioFilter lp(_type, _frequencyTable.at(_f), _g, q());
+    AudioFilter lp(_type, _frequencyTable.at(_fIndex), _g, q());
     auto response = lp.response(_frequencyTable, 1);
 
     QVector<QPointF> points;

@@ -7,7 +7,6 @@
 #include "charts/FrChartModel.h"
 #include "charts/IrChartModel.h"
 #include "crossover/CrossoverModel.h"
-#include "equalizer/EqualizerLogic.h"
 #include "equalizer/EqualizerModel.h"
 #include "measure/Measurement.h"
 #include "measure/MeasureModel.h"
@@ -54,11 +53,7 @@ int main(int argc, char *argv[]) {
     qmlRegisterSingletonType<TargetModel>("TargetModel", 1, 0, "TargetModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {
         return targetModel;
     });
-    auto equalizerLogic = new EqualizerLogic();
-    qmlRegisterSingletonType<EqualizerLogic>("EqualizerLogic", 1, 0, "EqualizerLogic", [&](QQmlEngine*, QJSEngine*) -> QObject* {
-        return equalizerLogic;
-    });
-    auto equalizerModel = new EqualizerModel(*equalizerLogic, *targetModel);
+    auto equalizerModel = new EqualizerModel(*targetModel);
     qmlRegisterSingletonType<EqualizerModel>("EqualizerModel", 1, 0, "EqualizerModel", [&](QQmlEngine*, QJSEngine*) -> QObject* {
         return equalizerModel;
     });

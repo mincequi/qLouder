@@ -11,11 +11,9 @@
 
 // https://www.sonarworks.com/soundid-reference/blog/learn/eq-curves-defined/
 
-EqualizerModel::EqualizerModel(const EqualizerLogic& logic,
-                               const TargetModel& targetModel,
+EqualizerModel::EqualizerModel(const TargetModel& targetModel,
                                QObject *parent)
     : ChartModel(parent),
-      _logic(logic),
       _targetModel(targetModel),
       _range({3, 28}) {
     ChartModel::setType(FrequencyResponse);
@@ -166,7 +164,7 @@ void EqualizerModel::addFilter(QtCharts::QAbstractSeries* response) {
     handles()->append(f, g);
     handles()->append(f - q, g / 2);
     handles()->append(f + q, g / 2);
-    _filters.append(new FilterModel(FilterType::Peak, f, q, g, response));
+    _filters.append(new FilterModel(*this, FilterType::Peak, f, q, g, response));
     emit filtersChanged();
     computeFilterSum();
 }
@@ -186,16 +184,11 @@ void EqualizerModel::setType(int index, int type) {
     filter->setType(static_cast<FilterType>(type));
 
     computeFilterSum();
-    updateHandles(index);
 }
 
 void EqualizerModel::stepF(int index, int f) {
     auto filter = static_cast<FilterModel*>(_filters.at(index));
     filter->stepF(f);
-
-    handles()->replace(index*3 + 0, filter->_f, filter->_g);
-    handles()->replace(index*3 + 1, filter->_f - filter->_qIndex, filter->_g / 2);
-    handles()->replace(index*3 + 2, filter->_f + filter->_qIndex, filter->_g / 2);
 
     computeFilterSum();
 }
@@ -204,19 +197,12 @@ void EqualizerModel::stepQ(int index, double q) {
     auto filter = static_cast<FilterModel*>(_filters.at(index));
     filter->stepQ(q);
 
-    handles()->replace(index*3 + 1, filter->_f - filter->_qIndex, filter->_g / 2);
-    handles()->replace(index*3 + 2, filter->_f + filter->_qIndex, filter->_g / 2);
-
     computeFilterSum();
 }
 
 void EqualizerModel::stepG(int index, double g) {
     auto filter = static_cast<FilterModel*>(_filters.at(index));
     filter->stepG(g);
-
-    handles()->replace(index*3 + 0, filter->_f, filter->_g);
-    handles()->replace(index*3 + 1, filter->_f - filter->_qIndex, filter->_g / 2);
-    handles()->replace(index*3 + 2, filter->_f + filter->_qIndex, filter->_g / 2);
 
     computeFilterSum();
 }
@@ -235,58 +221,33 @@ double EqualizerModel::yMax() const {
 
 void EqualizerModel::moveHandle(int index, double x, double y) {
     if (index % 3 == 1) {
-        return moveLeftQHandle(index, x);
+        return moveLeftHandle(index, x);
     } else if (index % 3 == 2) {
-        return moveRightQHandle(index, x);
+        return moveRightHandle(index, x);
     }
 
     auto filter = static_cast<FilterModel*>(_filters.at(index/3));
     int xIndex = std::round(x);
     double yIndex = std::round(y * 5.0) / 5.0;
 
-    filter->moveHandle(xIndex, yIndex);
+    filter->onMainHandleMoved(xIndex, yIndex);
     computeFilterSum();
-    updateHandles(index);
 }
 
-void EqualizerModel::moveLeftQHandle(int index, double x) {
+void EqualizerModel::moveLeftHandle(int index, double x) {
     auto filter = static_cast<FilterModel*>(_filters.at(index/3));
     double xIndex = std::round(x * 2.0) / 2.0;
 
-    auto q = abs(filter->_f - xIndex);
-    filter->setQ(q);
+    filter->onLeftHandleMoved(xIndex);
     computeFilterSum();
-    updateHandles(index-1);
 }
 
-void EqualizerModel::moveRightQHandle(int index, double x) {
+void EqualizerModel::moveRightHandle(int index, double x) {
     auto filter = static_cast<FilterModel*>(_filters.at(index/3));
     double xIndex = std::round(x * 2.0) / 2.0;
 
-    auto q = abs(filter->_f - xIndex);
-    filter->setQ(q);
+    filter->onRightHandleMoved(xIndex);
     computeFilterSum();
-    updateHandles(index-2);
-}
-
-void EqualizerModel::updateHandles(int index) {
-    auto filter = static_cast<FilterModel*>(_filters.at(index/3));
-
-    switch (filter->_type) {
-    case FilterType::LowPass:
-    case FilterType::HighPass:
-        handles()->replace(index + 0, filter->_f, filter->_qIndex);
-        // move out of sight
-        handles()->replace(index + 1, -99, 99.0);
-        handles()->replace(index + 2, -99, 99.0);
-        break;
-    case FilterType::Peak:
-    default:
-        handles()->replace(index + 0, filter->_f, filter->_g);
-        handles()->replace(index + 1, filter->_f - filter->_qIndex, filter->_g / 2);
-        handles()->replace(index + 2, filter->_f + filter->_qIndex, filter->_g / 2);
-        break;
-    }
 }
 
 void EqualizerModel::computeFilterSum() {
@@ -397,8 +358,8 @@ void EqualizerModel::optimize() {
         double minDeviation = std::numeric_limits<double>::infinity();
         const int minQ = std::max(1, (int)filter->_qIndex - 2);
         const int maxQ = std::min(80, (int)filter->_qIndex + 2);
-        const int minF = std::max(8, (int)filter->_f - 2);
-        const int maxF = std::min(248, (int)filter->_f + 2);
+        const int minF = std::max(8, (int)filter->_fIndex - 2);
+        const int maxF = std::min(248, (int)filter->_fIndex + 2);
         const double minG = filter->_g - 0.4;
         const double maxG = filter->_g + 0.401;
 
@@ -409,7 +370,7 @@ void EqualizerModel::optimize() {
             for (int q = minQ; q <= maxQ; ++q) {
                 for (double g = minG; g <= maxG; g += 0.2) {
 
-                    filter->_f = f;
+                    filter->_fIndex = f;
                     filter->_qIndex = q;
                     filter->_g = g;
                     filter->computeResponse();
@@ -426,15 +387,15 @@ void EqualizerModel::optimize() {
             }
         }
 
-        filter->_f = f_;
+        filter->_fIndex = f_;
         filter->_qIndex = q_;
         filter->_g = g_;
         filter->computeResponse();
         emit filter->valuesChanged();
 
-        handles()->replace(index*3 + 0, filter->_f, filter->_g);
-        handles()->replace(index*3 + 1, filter->_f - filter->_qIndex, filter->_g / 2);
-        handles()->replace(index*3 + 2, filter->_f + filter->_qIndex, filter->_g / 2);
+        handles()->replace(index*3 + 0, filter->_fIndex, filter->_g);
+        handles()->replace(index*3 + 1, filter->_fIndex - filter->_qIndex, filter->_g / 2);
+        handles()->replace(index*3 + 2, filter->_fIndex + filter->_qIndex, filter->_g / 2);
     }
     const auto t2 = std::chrono::high_resolution_clock::now();
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);

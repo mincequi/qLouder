@@ -1,8 +1,9 @@
 #include "PeakingStrategy.h"
 
 #include <cmath>
+#include <QDebug>
 
-void PeakingStrategy::init(const FilterInterface& previousFilter) {
+void PeakingStrategy::init(const FilterInterface&) {
     // Clamp to sane values
     setGainDb(std::clamp(gainDb(), -36.0, 12.0));
     setQIndex(std::clamp(qIndex(), 1.0, 120.0));
@@ -47,4 +48,6 @@ void PeakingStrategy::updateHandles() {
     moveMainHandle(frequencyIndex(), gainDb());
     moveLeftHandle(frequencyIndex() - qIndex(), gainDb() / 2);
     moveRightHandle(frequencyIndex() + qIndex(), gainDb() / 2);
+
+    //qDebug() << "moveHandle> f:" << frequencyIndex() << ", q:" << qIndex();
 }

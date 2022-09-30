@@ -4,7 +4,7 @@
 
 #include "FilterModel.h"
 
-void LowHighPassStrategy::init(const FilterInterface& previousStrategy) {
+void LowHighPassStrategy::init(const FilterInterface&) {
     // Clamp to sane values
     setQIndex(std::clamp(qIndex(), -36.0, 12.0));
 

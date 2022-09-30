@@ -21,7 +21,7 @@ void NoneStrategy::onRightHandleMoved(double) {
 }
 
 double NoneStrategy::q() const {
-    // Just for cosmetic reasons, we show the q of the previous filter type
+    // Just for cosmetic reasons: we show the q of the previous filter type
     return _prevQ;
 }
 

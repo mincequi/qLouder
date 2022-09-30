@@ -23,14 +23,14 @@ protected:
      * @param x
      * @param y
      */
-    void moveLeftHandle(int x, double y);
+    void moveLeftHandle(double x, double y);
 
     /**
      * @brief moveRightHandle
      * @param x
      * @param y
      */
-    void moveRightHandle(int x, double y);
+    void moveRightHandle(double x, double y);
 
     /**
      * @brief updateHandles

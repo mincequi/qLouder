@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-void ShelvingStrategy::init(const FilterInterface& previousFilter) {
+void ShelvingStrategy::init(const FilterInterface&) {
     // Clamp to sane values
     setQIndex(std::clamp(qIndex(), 1.0, 120.0));
     updateHandles();

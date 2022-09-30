@@ -12,6 +12,7 @@ ToolButton {
     property alias iconY: icon.y
 
     id: control
+    autoRepeat: true
     implicitHeight: 24
     implicitWidth: text.length ? textMetrics.width + 36 : 24
     //leftPadding: (availableWidth - textMetrics.width)/2

@@ -1,5 +1,7 @@
 #include "AbstractStrategy.h"
 
+#include <QDebug>
+
 #include "FilterModel.h"
 
 AbstractStrategy::AbstractStrategy(EqualizerModel& eq,
@@ -18,24 +20,16 @@ void AbstractStrategy::moveMainHandle(int x, double y) {
     _eq.handles()->replace(index, x, y);
 }
 
-void AbstractStrategy::moveLeftHandle(int x, double y) {
-    const auto filterCount = _eq.filters().size();
-    const auto pointCount = _eq.handles()->points().size();
-    assert(filterCount*3 == _eq.handles()->points().size());
-
+void AbstractStrategy::moveLeftHandle(double x, double y) {
     const auto index = _eq._filters.indexOf((QObject*)&_filter)*3 + 1;
-    assert (pointCount > index);
     _eq.handles()->replace(index, x, y);
+    //qDebug() << "moveLeftHandle> f: " << x << ", q:" << y;
 }
 
-void AbstractStrategy::moveRightHandle(int x, double y) {
-    const auto filterCount = _eq.filters().size();
-    const auto pointCount = _eq.handles()->points().size();
-    assert(filterCount*3 == _eq.handles()->points().size());
-
+void AbstractStrategy::moveRightHandle(double x, double y) {
     const auto index = _eq._filters.indexOf((QObject*)&_filter)*3 + 2;
-    assert (pointCount > index);
     _eq.handles()->replace(index, x, y);
+    //qDebug() << "moveRightHandle> f: " << x << ", q:" << y;
 }
 
 FilterType AbstractStrategy::type() const {

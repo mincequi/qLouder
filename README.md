@@ -47,12 +47,38 @@ optimal filter set and crossover for your DIY loudspeaker.
 
 # Requirements
 * fftw3
-* Qt 5.x or 6.x (Core Quick QuickControls2 Multimedia Charts Svg Xml)
-* libqt5multimedia5-plugins
+* **Qt 5.13** or later (Core Quick QuickControls2 Multimedia Charts Svg Xml)
 * PulseAudio is running
 
-# Download and compile
+# Installation (based on Ubuntu)
 ```
+sudo apt install \
+  zlib1g-dev \
+  libcurl4-openssl-dev \
+  libfftw3-dev \
+  libfontconfig1-dev \
+  libgl-dev \
+  libmpg123-dev \
+  libpulse-dev \
+  libsndfile1-dev \
+  libtag1-dev \
+  libxcursor-dev \
+  install libxi-dev \
+  libxinerama-dev \
+  libxrandr-dev \
+  pkgconf \
+  qtbase5-dev \
+  qtdeclarative5-dev \
+  qtmultimedia5-dev \
+  qtquickcontrols2-5-dev \
+  qml-module-qtcharts \
+  qml-module-qtquick-shapes \
+  qml-module-qt-labs-folderlistmodel \
+  qml-module-qt-labs-settings \
+  libqt5charts5-dev \
+  libqt5svg5-dev \
+  libqt5multimedia5-plugins
+
 git clone https://github.com/mincequi/qLouder
 cd qLouder
 mkdir build && cd build

@@ -20,9 +20,9 @@ Page {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.topMargin: 24
-        anchors.leftMargin: 48
-        anchors.rightMargin: 48
+        anchors.topMargin: 12
+        anchors.leftMargin: 12
+        anchors.rightMargin: 12
         GridLayout {
             columns: 3
             columnSpacing: 12
@@ -154,9 +154,10 @@ Page {
             SmallComboBox {
                 id: inputDevices
                 model: ProjectModel.inputDevices
-                sizeModel: ProjectModel.outputDevices   // Yes, the outputDevices to have a common width with input devices
+                //sizeModel: ProjectModel.outputDevices   // Yes, the outputDevices to have a common width with input devices
                 onCurrentIndexChanged: ProjectModel.setInputDevice(currentIndex)
                 Component.onCompleted: currentIndex = ProjectModel.savedInputDevice
+                Layout.fillWidth: true
             }
             Label {
                 Layout.leftMargin: 24
@@ -176,9 +177,10 @@ Page {
             }
             SmallComboBox {
                 model: ProjectModel.outputDevices
-                sizeModel: ProjectModel.outputDevices
+                //sizeModel: ProjectModel.outputDevices
                 onCurrentIndexChanged: ProjectModel.setOutputDevice(currentIndex)
                 Component.onCompleted: currentIndex = ProjectModel.savedOutputDevice
+                Layout.fillWidth: true
             }
             Label {
                 Layout.leftMargin: 24

@@ -33,6 +33,7 @@ public:
 
     double progressTime() const;
     double totalTime() const;
+    void setProgress(double value);
 
     void setFilters(const std::vector<cinder::audio::EqualizerNode::Filter>& filters);
 

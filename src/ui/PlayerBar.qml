@@ -47,6 +47,9 @@ ToolBar {
         first.onMoved: PlayerModel.setBegin(first.value)
         second.onMoved: PlayerModel.setEnd(second.value)
         progress: PlayerModel.progress
+        onProgressHandleChanged: {
+            PlayerModel.setProgress(progress)
+        }
     }
 
     Label {

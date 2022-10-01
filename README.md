@@ -64,7 +64,7 @@ sudo apt install \
   libsndfile1-dev \
   libtag1-dev \
   libxcursor-dev \
-  install libxi-dev \
+  libxi-dev \
   libxinerama-dev \
   libxrandr-dev \
   pkgconf \

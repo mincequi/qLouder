@@ -108,14 +108,14 @@ Page {
         spacing: 1
 
         IrChart {
-            Layout.preferredHeight: parent.height / 3
+            Layout.preferredHeight: parent.height * 3 / 8
             //SplitView.minimumHeight: 144
             //SplitView.preferredHeight: 160
             //SplitView.maximumHeight: 192
         }
         FrChart {
             id: frChart
-            Layout.preferredHeight: parent.height * 2 / 3
+            Layout.preferredHeight: parent.height * 5 / 8
             model: FrChartModel {
             }
             toolBarChildren: [
@@ -147,8 +147,7 @@ Page {
                 },
 
                 ToolSeparator {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                    Layout.fillWidth: true
                     topPadding: 6
                     bottomPadding: 6
                     orientation: Qt.Horizontal
@@ -157,7 +156,7 @@ Page {
                 Label {
                     height: 24
                     text: "Calibration"
-                    leftPadding: 3
+                    leftPadding: 6
                     font.pixelSize: 12
                 },
                 SmallComboBox {
@@ -169,8 +168,7 @@ Page {
                 },
 
                 ToolSeparator {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                    Layout.fillWidth: true
                     topPadding: 6
                     bottomPadding: 6
                     orientation: Qt.Horizontal

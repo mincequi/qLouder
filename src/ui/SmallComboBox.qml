@@ -87,6 +87,6 @@ ComboBox {
                 modelWidth = Math.max(textMetrics.width, modelWidth)
             }
         }
-        console.log("ComboBox> model size: ", model.length , ", new metrics: ", textMetrics.text, " width: ", textMetrics.width)
+        //console.log("ComboBox> model size: ", model.length , ", new metrics: ", textMetrics.text, " width: ", textMetrics.width)
     }
 }

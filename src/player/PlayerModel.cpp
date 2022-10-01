@@ -1,7 +1,5 @@
 #include "PlayerModel.h"
 
-#include <iostream>
-
 #include <QSettings>
 
 #include <taglib/fileref.h>
@@ -114,16 +112,23 @@ void PlayerModel::togglePlayPause() {
 void PlayerModel::setBegin(double value) {
     _d->setLoopBeginTime(value);
     emit statusChanged();
+    emit progressChanged();
 }
 
 void PlayerModel::setEnd(double value) {
     _d->setLoopEndTime(value);
     emit statusChanged();
+    emit progressChanged();
 }
 
 void PlayerModel::toggleEqualizer() {
     _d->toggleEqualizer();
     emit statusChanged();
+}
+
+void PlayerModel::setProgress(double value) {
+    _d->setProgress(value);
+    emit progressChanged();
 }
 
 EqualizerNode::Filter::Mode toCinder(int type_) {

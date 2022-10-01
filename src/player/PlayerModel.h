@@ -40,6 +40,7 @@ public slots:
     void setBegin(double value);
     void setEnd(double value);
     void toggleEqualizer();
+    void setProgress(double value);
 
 signals:
     void statusChanged();

@@ -32,19 +32,20 @@ RowLayout {
     ToolBar {
         id: toolBar
         Layout.fillHeight: true
+        Layout.margins: 0
         width: control.toolBarWidth
         Material.elevation: 0
-        anchors.margins: 0
-        anchors.top: parent.top
-        anchors.right: parent.right
+        //anchors.margins: 0
+        //anchors.top: parent.top
+        //anchors.right: parent.right
 
         ColumnLayout {
             id: toolBarLayout
             anchors.bottomMargin: 0
             anchors.fill: parent
             spacing: 0
-
             children: toolBarChildren
+            //onHeightChanged: { console.log("onHeightChanged: ", height) }
         }
     }
 
@@ -181,15 +182,15 @@ RowLayout {
         onPressed: {
             var cp = Qt.point(mouse.x,mouse.y);
             for (var i = 0; i < handles.count; ++i) {
-                console.log("onPressed>")
+                //console.log("onPressed>")
                 var p = chart.mapToPosition(handles.at(i), handles);
-                console.log("p", i, "> x: ", p.x, ", y: ", p.y)
+                //console.log("p", i, "> x: ", p.x, ", y: ", p.y)
 
                 if (Math.abs(cp.x - p.x) <= handles.markerSize/2 &&
                         Math.abs(cp.y - p.y) <= handles.markerSize/2) {
                     mouseArea.selectedPoint = p;
                     mouseArea.selectedHandle = i;
-                    console.log("onPressed> x: ", p.x, ", y: ", p.y)
+                    //console.log("onPressed> x: ", p.x, ", y: ", p.y)
                     break;
                 }
             }

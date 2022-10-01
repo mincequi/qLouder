@@ -61,8 +61,7 @@ Chart {
         },
 
         ToolSeparator {
-            anchors.left: parent.left
-            anchors.right: parent.right
+            Layout.fillWidth: true
             topPadding: 6
             bottomPadding: 6
             orientation: Qt.Horizontal
@@ -71,11 +70,12 @@ Chart {
         Label {
             height: 24
             text: "Left window"
-            leftPadding: 3
+            leftPadding: 6
             font.pixelSize: 12
         },
         RowLayout {
             spacing: 0
+            height: 24
             Layout.leftMargin: 0
             Layout.rightMargin: 0
             enabled: model.hasMeasurement
@@ -103,8 +103,7 @@ Chart {
         },
 
         ToolSeparator {
-            anchors.left: parent.left
-            anchors.right: parent.right
+            Layout.fillWidth: true
             topPadding: 6
             bottomPadding: 6
             orientation: Qt.Horizontal
@@ -113,10 +112,11 @@ Chart {
         Label {
             height: 24
             text: "Right window"
-            leftPadding: 3
+            leftPadding: 6
             font.pixelSize: 12
         },
         RowLayout {
+            height: 24
             spacing: 0
             Layout.leftMargin: 0
             Layout.rightMargin: 0

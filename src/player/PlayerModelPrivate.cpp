@@ -96,6 +96,11 @@ double PlayerModelPrivate::totalTime() const {
     return _bufferPlayer->getNumSeconds();
 }
 
+void PlayerModelPrivate::setProgress(double value) {
+    const double duration = _bufferPlayer->getLoopEndTime() - _bufferPlayer->getLoopBeginTime();
+    _bufferPlayer->seekToTime(_bufferPlayer->getLoopBeginTime() + value * duration);
+}
+
 void PlayerModelPrivate::setFilters(const std::vector<cinder::audio::EqualizerNode::Filter>& filters) {
     _equalizer->setFilters(filters);
 }

@@ -85,8 +85,7 @@ ColumnLayout {
         onValueDown: EqualizerModel.stepG(index, -0.2)
     }
     ToolSeparator {
-        anchors.left: parent.left
-        anchors.right: parent.right
+        Layout.fillWidth: true
         topPadding: 0
         bottomPadding: 0
         orientation: Qt.Horizontal

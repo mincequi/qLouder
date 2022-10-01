@@ -10,31 +10,51 @@ T.RangeSlider {
     property double progress: -1.0
     property real handleSize: 9.0
 
+    signal progressHandleChanged(real progress)
+
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset,
                             first.implicitHandleWidth + leftPadding + rightPadding,
                             second.implicitHandleWidth + leftPadding + rightPadding)
     implicitHeight: 24
     padding: 6
 
-    // progress indicator
-    /*
+    // progress handle
     Rectangle {
-        visible: control.progress >= 0.0
-        x: control.leftPadding + control.progress * (control.availableWidth - width)
+        id: progressHandle
+        visible: control.progress > 0.0
+        x: dragArea.drag.active ? x : first.handle.x + (handleSize-width)/2 + (second.handle.x - first.handle.x) * control.progress
         y: control.topPadding + (control.availableHeight - height) / 2
         z: 50
-        implicitWidth: 2
-        implicitHeight: 9
+        radius: 3
+        implicitWidth: 6
+        implicitHeight: 6
         color: control.Material.accentColor
-    }
-    */
 
+        Drag.active: dragArea.drag.active
+        Drag.hotSpot.x: 3
+        Drag.hotSpot.y: 3
+
+        onXChanged: {
+            if (dragArea.drag.active) {
+                control.progressHandleChanged((progressHandle.x - first.handle.x)/ (first.handle.x + (handleSize-width)/2 + (second.handle.x - first.handle.x)))
+            }
+        }
+
+        MouseArea {
+            id: dragArea
+            anchors.fill: parent
+            drag.target: parent
+            drag.axis: Drag.XAxis
+            drag.threshold: 1
+        }
+    }
+
+    // progress indicator
     Rectangle {
-        x: first.handle.x + control.handleSize
+        x: first.handle.x + control.handleSize/2
         y: (control.implicitHeight - height) / 2
-        z: 50
         visible: control.progress > 0.0
-        width: (second.handle.x - control.handleSize - first.handle.x) * control.progress
+        width: (second.handle.x - first.handle.x) * control.progress
         height: 2
         color: control.Material.accentColor
     }
@@ -42,6 +62,7 @@ T.RangeSlider {
     first.handle: Rectangle {
         x: control.leftPadding + (control.horizontal ? control.first.visualPosition * (control.availableWidth - width) : (control.availableWidth - width) / 2)
         y: control.topPadding + (control.horizontal ? (control.availableHeight - height) / 2 : control.first.visualPosition * (control.availableHeight - height))
+        z: 10
         implicitWidth: control.handleSize
         implicitHeight: control.handleSize
         radius: 9
@@ -51,6 +72,7 @@ T.RangeSlider {
     second.handle: Rectangle {
         x: control.leftPadding + (control.horizontal ? control.second.visualPosition * (control.availableWidth - width) : (control.availableWidth - width) / 2)
         y: control.topPadding + (control.horizontal ? (control.availableHeight - height) / 2 : control.second.visualPosition * (control.availableHeight - height))
+        z: 10
         implicitWidth: control.handleSize
         implicitHeight: control.handleSize
         radius: 9

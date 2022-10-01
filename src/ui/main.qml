@@ -14,8 +14,8 @@ ApplicationWindow {
     }
 
     id: window
-    width: 768
-    height: 480
+    minimumWidth: 768
+    minimumHeight: 448
     visible: true
     title: "qLouder"
 

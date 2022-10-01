@@ -1,7 +1,7 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Controls.Material 2.15
-import QtQml.Models 2.15
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Controls.Material 2.12
+import QtQml.Models 2.12
 
 ComboBox {
     property int modelWidth
@@ -87,6 +87,6 @@ ComboBox {
                 modelWidth = Math.max(textMetrics.width, modelWidth)
             }
         }
-        //console.log("New metrics: ", textMetrics.text, " width: ", textMetrics.width)
+        console.log("ComboBox> model size: ", model.length , ", new metrics: ", textMetrics.text, " width: ", textMetrics.width)
     }
 }

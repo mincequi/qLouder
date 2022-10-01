@@ -1,9 +1,9 @@
-import QtQuick 2.15
+import QtQuick 2.12
 import QtQuick.Dialogs 1.3
-import QtQuick.Controls 2.15
-import QtQuick.Controls.Material 2.15
-import QtQuick.Layouts 1.15
-import QtCharts 2.15
+import QtQuick.Controls 2.12
+import QtQuick.Controls.Material 2.12
+import QtQuick.Layouts 1.12
+import QtCharts 2.3
 
 import FrChartModel 1.0
 import MeasureModel 1.0
@@ -101,18 +101,21 @@ Page {
         }
     }
 
-    SplitView {
+    ColumnLayout { // SplitView
         anchors.topMargin: 1
         anchors.fill: parent
-        orientation: Qt.Vertical
+        //orientation: Qt.Vertical // SplitView
+        spacing: 1
 
         IrChart {
-            SplitView.minimumHeight: 144
-            SplitView.preferredHeight: 160
-            SplitView.maximumHeight: 192
+            Layout.preferredHeight: parent.height / 3
+            //SplitView.minimumHeight: 144
+            //SplitView.preferredHeight: 160
+            //SplitView.maximumHeight: 192
         }
         FrChart {
             id: frChart
+            Layout.preferredHeight: parent.height * 2 / 3
             model: FrChartModel {
             }
             toolBarChildren: [

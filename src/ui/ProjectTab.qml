@@ -2,7 +2,7 @@ import QtQuick 2.4
 import QtQuick.Dialogs 1.3
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.12
-import QtQuick.Layouts 1.15
+import QtQuick.Layouts 1.12
 
 import PlayerModel 1.0
 import ProjectModel 1.0

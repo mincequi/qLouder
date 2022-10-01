@@ -1,5 +1,6 @@
 #include "LowHighPassStrategy.h"
 
+#include <algorithm>
 #include <QDebug>
 
 #include "FilterModel.h"

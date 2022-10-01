@@ -35,8 +35,8 @@ ColumnLayout {
             }
         }
     }
+
     RowLayout {
-        id: control
         spacing: 0
         Layout.leftMargin: 0
         Layout.rightMargin: 0
@@ -49,14 +49,13 @@ ColumnLayout {
             font.pixelSize: 10
             Layout.alignment: Qt.AlignBaseline
         }
-
         SmallComboBox {
             font.pixelSize: 10
             flat: true
+            //implicitWidth: 72
             model: EqualizerModel.types
-            currentIndex: item.model.type
             onCurrentIndexChanged: EqualizerModel.setType(index, currentIndex)
-            Layout.alignment: Qt.AlignRight
+            Component.onCompleted: currentIndex = 1
             Layout.fillWidth: true
             Layout.leftMargin: 3
         }

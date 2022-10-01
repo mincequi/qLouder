@@ -11,10 +11,10 @@
 #include "MeasurementService.h"
 
 MeasureModel::MeasureModel(MeasurementService& measurementService, QObject *parent)
-	: QObject(parent),
-	  m_measurementService(measurementService) {
+    : QObject(parent),
+      m_measurementService(measurementService) {
     FrequencyTable<double> table(3);
-	m_frequencyTable = table.frequencies();
+    m_frequencyTable = table.frequencies();
     m_maxFrequencySlider = m_frequencyTable.size()-1;
     connect(&m_measurementService, &MeasurementService::progressChanged, this, &MeasureModel::onServiceProgressChanged);
     connect(&m_measurementService, &MeasurementService::levelChanged, this, &MeasureModel::levelChanged);
@@ -42,15 +42,15 @@ QStringList MeasureModel::channels() const {
 }
 
 void MeasureModel::setLength(int index) {
-	switch (index) {
+    switch (index) {
     case 0: m_durationPerOctave = 250; break;
     case 1: m_durationPerOctave = 500; break;
     case 2: m_durationPerOctave = 1000; break;
     case 3: m_durationPerOctave = 2000; break;
     case 4: m_durationPerOctave = 4000; break;
-	default:
-		break;
-	}
+    default:
+        break;
+    }
 }
 
 void MeasureModel::setChannels(int index) {
@@ -62,53 +62,53 @@ void MeasureModel::setLevel(int value) {
 }
 
 double MeasureModel::minFrequencySlider() const {
-	return m_minFrequencySlider;
+    return m_minFrequencySlider;
 }
 
 double MeasureModel::maxFrequencySlider() const {
-	return m_maxFrequencySlider;
+    return m_maxFrequencySlider;
 }
 
 void MeasureModel::setMinFrequencySlider(double value) {
     m_minFrequencySlider = std::min(value, (double)(m_frequencyTable.size()-2));
-	if (m_maxFrequencySlider <= m_minFrequencySlider) {
-		m_maxFrequencySlider = m_minFrequencySlider + 1;
-	}
-	emit rangeChanged();
+    if (m_maxFrequencySlider <= m_minFrequencySlider) {
+        m_maxFrequencySlider = m_minFrequencySlider + 1;
+    }
+    emit rangeChanged();
 }
 
 void MeasureModel::setMaxFrequencySlider(double value) {
-	m_maxFrequencySlider = std::max(value, 1.0);
-	if (m_minFrequencySlider >= m_maxFrequencySlider) {
-		m_minFrequencySlider = m_maxFrequencySlider - 1;
-	}
-	emit rangeChanged();
+    m_maxFrequencySlider = std::max(value, 1.0);
+    if (m_minFrequencySlider >= m_maxFrequencySlider) {
+        m_minFrequencySlider = m_maxFrequencySlider - 1;
+    }
+    emit rangeChanged();
 }
 
 QString MeasureModel::minFrequencyReadout() const {
-	const auto f = m_frequencyTable.at(m_minFrequencySlider);
+    const auto f = m_frequencyTable.at(m_minFrequencySlider);
     if (f > 3500.0) {
-		return QString::number(f/1000.0, 'f', 0) + " kHz";
+        return QString::number(f/1000.0, 'f', 0) + " kHz";
     } else if (f > 900.0) {
-		return QString::number(f/1000.0, 'f', 1) + " kHz";
-	} else {
-		return QString::number(f, 'f', 0) + " Hz";
-	}
+        return QString::number(f/1000.0, 'f', 1) + " kHz";
+    } else {
+        return QString::number(f, 'f', 0) + " Hz";
+    }
 }
 
 QString MeasureModel::maxFrequencyReadout() const {
-	const auto f = m_frequencyTable.at(m_maxFrequencySlider);
+    const auto f = m_frequencyTable.at(m_maxFrequencySlider);
     if (f > 3500.0) {
-		return QString::number(f/1000.0, 'f', 0) + " kHz";
+        return QString::number(f/1000.0, 'f', 0) + " kHz";
     } else if (f > 900.0) {
-		return QString::number(f/1000.0, 'f', 1) + " kHz";
-	} else {
-		return QString::number(f, 'f', 0) + " Hz";
-	}
+        return QString::number(f/1000.0, 'f', 1) + " kHz";
+    } else {
+        return QString::number(f, 'f', 0) + " Hz";
+    }
 }
 
 double MeasureModel::progress() const {
-	return m_measurementService.progress();
+    return m_measurementService.progress();
 }
 
 double MeasureModel::level() const {
@@ -128,21 +128,23 @@ QString MeasureModel::errorDescription() const {
 }
 
 QString MeasureModel::measureButtonIcon() const {
-	switch (m_state) {
-	case State::Idle:
-		return "circle";
-	case State::Measuring:
-		return "close-circle";
-	}
+    switch (m_state) {
+    case State::Idle:
+        return "circle";
+    case State::Measuring:
+    default:
+        return "close-circle";
+    }
 }
 
 QString MeasureModel::measureButtonText() const {
-	switch (m_state) {
-	case State::Idle:
-		return "Measure";
-	case State::Measuring:
-		return "Abort";
-	}
+    switch (m_state) {
+    case State::Idle:
+        return "Measure";
+    case State::Measuring:
+    default:
+        return "Abort";
+    }
 }
 
 bool MeasureModel::isMeasuring() const {
@@ -150,18 +152,18 @@ bool MeasureModel::isMeasuring() const {
 }
 
 void MeasureModel::onMeasureButtonClicked() {
-	switch (m_state) {
-	case State::Idle:
-		m_state = State::Measuring;
+    switch (m_state) {
+    case State::Idle:
+        m_state = State::Measuring;
         m_measurementService.start(_channels, m_durationPerOctave, m_level, m_frequencyTable.at(m_minFrequencySlider), m_frequencyTable.at(m_maxFrequencySlider));
-		break;
-	case State::Measuring:
-		m_measurementService.stop();
-		m_state = State::Idle;
-		break;
-	}
+        break;
+    case State::Measuring:
+        m_measurementService.stop();
+        m_state = State::Idle;
+        break;
+    }
 
-	emit measureStateChanged();
+    emit measureStateChanged();
 }
 
 void MeasureModel::saveFile(const QUrl& fileName) {

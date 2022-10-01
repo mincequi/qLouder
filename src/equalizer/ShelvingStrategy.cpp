@@ -1,5 +1,6 @@
 #include "ShelvingStrategy.h"
 
+#include <algorithm>
 #include <cmath>
 
 void ShelvingStrategy::init(const FilterInterface&) {

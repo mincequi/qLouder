@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 3.14)
 
+project(qLouder VERSION 0.3 LANGUAGES CXX)
+
 Include(FetchContent)
+Set(FETCHCONTENT_QUIET FALSE)
 
 FetchContent_Declare(
   rxcpp
   GIT_REPOSITORY https://github.com/ReactiveX/RxCpp.git
   GIT_TAG        761b932a80e2be6e2b62d232e754bd96fc448946 # main from Mar 13, 2022
+  GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(rxcpp)
 
@@ -23,10 +27,9 @@ FetchContent_Declare(
   cinder
   GIT_REPOSITORY https://github.com/mincequi/Cinder.git
   GIT_TAG        4d88e1e6208d715643f5852c5d844578d0095e03
+  GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(cinder)
-
-project(qLouder VERSION 0.3 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -34,8 +37,8 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 17)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt5 COMPONENTS Core Quick QuickControls2 Multimedia Charts Svg Xml REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 Multimedia Charts Svg Xml REQUIRED)

@@ -1,5 +1,6 @@
 #include "PeakingStrategy.h"
 
+#include <algorithm>
 #include <cmath>
 #include <QDebug>
 

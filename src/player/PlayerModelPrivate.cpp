@@ -27,7 +27,7 @@ PlayerModelPrivate::PlayerModelPrivate() {
 
     _bufferPlayer = ctx->makeNode<BufferPlayerNode>();
     _bufferPlayer->setLoopEnabled(true);
-    //ctx->setOutput(dynamic_pointer_cast<audio::OutputDeviceNode>(Device::findDeviceByName(deviceNames.front())));
+    //ctx->setOutput(std::dynamic_pointer_cast<audio::OutputDeviceNode>(Device::findDeviceByName(deviceNames.front())));
 
     _equalizer = ctx->makeNode<EqualizerNode>();
 
@@ -42,7 +42,7 @@ bool PlayerModelPrivate::setFile(const std::string& file) {
 }
 
 void PlayerModelPrivate::setDevice(const std::string& output) {
-    const auto device = dynamic_pointer_cast<audio::OutputDeviceNode>(Device::findDeviceByName(output));
+    const auto device = std::dynamic_pointer_cast<audio::OutputDeviceNode>(Device::findDeviceByName(output));
     device->setAutoEnabled();
     ctx->setOutput(device);
 

@@ -46,8 +46,9 @@ optimal filter set and crossover for your DIY loudspeaker.
 * Detect hot plugged audio devices
 
 # Requirements
-* fftw3
-* **Qt 5.13** or later (Core Quick QuickControls2 Multimedia Charts Svg Xml)
+* GCC >= 9.4.0
+* Qt >= 5.12
+* e.g. Ubuntu >= 20.04 (Focal)
 * PulseAudio is running
 
 # Installation (based on Ubuntu)

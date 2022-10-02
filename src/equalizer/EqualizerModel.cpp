@@ -392,10 +392,6 @@ void EqualizerModel::optimize() {
         filter->_g = g_;
         filter->computeResponse();
         emit filter->valuesChanged();
-
-        handles()->replace(index*3 + 0, filter->_fIndex, filter->_g);
-        handles()->replace(index*3 + 1, filter->_fIndex - filter->_qIndex, filter->_g / 2);
-        handles()->replace(index*3 + 2, filter->_fIndex + filter->_qIndex, filter->_g / 2);
     }
     const auto t2 = std::chrono::high_resolution_clock::now();
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);

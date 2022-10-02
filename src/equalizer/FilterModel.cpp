@@ -1,5 +1,6 @@
 #include "FilterModel.h"
 
+#include <algorithm>
 #include <QDebug>
 
 #include "FrequencyTable.h"
@@ -95,7 +96,6 @@ QtCharts::QAbstractSeries* FilterModel::response() const {
 
 void FilterModel::onMainHandleMoved(int xIndex, double yIndex) {
     _strategy.get().onMainHandleMoved(xIndex, yIndex);
-    _strategy.get().updateHandles();
     emit valuesChanged();
     computeResponse();
 }
@@ -104,16 +104,12 @@ void FilterModel::onLeftHandleMoved(double qIndex) {
     auto q = abs(_fIndex - qIndex);
     setQ(q);
     //qDebug() << "q: " << q;
-
-    _strategy.get().updateHandles();
 }
 
 void FilterModel::onRightHandleMoved(double qIndex) {
     auto q = abs(_fIndex - qIndex);
     setQ(q);
     //qDebug() << "q: " << q;
-
-    _strategy.get().updateHandles();
 }
 
 void FilterModel::setQ(double q) {
@@ -129,26 +125,26 @@ void FilterModel::init(const FilterInterface&) {
 
 void FilterModel::stepF(int index) {
     _fIndex += index;
+    _fIndex = std::clamp(_fIndex, 0, (int)_frequencyTable.size()-1);
     emit valuesChanged();
     computeResponse();
-    _strategy.get().updateHandles();
 }
 
 void FilterModel::stepQ(double d) {
     _strategy.get().stepQ(d);
     emit valuesChanged();
     computeResponse();
-    _strategy.get().updateHandles();
 }
 
 void FilterModel::stepG(double d) {
     _g += d;
     emit valuesChanged();
     computeResponse();
-    _strategy.get().updateHandles();
 }
 
 void FilterModel::computeResponse() {
+    _strategy.get().updateHandles();
+
     AudioFilter lp(_type, _frequencyTable.at(_fIndex), _g, q());
     auto response = lp.response(_frequencyTable, 1);
 

@@ -26,5 +26,6 @@
         <file>ui/EqualizerTab.qml</file>
         <file>ui/FilterItem.qml</file>
         <file>ui/PlayerBar.qml</file>
+        <file>ui/items/MicroComboBox.qml</file>
     </qresource>
 </RCC>

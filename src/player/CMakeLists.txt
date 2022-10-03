@@ -12,6 +12,7 @@ PRIVATE
 
 target_link_libraries(player
 PRIVATE
+    equalizer
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Multimedia
     ${TAGLIB_LINK_LIBRARIES}

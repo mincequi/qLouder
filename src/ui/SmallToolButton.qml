@@ -10,6 +10,7 @@ ToolButton {
     property alias iconEnabled: icon.enabled
     property alias iconX: icon.x
     property alias iconY: icon.y
+    property real yOffset: 0
 
     id: control
     autoRepeat: true
@@ -30,7 +31,7 @@ ToolButton {
     MaterialDesignIcon {
         id: icon
         x: text.length ? (control.height - size)/2 : (control.width - size)/2
-        y: (control.height - size)/2
+        y: (control.height - size)/2 + control.yOffset
         color: control.iconEnabled ? control.iconColor : control.Material.hintTextColor
     }
 }

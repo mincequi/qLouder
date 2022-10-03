@@ -3,6 +3,8 @@
 #include <complex>
 #include <charts/ChartModel.h>
 
+#include <QQmlListProperty>
+
 #include <rxcpp/rx-lite.hpp>
 
 class FilterModel;
@@ -11,14 +13,13 @@ class TargetModel;
 class EqualizerModel : public ChartModel {
     Q_OBJECT
 
-    Q_PROPERTY(QStringList types READ types CONSTANT)
     Q_PROPERTY(std::vector<qreal> frequencies MEMBER _rangeTable CONSTANT)
     Q_PROPERTY(double minFrequencySlider READ minFrequencySlider NOTIFY rangeChanged)
     Q_PROPERTY(double maxFrequencySlider READ maxFrequencySlider NOTIFY rangeChanged)
     Q_PROPERTY(QString minFrequencyReadout READ minFrequencyReadout NOTIFY rangeChanged)
     Q_PROPERTY(QString maxFrequencyReadout READ maxFrequencyReadout NOTIFY rangeChanged)
 
-    Q_PROPERTY(QList<QObject*> filters READ filters NOTIFY filtersChanged)
+    Q_PROPERTY(QQmlListProperty<FilterModel> filters READ filters NOTIFY filtersChanged)
 
     Q_PROPERTY(double sumMin MEMBER _sumMin NOTIFY rangeChanged)
     Q_PROPERTY(double sumMax MEMBER _sumMax NOTIFY rangeChanged)
@@ -26,13 +27,14 @@ class EqualizerModel : public ChartModel {
 public:
     explicit EqualizerModel(const TargetModel& targetModel, QObject *parent = nullptr);
 
-    static const QStringList& types();
     double minFrequencySlider() const;
     double maxFrequencySlider() const;
     QString minFrequencyReadout() const;
     QString maxFrequencyReadout() const;
 
-    QObjectList filters() const;
+    QQmlListProperty<FilterModel> filters();
+    int filterCount() const;
+    FilterModel* filter(int) const;
 
 public slots:
     void setFilterSumSeries(QtCharts::QAbstractSeries* series);
@@ -81,7 +83,7 @@ private:
     QtCharts::QXYSeries* _targetSeries = nullptr;
     QtCharts::QXYSeries* _filteredResponseSeries = nullptr;
 
-    QObjectList _filters;
+    QList<FilterModel*> _filters;
 
     rxcpp::subjects::subject<std::vector<double>> _filterSum;
     rxcpp::subjects::behavior<std::pair<int,int>> _range;
@@ -89,4 +91,6 @@ private:
     rxcpp::observable<QtCharts::QXYSeries*> _filteredMeasurement;
 
     friend class AbstractStrategy;
+    friend class FilterModel;
+    friend class PlayerModel;
 };

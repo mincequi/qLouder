@@ -33,7 +33,7 @@ RowLayout {
         id: toolBar
         Layout.fillHeight: true
         Layout.margins: 0
-        width: control.toolBarWidth
+        Layout.maximumWidth: control.toolBarWidth
         Material.elevation: 0
         //anchors.margins: 0
         //anchors.top: parent.top

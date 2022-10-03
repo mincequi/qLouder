@@ -69,11 +69,6 @@ EqualizerModel::EqualizerModel(const TargetModel& targetModel,
     });
 }
 
-const QStringList& EqualizerModel::types() {
-    static const QStringList _types = { "None", "Peaking", "Low Pass", "High Pass", "Low Shelf", "High Shelf" };
-    return _types;
-}
-
 double EqualizerModel::minFrequencySlider() const {
     return _range.get_value().first;
 }
@@ -124,8 +119,16 @@ QString EqualizerModel::maxFrequencyReadout() const {
     }
 }
 
-QObjectList EqualizerModel::filters() const {
-    return _filters;
+QQmlListProperty<FilterModel> EqualizerModel::filters() {
+    return QQmlListProperty<FilterModel>(this, _filters);
+}
+
+int EqualizerModel::filterCount() const {
+    return _filters.count();
+}
+
+FilterModel* EqualizerModel::filter(int index) const {
+    return _filters.at(index);
 }
 
 void EqualizerModel::setFilterSumSeries(QtCharts::QAbstractSeries* series) {
@@ -164,7 +167,10 @@ void EqualizerModel::addFilter(QtCharts::QAbstractSeries* response) {
     handles()->append(f, g);
     handles()->append(f - q, g / 2);
     handles()->append(f + q, g / 2);
-    _filters.append(new FilterModel(*this, FilterType::Peak, f, q, g, response));
+    const auto filter = new FilterModel(*this, FilterType::Invalid, f, q, g, response);
+    _filters.append(filter);
+    filter->setType((int)FilterType::Peak);
+
     emit filtersChanged();
     computeFilterSum();
 }
@@ -181,7 +187,7 @@ void EqualizerModel::removeFilter(int index) {
 
 void EqualizerModel::setType(int index, int type) {
     auto filter = static_cast<FilterModel*>(_filters.at(index));
-    filter->setType(static_cast<FilterType>(type));
+    filter->setType(type);
 
     computeFilterSum();
 }

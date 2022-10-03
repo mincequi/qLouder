@@ -124,8 +124,8 @@ Page {
                 Label {
                     height: 24
                     leftPadding: 6
-                    topPadding: 6
-                    bottomPadding: 6
+                    topPadding: 3
+                    bottomPadding: 3
                     text: "Deviation"
                     font.bold: true
                     font.pixelSize: 12

@@ -8,6 +8,8 @@ import QtCharts 2.3
 import EqualizerModel 1.0
 import TargetModel 1.0
 
+import "items"
+
 Page {
     function colorWithAlpha(color, alpha) {
         return Qt.rgba(color.r, color.g, color.b, alpha)
@@ -182,7 +184,7 @@ Page {
                     model: EqualizerModel.filters
                     delegate: FilterItem {
                         chart2: chart.chart
-                        model: modelData
+                        filterModel: modelData
                     }
                 },
                 Rectangle {
@@ -193,8 +195,8 @@ Page {
                 Label {
                     height: 24
                     leftPadding: 6
-                    topPadding: 6
-                    bottomPadding: 6
+                    topPadding: 3
+                    bottomPadding: 3
                     text: "Sum"
                     font.bold: true
                     font.pixelSize: 12

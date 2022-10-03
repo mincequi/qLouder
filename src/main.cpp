@@ -8,6 +8,7 @@
 #include "charts/IrChartModel.h"
 #include "crossover/CrossoverModel.h"
 #include "equalizer/EqualizerModel.h"
+#include "equalizer/FilterModel.h"
 #include "measure/Measurement.h"
 #include "measure/MeasureModel.h"
 #include "measure/MeasurementService.h"
@@ -105,6 +106,7 @@ int main(int argc, char *argv[]) {
     qmlRegisterSingletonType<PlayerModel>("PlayerBarModel", 1, 0, "PlayerBarModel", ModelProviderFactory::playerBarModel);
 
     qmlRegisterType<ChartModel>("ChartModel", 1, 0, "ChartModel");
+    qmlRegisterUncreatableType<FilterModel>("FilterModel", 1, 0, "FilterModel", "Type cannot be created in QML");
     qmlRegisterType<FrChartModel>("FrChartModel", 1, 0, "FrChartModel");
     qmlRegisterType<IrChartModel>("IrChartModel", 1, 0, "IrChartModel");
 

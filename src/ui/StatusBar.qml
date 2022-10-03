@@ -16,7 +16,7 @@ ToolBar {
         padding: 6
         color: Material.primaryTextColor
         wrapMode: TextEdit.Wrap
-        //leftPadding: 12
+        leftPadding: 12
         //horizontalAlignment: Qt.AlignRight
         //verticalAlignment: Qt.AlignVCenter
         text: StatusModel.text

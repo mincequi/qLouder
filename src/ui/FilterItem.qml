@@ -5,11 +5,14 @@ import QtQuick.Layouts 1.0
 
 import EqualizerModel 1.0
 
+import "items"
+
 ColumnLayout {
     id: item
     width: 96
     property var chart2
-    property var model
+    property var filterModel
+    property var itemHeight: 18
 
     spacing: 0
     RowLayout {
@@ -17,7 +20,7 @@ ColumnLayout {
         Label {
             id: label
             text: "Filter " + (index + 1).toString()
-            height: 24
+            height: itemHeight
             leftPadding: 6
             font.pixelSize: 12
         }
@@ -26,6 +29,7 @@ ColumnLayout {
         }
         SmallToolButton {
             id: deleteFilter
+            implicitHeight: itemHeight
             iconName: "close"
             iconColor: Material.color(Material.Red, Material.Shade300)
             flat: true
@@ -43,19 +47,22 @@ ColumnLayout {
 
         Label {
             width: 24
-            height: 24
+            height: itemHeight
             text: "T"
             leftPadding: 6
             font.pixelSize: 10
             Layout.alignment: Qt.AlignBaseline
         }
-        SmallComboBox {
+        MicroComboBox {
+            id: typeComboBox
+            implicitHeight: itemHeight
             font.pixelSize: 10
-            flat: true
-            //implicitWidth: 72
-            model: EqualizerModel.types
-            onCurrentIndexChanged: EqualizerModel.setType(index, currentIndex)
-            Component.onCompleted: currentIndex = 1
+            model: ["None", "Peaking", "Low Pass", "High Pass", "Low Shelf", "High Shelf"]
+            onCurrentIndexChanged: {
+                //console.log("onCurrentIndexChanged>", currentIndex)
+                filterModel.setType(currentIndex)
+            }
+            currentIndex: filterModel.type
             Layout.fillWidth: true
             Layout.leftMargin: 3
         }

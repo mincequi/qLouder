@@ -9,6 +9,8 @@ RowLayout {
     Layout.leftMargin: 0
     Layout.rightMargin: 0
 
+    implicitHeight: 18
+
     property string label
     property string value
     property string unit
@@ -21,7 +23,7 @@ RowLayout {
     Label {
         id: label
         width: 24
-        height: 24
+        height: parent.height
         text: control.label
         leftPadding: 6
         font.pixelSize: 10
@@ -29,7 +31,7 @@ RowLayout {
     }
 
     Label {
-        height: 24
+        height: parent.height
         text: control.value
         horizontalAlignment: Qt.AlignRight
         Layout.rightMargin: unitLabel.visible ? 3 : 0
@@ -41,7 +43,7 @@ RowLayout {
 
     Label {
         id: unitLabel
-        height: 24
+        height: parent.height
         visible: control.unit
         text: control.unit
         horizontalAlignment: Qt.AlignRight
@@ -54,17 +56,17 @@ RowLayout {
         visible: buttonsVisible
         spacing: 0
         SmallToolButton {
-            iconY: -1
+            yOffset: 1
             iconName: "chevron-up"
             iconColor: Material.foreground
-            implicitHeight: 12
+            implicitHeight: control.implicitHeight/2
             onClicked: control.valueUp()
         }
         SmallToolButton {
-            iconY: -5
+            yOffset: -1
             iconName: "chevron-down"
             iconColor: Material.foreground
-            implicitHeight: 12
+            implicitHeight: control.implicitHeight/2
             onClicked: control.valueDown()
         }
     }

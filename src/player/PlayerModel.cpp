@@ -149,9 +149,8 @@ EqualizerNode::Filter::Mode toCinder(int type_) {
 void PlayerModel::onFiltersChanged() {
     std::vector<EqualizerNode::Filter> filters;
 
-    QObject* p;
-    foreach (p, _equalizerModel.filters()) {
-        const auto f = static_cast<FilterModel*>(p);
+    const FilterModel* f;
+    foreach (f, _equalizerModel._filters) {
         if (f->type() != 0) {
             filters.push_back(EqualizerNode::Filter(toCinder(f->type()), f->f(), f->q(), f->g()));
         } else {

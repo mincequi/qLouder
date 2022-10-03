@@ -30,12 +30,16 @@ int FilterModel::type() const {
     return (int)_type;
 }
 
-void FilterModel::setType(FilterType type) {
-    _type = type;
+void FilterModel::setType(int type) {
+    auto type_ = static_cast<FilterType>(type);
+    if (_type == type_) {
+        return;
+    }
+    _type = type_;
 
     std::reference_wrapper<AbstractStrategy> previousStrategy(_strategy);
 
-    switch (type) {
+    switch (_type) {
     case FilterType::Peak:
         _strategy = _peakingStrategy;
         break;
@@ -154,4 +158,5 @@ void FilterModel::computeResponse() {
         points.append( { _frequencyTable.at(i), 20 * log10(abs(response.at(i))) } );
     }
     _response->replace(points);
+    _eq.computeFilterSum();
 }

@@ -44,8 +44,8 @@ ApplicationWindow {
         anchors.left: parent.left
         anchors.top: upperLeftToolBar.bottom
         anchors.topMargin: 1
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 49
+        anchors.bottom: playerControls.top
+        anchors.bottomMargin: 1
         width: 72
 
         MaterialTabButton {
@@ -77,8 +77,8 @@ ApplicationWindow {
         //anchors.rightMargin: 73
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 49
+        anchors.bottom: playerControls.top
+        anchors.bottomMargin: 1
         currentIndex: bar.currentIndex
         ProjectTab {
         }
@@ -118,9 +118,11 @@ ApplicationWindow {
     }
 
     ToolBar {
+        id: playerControls
         width: 72
         height: 48
-        anchors.bottom: parent.bottom
+        anchors.bottom: lowerLeftToolBar.top
+        anchors.bottomMargin: 1
         Material.elevation: 0
 
         ColumnLayout {
@@ -152,15 +154,45 @@ ApplicationWindow {
         id: playerBar
         anchors.left: bar.right
         anchors.leftMargin: 1
+        anchors.right: parent.right
         anchors.rightMargin: 97
+        anchors.bottom: statusBar.top
+        anchors.bottomMargin: 1
+    }
+
+    ToolBar {
+        id: lowerLeftToolBar
+        width: 72
+        height: 24
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        Material.elevation: 0
+    }
+    ToolBar {
+        id: lowerRightToolBar
+        width: 96
+        height: 48
+        anchors.right: parent.right
+        anchors.bottom: lowerRightSpacerToolBar.top
+        anchors.bottomMargin: 1
+        Material.elevation: 0
+    }
+    ToolBar {
+        id: lowerRightSpacerToolBar
+        width: 96
+        height: 24
         anchors.right: parent.right
         anchors.bottom: parent.bottom
+        Material.elevation: 0
     }
 
     StatusBar {
         id: statusBar
-        width: 96
+        height: 24
+        anchors.left: lowerLeftToolBar.right
+        anchors.leftMargin: 1
         anchors.right: parent.right
+        anchors.rightMargin: 97
         anchors.bottom: parent.bottom
     }
 }

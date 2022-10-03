@@ -41,16 +41,6 @@ public:
      */
     int type() const;
 
-    /**
-     * @brief setType
-     *
-     * This sets the filter type and inits this class. Do not call this within
-     * the constructor.
-     *
-     * @param type
-     */
-    void setType(FilterType type);
-
     QString fAsString() const;
     QString fUnit() const;
     double f() const;
@@ -67,6 +57,17 @@ public:
     void onRightHandleMoved(double qIndex) override;
 
     void setQ(double q);
+
+public slots:
+    /**
+     * @brief setType
+     *
+     * This sets the filter type and inits this class. Do not call this within
+     * the constructor.
+     *
+     * @param type
+     */
+    void setType(int type);
 
 signals:
     void nameChanged();

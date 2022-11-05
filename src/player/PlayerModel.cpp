@@ -1,25 +1,24 @@
 #include "PlayerModel.h"
 
+#include <QDebug>
 #include <QSettings>
 
 #include <taglib/fileref.h>
-#include <cinder/audio/EqualizerNode.h>
 
 #include <equalizer/EqualizerModel.h>
 #include <equalizer/FilterModel.h>
 #include <measure/MeasureModel.h>
-
-#include "PlayerModelPrivate.h"
+#include <ma/FilterConfig.h>
+#include <ma/Player.h>
 
 static const QString sampleKey("sample");
-
-using namespace cinder::audio;
 
 PlayerModel::PlayerModel(const EqualizerModel& equalizerModel,
                          QObject *parent)
     : QObject{parent},
       _equalizerModel(equalizerModel),
-      _d(new PlayerModelPrivate) {
+      //_d(new PlayerModelPrivate) {
+      _d(new ma::Player) {
     connect(&_timer, &QTimer::timeout, this, &PlayerModel::progressChanged);
     connect(&_equalizerModel, &EqualizerModel::rangeChanged, this, &PlayerModel::onFiltersChanged);
 
@@ -52,11 +51,15 @@ bool PlayerModel::isPlaying() const {
 }
 
 double PlayerModel::loopBeginTime() const {
-    return _d->loopBeginTime();
+    const auto value = _d->loopBeginTime();
+    qDebug() << "loopBeginTime:" << value;
+    return value;
 }
 
 double PlayerModel::loopEndTime() const {
-    return _d->loopEndTime();
+    const auto value = _d->loopEndTime();
+    qDebug() << "loopEndTime:" << value;
+    return value;
 }
 
 double PlayerModel::totalTime() const {
@@ -64,8 +67,11 @@ double PlayerModel::totalTime() const {
 }
 
 double PlayerModel::progress() const {
-    return (_d->progressTime() - _d->loopBeginTime()) /
-            (_d->loopEndTime() - _d->loopBeginTime());
+    const auto value = (_d->progressTime() - _d->loopBeginTime()) /
+                       (_d->loopEndTime() - _d->loopBeginTime());
+    //const auto value = _d->progressTime();
+    qDebug() << "progress:" << value;
+    return value;
 }
 
 QString PlayerModel::title() const {
@@ -94,7 +100,7 @@ void PlayerModel::setFile(const QString& file) {
 }
 
 void PlayerModel::setDevice(const QString& output) {
-    _d->setDevice(output.toStdString());
+    _d->setOutputDevice(output.toStdString());
 }
 
 void PlayerModel::togglePlayPause() {
@@ -102,7 +108,7 @@ void PlayerModel::togglePlayPause() {
         _d->stop();
         _timer.stop();
     } else {
-        _d->play();
+        _d->start();
         _timer.start(100);
     }
     emit statusChanged();
@@ -111,52 +117,34 @@ void PlayerModel::togglePlayPause() {
 
 void PlayerModel::setBegin(double value) {
     _d->setLoopBeginTime(value);
+    //qDebug() << "loopBegin:" << value;
     emit statusChanged();
     emit progressChanged();
 }
 
 void PlayerModel::setEnd(double value) {
     _d->setLoopEndTime(value);
+    //qDebug() << "loopEnd:" << value;
     emit statusChanged();
     emit progressChanged();
 }
 
 void PlayerModel::toggleEqualizer() {
-    _d->toggleEqualizer();
+    _d->setEqualizerEnabled(!_d->isEqualizerEnabled());
     emit statusChanged();
 }
 
 void PlayerModel::setProgress(double value) {
     _d->setProgress(value);
     emit progressChanged();
-}
-
-EqualizerNode::Filter::Mode toCinder(int type_) {
-    FilterType type = (FilterType)type_;
-    switch (type) {
-    case FilterType::Peak: return EqualizerNode::Filter::Mode::PEAKING;
-    case FilterType::LowPass: return EqualizerNode::Filter::Mode::LOWPASS;
-    case FilterType::HighPass: return EqualizerNode::Filter::Mode::HIGHPASS;
-    case FilterType::LowShelf: return EqualizerNode::Filter::Mode::LOWSHELF;
-    case FilterType::HighShelf: return EqualizerNode::Filter::Mode::HIGHSHELF;
-    case FilterType::AllPass: return EqualizerNode::Filter::Mode::ALLPASS;
-    default: return EqualizerNode::Filter::Mode::ALLPASS;
-    }
-
-    return EqualizerNode::Filter::Mode::ALLPASS;
+    //qDebug() << "Seek to:" << value;
 }
 
 void PlayerModel::onFiltersChanged() {
-    std::vector<EqualizerNode::Filter> filters;
-
+    std::vector<AudioFilter> filters;
     const FilterModel* f;
     foreach (f, _equalizerModel._filters) {
-        if (f->type() != 0) {
-            filters.push_back(EqualizerNode::Filter(toCinder(f->type()), f->f(), f->q(), f->g()));
-        } else {
-            // If invalid type, we pass a pass through biquad (peaking with q and gain of 0 dB)
-            filters.push_back(EqualizerNode::Filter(EqualizerNode::Filter::Mode::PEAKING, -1.0, 0.0, 0.0));
-        }
+        filters.push_back(AudioFilter(static_cast<FilterType>(f->type()), f->f(), f->g(), f->q()));
     }
 
     _d->setFilters(filters);

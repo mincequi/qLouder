@@ -36,7 +36,12 @@ T.RangeSlider {
 
         onXChanged: {
             if (dragArea.drag.active) {
-                control.progressHandleChanged((progressHandle.x - first.handle.x)/ (first.handle.x + (handleSize-width)/2 + (second.handle.x - first.handle.x)))
+                //control.progressHandleChanged((progressHandle.x - first.handle.x)/ (first.handle.x + (handleSize-width)/2 + (second.handle.x - first.handle.x)))
+                var progress_ = (progressHandle.x - (width + control.handleSize)/2) / (control.availableWidth - control.handleSize) * (control.to - control.from)
+                //if (progressHandle.x > second.handle.x - (control.handleSize - width)/2) {
+                //    dragArea.drag.active = false
+                //}
+                control.progressHandleChanged(progress_) // Math.max(progress_, second.handle.x + (control.handleSize - width)/2))
             }
         }
 
@@ -46,6 +51,8 @@ T.RangeSlider {
             drag.target: parent
             drag.axis: Drag.XAxis
             drag.threshold: 1
+            drag.minimumX: first.handle.x
+            drag.maximumX: second.handle.x + (control.handleSize - progressHandle.width) / 2
         }
     }
 

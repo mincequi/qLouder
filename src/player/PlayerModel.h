@@ -13,7 +13,7 @@ class PlayerModel : public QObject {
     Q_PROPERTY(bool isPlaying READ isPlaying NOTIFY statusChanged)
     Q_PROPERTY(double loopBeginTime READ loopBeginTime NOTIFY statusChanged)
     Q_PROPERTY(double loopEndTime READ loopEndTime NOTIFY statusChanged)
-    Q_PROPERTY(double totalTime READ totalTime NOTIFY statusChanged)
+    Q_PROPERTY(double totalTime READ totalTime NOTIFY fileChanged)
     Q_PROPERTY(double progress READ progress NOTIFY progressChanged)
     Q_PROPERTY(QString file MEMBER _file NOTIFY fileChanged)
     Q_PROPERTY(QString title READ title NOTIFY fileChanged)
@@ -53,7 +53,8 @@ private slots:
 private:
     // Due to conflicting declarations of some types between cinder and qt, we
     // have different compile units for each.
-    class PlayerModelPrivate* _d;
+    // Update: cinder is removed, however, let's keep this pimpl.
+    class PlayerInterface* _d;
 
     const EqualizerModel& _equalizerModel;
 

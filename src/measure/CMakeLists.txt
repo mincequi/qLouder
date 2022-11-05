@@ -1,3 +1,10 @@
+FetchContent_Declare(
+  r8brain
+  GIT_REPOSITORY https://github.com/avaneev/r8brain-free-src.git
+  GIT_TAG        version-5.7
+)
+FetchContent_MakeAvailable(r8brain)
+
 add_library(measure STATIC
     AudioBuffer.cpp
     AudioDeviceInfo.cpp
@@ -11,12 +18,13 @@ add_library(measure STATIC
     ResponseSignal.cpp
     Signal.cpp
     SignalGenerator.cpp
+    ${r8brain_SOURCE_DIR}/r8bbase.cpp
 )
 
 target_include_directories(measure
 PRIVATE
     ${FFTW3_INCLUDE_DIRS}
-    ${cinder_SOURCE_DIR}
+    ${r8brain_SOURCE_DIR}
 )
 
 target_link_libraries(measure
@@ -25,5 +33,4 @@ PRIVATE
     ${FFTW3F_LINK_LIBRARIES}
     ${FFTW3_LINK_LIBRARIES}
     rxcpp
-    cinder
 )

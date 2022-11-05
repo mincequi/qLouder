@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(qLouder VERSION 0.3 LANGUAGES CXX)
+project(qLouder VERSION 0.3 LANGUAGES CXX C)
 
 Include(FetchContent)
 Set(FETCHCONTENT_QUIET FALSE)
@@ -13,23 +13,20 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(rxcpp)
 
+FetchContent_Declare(
+  miniaudio
+  GIT_REPOSITORY https://github.com/mackron/miniaudio.git
+  GIT_TAG        4d813cfe23c28db165cce6785419fee9d2399766 # v0.11.9
+  GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(miniaudio)
+
 #FetchContent_Declare(
 #  rpp
 #  GIT_REPOSITORY https://github.com/victimsnino/ReactivePlusPlus.git
 #  GIT_TAG        v0.0.5
 #)
 #FetchContent_MakeAvailable(rpp)
-
-set (CINDER_DISABLE_ANTTWEAKBAR ON CACHE INTERNAL "CINDER_DISABLE_ANTTWEAKBAR")
-set (CINDER_DISABLE_IMGUI ON CACHE INTERNAL "CINDER_DISABLE_IMGUI")
-set (CINDER_DISABLE_VIDEO ON CACHE INTERNAL "CINDER_DISABLE_VIDEO")
-FetchContent_Declare(
-  cinder
-  GIT_REPOSITORY https://github.com/mincequi/Cinder.git
-  GIT_TAG        4d88e1e6208d715643f5852c5d844578d0095e03
-  GIT_PROGRESS TRUE
-)
-FetchContent_MakeAvailable(cinder)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

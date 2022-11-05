@@ -41,8 +41,7 @@ optimal filter set and crossover for your DIY loudspeaker.
 * Persistent measurements
 * ~~Harman house curve~~
 * Separate handlers for bass and treble for loudness target
-* Remove QtMultimedia and use Cinder instead
-* Remove PulseAudio as hard dependency for Cinder
+* Remove QtMultimedia and use miniaudio instead
 * Detect hot plugged audio devices
 
 # Requirements

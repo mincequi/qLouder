@@ -20,3 +20,9 @@ PRIVATE
     $<$<CXX_COMPILER_ID:MSVC>:/W4>
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Werror -Wno-deprecated-declarations> # -Wall -Wextra -Wpedantic
 )
+
+target_link_libraries(player_miniaudio
+PRIVATE
+    dl
+    pthread
+)

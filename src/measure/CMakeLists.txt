@@ -32,5 +32,6 @@ PRIVATE
     Qt${QT_VERSION_MAJOR}::Multimedia
     ${FFTW3F_LINK_LIBRARIES}
     ${FFTW3_LINK_LIBRARIES}
+    pthread
     rxcpp
 )

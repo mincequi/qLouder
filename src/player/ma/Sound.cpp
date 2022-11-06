@@ -9,7 +9,7 @@ Sound::Sound(Engine& engine, const std::string& filePath)
     ma_sound_init_from_file(&engine, filePath.c_str(), MA_SOUND_FLAG_DECODE, NULL, NULL, &_sound);
 
     // We must explicitely set the loop points
-    uint64_t length;
+    ma_uint64 length;
     ma_sound_get_length_in_pcm_frames(&_sound, &length);
     ma_data_source_set_loop_point_in_pcm_frames(_sound.pDataSource, 0, length);
 }
@@ -35,17 +35,17 @@ void Sound::setLooping(bool isLooping) {
 }
 
 float Sound::loopBegin() const {
-    uint64_t begin = 0;
+    ma_uint64 begin = 0;
     ma_data_source_get_loop_point_in_pcm_frames(_sound.pDataSource, &begin, NULL);
     return (float)begin / sampleRate();
 }
 
 void Sound::setLoopBegin(float seconds) {
-    uint64_t end;
+    ma_uint64 end;
     ma_data_source_get_loop_point_in_pcm_frames(_sound.pDataSource, NULL, &end);
-    uint64_t begin = seconds * sampleRate();
+    ma_uint64 begin = seconds * sampleRate();
     ma_data_source_set_loop_point_in_pcm_frames(_sound.pDataSource, begin, end);
-    uint64_t cursor;
+    ma_uint64 cursor;
     ma_data_source_get_cursor_in_pcm_frames(_sound.pDataSource, &cursor);
     if (cursor < begin) {
         ma_data_source_seek_to_pcm_frame(_sound.pDataSource, begin);
@@ -53,17 +53,17 @@ void Sound::setLoopBegin(float seconds) {
 }
 
 float Sound::loopEnd() const {
-    uint64_t end = 0;
+    ma_uint64 end = 0;
     ma_data_source_get_loop_point_in_pcm_frames(_sound.pDataSource, NULL, &end);
     return (float)end / sampleRate();
 }
 
 void Sound::setLoopEnd(float seconds) {
-    uint64_t begin;
+    ma_uint64 begin;
     ma_data_source_get_loop_point_in_pcm_frames(_sound.pDataSource, &begin, NULL);
-    uint64_t end_ = seconds * sampleRate();
+    ma_uint64 end_ = seconds * sampleRate();
     ma_data_source_set_loop_point_in_pcm_frames(_sound.pDataSource, begin, end_);
-    uint64_t cursor;
+    ma_uint64 cursor;
     ma_data_source_get_cursor_in_pcm_frames(_sound.pDataSource, &cursor);
     if (cursor > end_) {
         ma_data_source_seek_to_pcm_frame(_sound.pDataSource, begin);

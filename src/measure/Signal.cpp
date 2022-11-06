@@ -1,11 +1,8 @@
 #include "Signal.h"
 
-//#include <cinder/audio/dsp/ConverterR8brain.h>
-#include <src/r8brain/CDSPResampler.h>
+#include <CDSPResampler.h>
 
 #include "AudioBuffer.h"
-
-//using namespace cinder::audio;
 
 Signal::Channels Signal::channels() const {
     return _channels;

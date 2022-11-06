@@ -11,7 +11,7 @@ add_library(equalizer STATIC
 target_link_libraries(equalizer
 PUBLIC
     Qt${QT_VERSION_MAJOR}::Qml
+    rxcpp
 PRIVATE
     Qt${QT_VERSION_MAJOR}::Core
-    rxcpp
 )

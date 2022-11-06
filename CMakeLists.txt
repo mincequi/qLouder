@@ -77,6 +77,7 @@ set(PROJECT_SOURCES
 )
 
 add_subdirectory(src/equalizer)
+add_subdirectory(src/export)
 add_subdirectory(src/measure)
 add_subdirectory(src/player)
 
@@ -127,6 +128,7 @@ PRIVATE
     rxcpp # TODO: remove, still needed for TargetModel.cpp
     #rpp
     equalizer
+    export
     player
     measure
 )

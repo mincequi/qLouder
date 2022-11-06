@@ -11,6 +11,7 @@ T.Switch {
     implicitHeight: 24
     padding: 0
     spacing: 0
+
     /*
     indicator: SwitchIndicator {
         implicitHeight: 24
@@ -76,9 +77,10 @@ T.Switch {
     }
 
     Label {
+        id: label
         y: control.topPadding + (control.availableHeight - height) / 2
         font.pixelSize: 12
         leftPadding: 6
-        text: "Invert"
+        text: control.text
     }
 }

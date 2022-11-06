@@ -9,6 +9,7 @@
 #include "crossover/CrossoverModel.h"
 #include "equalizer/EqualizerModel.h"
 #include "equalizer/FilterModel.h"
+#include "export/ExportModel.h"
 #include "measure/Measurement.h"
 #include "measure/MeasureModel.h"
 #include "measure/MeasurementService.h"
@@ -29,10 +30,14 @@ public:
         _equalizerModel = new EqualizerModel(*_targetModel);
         _playerModel = new PlayerModel(*_equalizerModel);
         _playerBarModel = new PlayerBarModel(*_measureModel, *_playerModel);
+        _exportModel = new ExportModel(*_equalizerModel);
     }
 
     static QObject* crossoverModel(QQmlEngine*, QJSEngine*) {
         return _crossoverModel;
+    }
+    static QObject* exportModel(QQmlEngine*, QJSEngine*) {
+        return _exportModel;
     }
     static QObject* measureModel(QQmlEngine*, QJSEngine*) {
         return _measureModel;
@@ -61,6 +66,7 @@ private:
     }
 
     static CrossoverModel* _crossoverModel;
+    static ExportModel* _exportModel;
     static MeasureModel* _measureModel;
     static ProjectModel* _projectModel;
     static StatusModel* _statusModel;
@@ -71,6 +77,7 @@ private:
 };
 
 CrossoverModel* ModelProviderFactory::_crossoverModel;
+ExportModel* ModelProviderFactory::_exportModel;
 MeasureModel* ModelProviderFactory::_measureModel;
 ProjectModel* ModelProviderFactory::_projectModel;
 StatusModel* ModelProviderFactory::_statusModel;
@@ -97,6 +104,7 @@ int main(int argc, char *argv[]) {
     // Instantiate and register models
     ModelProviderFactory::init();
     qmlRegisterSingletonType<CrossoverModel>("CrossoverModel", 1, 0, "CrossoverModel", ModelProviderFactory::crossoverModel);
+    qmlRegisterSingletonType<ExportModel>("ExportModel", 1, 0, "ExportModel", ModelProviderFactory::exportModel);
     qmlRegisterSingletonType<ProjectModel>("MeasureModel", 1, 0, "MeasureModel", ModelProviderFactory::measureModel);
     qmlRegisterSingletonType<ProjectModel>("ProjectModel", 1, 0, "ProjectModel", ModelProviderFactory::projectModel);
     qmlRegisterSingletonType<StatusModel>("StatusModel", 1, 0, "StatusModel", ModelProviderFactory::statusModel);

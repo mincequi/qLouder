@@ -15,7 +15,7 @@ ApplicationWindow {
 
     id: window
     minimumWidth: 768
-    minimumHeight: 448
+    minimumHeight: 480 // 432 would be nice
     visible: true
     title: "qLouder"
 
@@ -64,6 +64,10 @@ ApplicationWindow {
             text: "Crossover"
             icon.name: "swap-horizontal"
         }
+        MaterialTabButton {
+            text: "Export"
+            icon.name: "export"
+        }
         //MaterialTabButton {
         //    text: "Target"
         //    icon.name: "bullseye"
@@ -87,6 +91,8 @@ ApplicationWindow {
         EqualizerTab {
         }
         CrossoverTab {
+        }
+        ExportTab {
         }
 
         TargetTab {

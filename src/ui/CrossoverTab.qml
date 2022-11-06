@@ -108,6 +108,7 @@ Page {
                     implicitHeight: 24
                     implicitWidth: 96
                     onCheckedChanged: CrossoverModel.invert(checked)
+                    text: "Invert"
                 },
 
                 // spacer item

@@ -38,6 +38,8 @@ Player::Player() :
     for (uint i = 0; i < captureDeviceCount; ++i) {
         _inputDevices.push_back(pCaptureDeviceInfos[i].name);
     }
+
+    _sound = std::make_unique<ma::Sound>(_engine, "");
 }
 
 Player::~Player() {

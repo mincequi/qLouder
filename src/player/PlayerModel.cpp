@@ -70,7 +70,7 @@ double PlayerModel::progress() const {
     const auto value = (_d->progressTime() - _d->loopBeginTime()) /
                        (_d->loopEndTime() - _d->loopBeginTime());
     //const auto value = _d->progressTime();
-    qDebug() << "progress:" << value;
+    //qDebug() << "progress:" << value;
     return value;
 }
 

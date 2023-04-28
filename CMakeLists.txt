@@ -37,7 +37,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt5 COMPONENTS Core Quick QuickControls2 Multimedia Charts Svg Xml REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core Quick QuickControls2 Multimedia Charts Svg Xml REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 Multimedia Charts Svg Xml REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FFTW3F REQUIRED fftw3f)

@@ -113,45 +113,6 @@ Page {
                 // spacer item
                 Item {
                     Layout.fillHeight: true
-                },
-
-                Rectangle {
-                    width: 96
-                    height: 1
-                    color: Material.background
-                },
-
-                Label {
-                    height: 24
-                    leftPadding: 6
-                    topPadding: 3
-                    bottomPadding: 3
-                    text: "Deviation"
-                    font.bold: true
-                    font.pixelSize: 12
-                },
-
-                UpDownSpinBox {
-                    label: "Min"
-                    value: CrossoverModel.sumMin.toFixed(1)
-                    unit: "dB"
-                    valueColor: Material.accent
-                    buttonsVisible: false
-                },
-                UpDownSpinBox {
-                    label: "Max"
-                    value: CrossoverModel.sumMax.toFixed(1)
-                    unit: "dB"
-                    valueColor: Material.accent
-                    buttonsVisible: false
-                },
-                UpDownSpinBox {
-                    label: "Ripple"
-                    value: CrossoverModel.ripple
-                    unit: "dB"
-                    valueColor: Material.accent
-                    buttonsVisible: false
-                    Layout.bottomMargin: 6
                 }
             ]
 

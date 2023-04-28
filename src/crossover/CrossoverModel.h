@@ -74,4 +74,6 @@ private:
     QtCharts::QXYSeries* _highPassSeries = nullptr;
     std::vector<double> _fr;
     QtCharts::QXYSeries* _sumSeries = nullptr;
+
+    friend class StatusModel;
 };

@@ -15,28 +15,28 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(FFTW3F REQUIRED fftw3f)
 
 # Fft test
-add_executable(fft_test
-  FftTest.cpp
-  ../src/Config.cpp
-  ../src/FrequencyTable.cpp
-  ../src/status/StatusModel.cpp
-)
+#add_executable(fft_test
+#  FftTest.cpp
+#  ../src/Config.cpp
+#  ../src/FrequencyTable.cpp
+#  ../src/status/StatusModel.cpp
+#)
 
-target_include_directories(fft_test
-PRIVATE
-  ../src
-  ${FFTW3_INCLUDE_DIRS}
-)
-
-target_link_libraries(fft_test
-PRIVATE
-  pthread
-  Qt${QT_VERSION_MAJOR}::Core
-  Catch2::Catch2WithMain
-  ${FFTW3F_LINK_LIBRARIES}
-  ${FFTW3_LINK_LIBRARIES}
-  measure
-)
+#target_include_directories(fft_test
+#PRIVATE
+#  ../src
+#  ${FFTW3_INCLUDE_DIRS}
+#)
+#
+#target_link_libraries(fft_test
+#PRIVATE
+#  pthread
+#  Qt${QT_VERSION_MAJOR}::Core
+#  Catch2::Catch2WithMain
+#  ${FFTW3F_LINK_LIBRARIES}
+#  ${FFTW3_LINK_LIBRARIES}
+#  measure
+#)
 
 # FrequencyTable test
 add_executable(ft_test

@@ -29,6 +29,7 @@ public:
         _equalizerModel = new EqualizerModel(*_targetModel);
         _playerModel = new PlayerModel(*_equalizerModel);
         _playerBarModel = new PlayerBarModel(*_measureModel, *_playerModel);
+        _statusModel = StatusModel::init(*_crossoverModel, *_equalizerModel);
     }
 
     static QObject* crossoverModel(QQmlEngine*, QJSEngine*) {
@@ -41,7 +42,7 @@ public:
         return _projectModel;
     }
     static QObject* statusModel(QQmlEngine*, QJSEngine*) {
-        return StatusModel::instance();
+        return _statusModel;
     }
     static QObject* targetModel(QQmlEngine*, QJSEngine*) {
         return _targetModel;

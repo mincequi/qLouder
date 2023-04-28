@@ -41,7 +41,7 @@ RowLayout {
 
         ColumnLayout {
             id: toolBarLayout
-            anchors.bottomMargin: 0
+            anchors.bottomMargin: -49
             anchors.fill: parent
             spacing: 0
             children: toolBarChildren

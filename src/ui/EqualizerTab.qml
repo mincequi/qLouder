@@ -124,41 +124,6 @@ Page {
             Item {
                 Layout.fillWidth: true
             }
-            RowLayout {
-                spacing: 6
-                // Add filter button
-                SmallToolButton {
-                    height: 24
-                    //implicitWidth: 96
-                    text: "Add filter"
-                    font.pixelSize: 10
-                    iconName: "plus"
-                    onClicked: {
-                        var response = chart.chart.createSeries(ChartView.SeriesTypeLine, "Response", chart.xAxisLog, chart.yAxis)
-                        response.color = Material.color(Material.Grey)
-                        response.width = 1.0
-                        EqualizerModel.addFilter(response)
-
-                        // TODO: we have to delete sumSeries each filter creation to keep z ordering
-                        chart.chart.removeSeries(chart.sumSeries)
-                        chart.sumSeries = chart.chart.createSeries(ChartView.SeriesTypeLine, "Sum", chart.xAxisLog, chart.yAxis)
-                        chart.sumSeries.color = chart.accentColor
-                        chart.sumSeries.width = 1.0
-                        EqualizerModel.setFilterSumSeries(chart.sumSeries)
-                    }
-                }
-                // Optimize button
-                SmallToolButton {
-                    height: 24
-                    //implicitWidth: 96
-                    text: "Optimize"
-                    font.pixelSize: 10
-                    iconName: "auto-fix"
-                    onClicked: {
-                        EqualizerModel.optimize()
-                    }
-                }
-            }
         }
     }
 
@@ -192,29 +157,36 @@ Page {
                     height: 1
                     color: Material.background
                 },
-                Label {
+                SmallToolButton {
                     height: 24
-                    leftPadding: 6
-                    topPadding: 3
-                    bottomPadding: 3
-                    text: "Sum"
-                    font.bold: true
-                    font.pixelSize: 12
+                    implicitWidth: 96
+                    text: "Add filter"
+                    font.pixelSize: 10
+                    iconName: "plus"
+                    onClicked: {
+                        var response = chart.chart.createSeries(ChartView.SeriesTypeLine, "Response", chart.xAxisLog, chart.yAxis)
+                        response.color = Material.color(Material.Grey)
+                        response.width = 1.0
+                        EqualizerModel.addFilter(response)
+
+                        // TODO: we have to delete sumSeries each filter creation to keep z ordering
+                        chart.chart.removeSeries(chart.sumSeries)
+                        chart.sumSeries = chart.chart.createSeries(ChartView.SeriesTypeLine, "Sum", chart.xAxisLog, chart.yAxis)
+                        chart.sumSeries.color = chart.accentColor
+                        chart.sumSeries.width = 1.0
+                        EqualizerModel.setFilterSumSeries(chart.sumSeries)
+                    }
                 },
-                UpDownSpinBox {
-                    label: "Min"
-                    value: EqualizerModel.sumMin.toFixed(1)
-                    unit: "dB"
-                    valueColor: Material.accent
-                    buttonsVisible: false
-                },
-                UpDownSpinBox {
-                    label: "Max"
-                    value: EqualizerModel.sumMax.toFixed(1)
-                    unit: "dB"
-                    valueColor: Material.accent
-                    buttonsVisible: false
-                    Layout.bottomMargin: 6
+                // Optimize button
+                SmallToolButton {
+                    height: 24
+                    implicitWidth: 96
+                    text: "Optimize"
+                    font.pixelSize: 10
+                    iconName: "auto-fix"
+                    onClicked: {
+                        EqualizerModel.optimize()
+                    }
                 }
             ]
 

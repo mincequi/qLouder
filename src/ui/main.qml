@@ -7,6 +7,7 @@ import Qt.labs.settings 1.0
 
 import MeasureModel 1.0
 import PlayerBarModel 1.0
+import StatusModel 1.0
 
 ApplicationWindow {
     function colorWithAlpha(color, alpha) {
@@ -47,6 +48,7 @@ ApplicationWindow {
         anchors.bottom: playerControls.top
         anchors.bottomMargin: 1
         width: 72
+        onCurrentIndexChanged: StatusModel.setTabIndex(currentIndex)
 
         MaterialTabButton {
             text: "Settings"
@@ -68,29 +70,6 @@ ApplicationWindow {
         //    text: "Target"
         //    icon.name: "bullseye"
         //}
-    }
-
-    StackLayout {
-        //anchors.fill: parent
-        anchors.left: bar.right
-        anchors.leftMargin: 1
-        //anchors.rightMargin: 73
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: playerControls.top
-        anchors.bottomMargin: 1
-        currentIndex: bar.currentIndex
-        ProjectTab {
-        }
-        MeasureTab {
-        }
-        EqualizerTab {
-        }
-        CrossoverTab {
-        }
-
-        TargetTab {
-        }
     }
 
     Rectangle {
@@ -173,26 +152,38 @@ ApplicationWindow {
         width: 96
         height: 48
         anchors.right: parent.right
-        anchors.bottom: lowerRightSpacerToolBar.top
+        anchors.bottom: statusBar.top
         anchors.bottomMargin: 1
         Material.elevation: 0
     }
-    ToolBar {
-        id: lowerRightSpacerToolBar
-        width: 96
-        height: 24
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        Material.elevation: 0
-    }
-
     StatusBar {
         id: statusBar
         height: 24
         anchors.left: lowerLeftToolBar.right
         anchors.leftMargin: 1
         anchors.right: parent.right
-        anchors.rightMargin: 97
         anchors.bottom: parent.bottom
+    }
+
+    StackLayout {
+        //anchors.fill: parent
+        anchors.left: bar.right
+        anchors.leftMargin: 1
+        //anchors.rightMargin: 73
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: playerControls.top
+        anchors.bottomMargin: 1
+        currentIndex: bar.currentIndex
+        ProjectTab {
+        }
+        MeasureTab {
+        }
+        EqualizerTab {
+        }
+        CrossoverTab {
+        }
+        TargetTab {
+        }
     }
 }

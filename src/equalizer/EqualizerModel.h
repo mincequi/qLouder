@@ -93,4 +93,5 @@ private:
     friend class AbstractStrategy;
     friend class FilterModel;
     friend class PlayerModel;
+    friend class StatusModel;
 };

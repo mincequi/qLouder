@@ -43,7 +43,6 @@ ExcitationSignal SignalFactory::createSineSweep(AudioBuffer* buffer,
 
     ExcitationSignal signal(buffer);
     signal._sampleRate = sampleRate;
-    signal._channels = channels;
     signal._minF = fMin;
     signal._maxF = fMax;
     signal._samplesPerOctave = samplesPerOctave;

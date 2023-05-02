@@ -5,8 +5,10 @@ import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
 import Qt.labs.settings 1.0
 
+import EqualizerModel 1.0
 import MeasureModel 1.0
 import PlayerBarModel 1.0
+import ProjectsModel 1.0
 import StatusModel 1.0
 
 ApplicationWindow {
@@ -19,6 +21,7 @@ ApplicationWindow {
     minimumHeight: 448
     visible: true
     title: "qLouder"
+    property int leftToolBarWidth: 96
 
     Settings {
         property alias x: window.x
@@ -33,8 +36,10 @@ ApplicationWindow {
 
     ToolBar {
         id: upperLeftToolBar
-        width: 72
+        width: leftToolBarWidth
         height: 24
+        anchors.left: parent.left
+        anchors.top: parent.top
         Material.elevation: 0
     }
 
@@ -42,12 +47,11 @@ ApplicationWindow {
         id: bar
         currentIndex: 1
         spacing: 0
+        width: leftToolBarWidth
+        height: 240
         anchors.left: parent.left
         anchors.top: upperLeftToolBar.bottom
         anchors.topMargin: 1
-        anchors.bottom: playerControls.top
-        anchors.bottomMargin: 1
-        width: 72
         onCurrentIndexChanged: StatusModel.setTabIndex(currentIndex)
 
         MaterialTabButton {
@@ -66,9 +70,37 @@ ApplicationWindow {
             text: "Crossover"
             icon.name: "swap-horizontal"
         }
-        //MaterialTabButton {
-        //    text: "Target"
-        //    icon.name: "bullseye"
+    }
+
+    ToolBar {
+        width: leftToolBarWidth
+        anchors.left: parent.left
+        anchors.top: bar.bottom
+        anchors.topMargin: 1
+        anchors.bottom: playerControls.top
+        anchors.bottomMargin: 1
+        Material.elevation: 0
+    }
+
+    ListView {
+        id: listView
+        anchors.left: parent.left
+        anchors.top: bar.bottom
+        anchors.topMargin: 1
+        anchors.bottom: playerControls.top
+        anchors.bottomMargin: 1
+        //Layout.fillWidth: true
+        width: 96
+        //Layout.fillHeight: true
+        clip: true
+
+        model: ProjectsModel.projects
+        delegate: ProjectItem {
+            projectModel: modelData
+        }
+        //model: EqualizerModel.filters
+        //delegate: FilterItem {
+        //    filterModel: modelData
         //}
     }
 
@@ -98,7 +130,7 @@ ApplicationWindow {
 
     ToolBar {
         id: playerControls
-        width: 72
+        width: leftToolBarWidth
         height: 48
         anchors.bottom: lowerLeftToolBar.top
         anchors.bottomMargin: 1
@@ -109,8 +141,8 @@ ApplicationWindow {
             spacing: 0
             SmallToolButton {
                 id: measureButton
-                font.pixelSize: 9
-                implicitWidth: 72
+                font.pixelSize: 10
+                implicitWidth: leftToolBarWidth
                 enabled: !PlayerBarModel.isPlaying
                 text: MeasureModel.measureButtonText
                 iconName: MeasureModel.measureButtonIcon
@@ -119,8 +151,8 @@ ApplicationWindow {
             }
             SmallToolButton {
                 id: playButton
-                font.pixelSize: 9
-                implicitWidth: 72
+                font.pixelSize: 10
+                implicitWidth: leftToolBarWidth
                 enabled: !PlayerBarModel.isMeasuring
                 text: PlayerBarModel.isPlaying ? "Pause" : "Play"
                 iconName: PlayerBarModel.isPlaying ? "pause" : "play"
@@ -141,7 +173,7 @@ ApplicationWindow {
 
     ToolBar {
         id: lowerLeftToolBar
-        width: 72
+        width: leftToolBarWidth
         height: 24
         anchors.left: parent.left
         anchors.bottom: parent.bottom
@@ -175,7 +207,7 @@ ApplicationWindow {
         anchors.bottom: playerControls.top
         anchors.bottomMargin: 1
         currentIndex: bar.currentIndex
-        ProjectTab {
+        SettingsTab {
         }
         MeasureTab {
         }

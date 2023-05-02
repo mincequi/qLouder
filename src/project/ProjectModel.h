@@ -1,69 +1,20 @@
-#ifndef PROJECTMODEL_H
-#define PROJECTMODEL_H
+#pragma once
 
 #include <QObject>
 
-class QAudioDeviceInfo;
-class MeasurementService;
-
 class ProjectModel : public QObject {
-	Q_OBJECT
-	Q_PROPERTY(QString projectDir MEMBER m_projectDir NOTIFY modelChanged)
-	Q_PROPERTY(QString micCalibration0 MEMBER m_micCalibration0 NOTIFY modelChanged)
-	Q_PROPERTY(QString micCalibration90 MEMBER m_micCalibration90 NOTIFY modelChanged)
-	Q_PROPERTY(QStringList inputDevices READ inputDevices NOTIFY modelChanged)
-    Q_PROPERTY(int savedInputDevice READ savedInputDevice)
-    Q_PROPERTY(QStringList inputSampleRates READ inputSampleRates NOTIFY inputDeviceChanged)
-    Q_PROPERTY(int savedInputSampleRate READ savedInputSampleRate)
-	Q_PROPERTY(QStringList outputDevices READ outputDevices NOTIFY modelChanged)
-    Q_PROPERTY(int savedOutputDevice READ savedOutputDevice)
-    Q_PROPERTY(QStringList outputSampleRates READ outputSampleRates NOTIFY outputDeviceChanged)
-    Q_PROPERTY(int savedOutputSampleRate READ savedOutputSampleRate)
+    Q_OBJECT
+
+    Q_PROPERTY(QString name READ name NOTIFY valuesChanged)
 
 public:
-	explicit ProjectModel(MeasurementService& measurementService, QObject *parent = nullptr);
-    ~ProjectModel();
+    explicit ProjectModel(QObject *parent = nullptr);
 
-	QStringList inputDevices();
-	Q_INVOKABLE void setInputDevice(int index);
-    int savedInputDevice() const;
-
-	QStringList inputSampleRates();
-	Q_INVOKABLE void setInputSampleRate(int index);
-    int savedInputSampleRate() const;
-
-	QStringList outputDevices();
-	Q_INVOKABLE void setOutputDevice(int index);
-    int savedOutputDevice() const;
-
-    QStringList outputSampleRates();
-	Q_INVOKABLE void setOutputSampleRate(int index);
-    int savedOutputSampleRate() const;
-
-    Q_INVOKABLE void openCalibrationFile(int degrees, const QString& fileName);
+    QString name() const;
 
 signals:
-	void modelChanged();
-	void inputDeviceChanged();
-	void outputDeviceChanged();
+    void valuesChanged();
 
 private:
-    void openInputDevice(const QAudioDeviceInfo& device);
-
-	MeasurementService& m_measurementService;
-
-	QString m_projectDir;
-	QString m_micCalibration0;
-	QString m_micCalibration90;
-
-	QList<QAudioDeviceInfo> m_inputDevices;
-	int m_inputDeviceIndex = 0;
-    const QList<int> m_inputSampleRates = { 44100, 48000 };
-	int m_inputSampleRateIndex = 0;
-	QList<QAudioDeviceInfo> m_outputDevices;
-	int m_outputDeviceIndex = 0;
-    const QList<int> m_outputSampleRates = { 44100, 48000 };
-	int m_outputSampleRateIndex = 0;
+    QString _name;
 };
-
-#endif // PROJECTMODEL_H

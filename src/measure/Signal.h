@@ -1,5 +1,4 @@
-#ifndef SIGNAL_H
-#define SIGNAL_H
+#pragma once
 
 #include <vector>
 
@@ -13,6 +12,8 @@ public:
         Stereo = 2
     };
 
+    Signal(AudioBuffer* buffer);
+
     Channels channels() const;
     void setChannels(Channels channels);
 
@@ -22,11 +23,7 @@ public:
     const std::vector<float>& data() const;
 
 protected:
-    Signal(AudioBuffer* buffer);
-
     AudioBuffer* _buffer = nullptr;
     Channels _channels = Channels::Left;
     int _sampleRate = 0;
 };
-
-#endif // SIGNAL_H

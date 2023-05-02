@@ -3,9 +3,9 @@
 #include <algorithm>
 #include <QDebug>
 
-#include "FrequencyTable.h"
 #include "FilterInterface.h"
-#include "ui/UiUtil.h"
+#include <common/FrequencyTable.h>
+#include <common/UiUtil.h>
 
 FilterModel::FilterModel(EqualizerModel& eq,
                          FilterType t, int f, double q, double g,

@@ -9,6 +9,7 @@
 #include "crossover/CrossoverModel.h"
 #include "equalizer/EqualizerModel.h"
 #include "equalizer/FilterModel.h"
+#include "equalizer/TargetModel.h"
 #include "measure/Measurement.h"
 #include "measure/MeasureModel.h"
 #include "measure/MeasurementService.h"
@@ -16,15 +17,17 @@
 #include "player/PlayerBarModel.h"
 #include "player/PlayerModel.h"
 #include "project/ProjectModel.h"
+#include "project/ProjectsModel.h"
+#include "project/SettingsModel.h"
 #include "status/StatusModel.h"
-#include "target/TargetModel.h"
 
 class ModelProviderFactory {
 public:
     static void init() {
+        _projectsModel = new ProjectsModel();
         _crossoverModel = new CrossoverModel();
         _measureModel = new MeasureModel(MeasurementService::instance());
-        _projectModel = new ProjectModel(MeasurementService::instance());
+        _settingsModel = new SettingsModel(MeasurementService::instance());
         _targetModel = new TargetModel();
         _equalizerModel = new EqualizerModel(*_targetModel);
         _playerModel = new PlayerModel(*_equalizerModel);
@@ -38,8 +41,8 @@ public:
     static QObject* measureModel(QQmlEngine*, QJSEngine*) {
         return _measureModel;
     }
-    static QObject* projectModel(QQmlEngine*, QJSEngine*) {
-        return _projectModel;
+    static QObject* settingsModel(QQmlEngine*, QJSEngine*) {
+        return _settingsModel;
     }
     static QObject* statusModel(QQmlEngine*, QJSEngine*) {
         return _statusModel;
@@ -56,6 +59,9 @@ public:
     static QObject* playerBarModel(QQmlEngine*, QJSEngine*) {
         return _playerBarModel;
     }
+    static QObject* projectsModel(QQmlEngine*, QJSEngine*) {
+        return _projectsModel;
+    }
 
 private:
     ModelProviderFactory() {
@@ -63,22 +69,24 @@ private:
 
     static CrossoverModel* _crossoverModel;
     static MeasureModel* _measureModel;
-    static ProjectModel* _projectModel;
+    static SettingsModel* _settingsModel;
     static StatusModel* _statusModel;
     static TargetModel* _targetModel;
     static EqualizerModel* _equalizerModel;
     static PlayerModel* _playerModel;
     static PlayerBarModel* _playerBarModel;
+    static ProjectsModel* _projectsModel;
 };
 
 CrossoverModel* ModelProviderFactory::_crossoverModel;
 MeasureModel* ModelProviderFactory::_measureModel;
-ProjectModel* ModelProviderFactory::_projectModel;
+SettingsModel* ModelProviderFactory::_settingsModel;
 StatusModel* ModelProviderFactory::_statusModel;
 TargetModel* ModelProviderFactory::_targetModel;
 EqualizerModel* ModelProviderFactory::_equalizerModel;
 PlayerModel* ModelProviderFactory::_playerModel;
 PlayerBarModel* ModelProviderFactory::_playerBarModel;
+ProjectsModel* ModelProviderFactory::_projectsModel;
 
 int main(int argc, char *argv[]) {
     //fftw_init_threads();
@@ -98,16 +106,18 @@ int main(int argc, char *argv[]) {
     // Instantiate and register models
     ModelProviderFactory::init();
     qmlRegisterSingletonType<CrossoverModel>("CrossoverModel", 1, 0, "CrossoverModel", ModelProviderFactory::crossoverModel);
-    qmlRegisterSingletonType<ProjectModel>("MeasureModel", 1, 0, "MeasureModel", ModelProviderFactory::measureModel);
-    qmlRegisterSingletonType<ProjectModel>("ProjectModel", 1, 0, "ProjectModel", ModelProviderFactory::projectModel);
+    qmlRegisterSingletonType<MeasureModel>("MeasureModel", 1, 0, "MeasureModel", ModelProviderFactory::measureModel);
+    qmlRegisterSingletonType<SettingsModel>("SettingsModel", 1, 0, "SettingsModel", ModelProviderFactory::settingsModel);
     qmlRegisterSingletonType<StatusModel>("StatusModel", 1, 0, "StatusModel", ModelProviderFactory::statusModel);
     qmlRegisterSingletonType<TargetModel>("TargetModel", 1, 0, "TargetModel", ModelProviderFactory::targetModel);
     qmlRegisterSingletonType<EqualizerModel>("EqualizerModel", 1, 0, "EqualizerModel", ModelProviderFactory::equalizerModel);
     qmlRegisterSingletonType<PlayerModel>("PlayerModel", 1, 0, "PlayerModel", ModelProviderFactory::playerModel);
-    qmlRegisterSingletonType<PlayerModel>("PlayerBarModel", 1, 0, "PlayerBarModel", ModelProviderFactory::playerBarModel);
+    qmlRegisterSingletonType<PlayerBarModel>("PlayerBarModel", 1, 0, "PlayerBarModel", ModelProviderFactory::playerBarModel);
+    qmlRegisterSingletonType<ProjectsModel>("ProjectsModel", 1, 0, "ProjectsModel", ModelProviderFactory::projectsModel);
 
     qmlRegisterType<ChartModel>("ChartModel", 1, 0, "ChartModel");
     qmlRegisterUncreatableType<FilterModel>("FilterModel", 1, 0, "FilterModel", "Type cannot be created in QML");
+    qmlRegisterUncreatableType<ProjectModel>("ProjectModel", 1, 0, "ProjectModel", "Type cannot be created in QML");
     qmlRegisterType<FrChartModel>("FrChartModel", 1, 0, "FrChartModel");
     qmlRegisterType<IrChartModel>("IrChartModel", 1, 0, "IrChartModel");
 

@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>ui/main.qml</file>
-        <file>ui/ProjectTab.qml</file>
+        <file>ui/SettingsTab.qml</file>
         <file>ui/MeasureTab.qml</file>
         <file>ui/VerticalTabBar.qml</file>
         <file>ui/MaterialDesignIcon.qml</file>
@@ -27,5 +27,6 @@
         <file>ui/FilterItem.qml</file>
         <file>ui/PlayerBar.qml</file>
         <file>ui/items/MicroComboBox.qml</file>
+        <file>ui/ProjectItem.qml</file>
     </qresource>
 </RCC>

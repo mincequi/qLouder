@@ -5,11 +5,11 @@ import QtQuick.Controls.Material 2.12
 TabButton {
     property alias materialIcon: icon.name
     property alias iconSize: icon.size
-    property bool horizontal: availableWidth > availableHeight * 1.5
+    property bool horizontal: false //availableWidth > availableHeight * 1.5
 
     id: control
 
-    width: 72
+    width: 96
     implicitHeight: 60  // must override implicitHeight. If overriding height, parent layout collapses
 
     padding: 0

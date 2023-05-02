@@ -12,7 +12,7 @@ ColumnLayout {
     width: 96
     property var chart2
     property var filterModel
-    property var itemHeight: 18
+    property int itemHeight: 18
 
     spacing: 0
     RowLayout {

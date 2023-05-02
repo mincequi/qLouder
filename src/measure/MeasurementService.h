@@ -11,7 +11,6 @@
 #include "ExcitationSignal.h"
 #include "InverseFilter.h"
 
-template <class T>
 class Measurement;
 
 class MeasurementService : public QObject {
@@ -36,7 +35,7 @@ public:
 
 signals:
     void progressChanged(double progress);
-    void measurementAvailable(Measurement<float>* measurement);
+    void measurementAvailable(Measurement* measurement);
     void levelChanged();
     void errorOccured();
 

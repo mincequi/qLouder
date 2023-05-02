@@ -43,6 +43,9 @@ optimal filter set and crossover for your DIY loudspeaker.
 * Separate handlers for bass and treble for loudness target
 * Remove QtMultimedia and use miniaudio instead
 * Detect hot plugged audio devices
+* Improve crossover handles for order of 4
+* Improve equalizer handles for shelving filters
+* Align crossover filter settings to equalizer filter settings
 
 # Requirements
 * GCC >= 9.4.0

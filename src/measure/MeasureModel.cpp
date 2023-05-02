@@ -7,8 +7,8 @@
 #include <QUrl>
 #include <QVariant>
 
-#include "FrequencyTable.h"
 #include "MeasurementService.h"
+#include <common/FrequencyTable.h>
 
 MeasureModel::MeasureModel(MeasurementService& measurementService, QObject *parent)
     : QObject(parent),

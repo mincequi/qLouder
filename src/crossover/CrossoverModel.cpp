@@ -2,16 +2,15 @@
 
 #include <utility>
 
-#include <QAudioDeviceInfo>
 #include <QDebug>
 #include <QSaveFile>
 #include <QTimer>
 #include <QUrl>
 #include <QVariant>
 
-#include "AudioFilter.h"
-#include "FrequencyTable.h"
-#include "ui/UiUtil.h"
+#include <common/AudioFilter.h>
+#include <common/FrequencyTable.h>
+#include <common/UiUtil.h>
 
 CrossoverModel::CrossoverModel(QObject *parent)
     : ChartModel(parent) {

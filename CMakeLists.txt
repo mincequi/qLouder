@@ -37,12 +37,13 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+
 find_package(QT NAMES Qt5 Qt6 COMPONENTS Core Quick QuickControls2 Multimedia Charts Svg Xml REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 Multimedia Charts Svg Xml REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FFTW3F REQUIRED fftw3f)
 pkg_check_modules(FFTW3 REQUIRED fftw3)
-pkg_check_modules(TAGLIB REQUIRED taglib)
 string(REPLACE "fftw3f" "fftw3f_threads" FFTW3F_THREADS_LINK_LIBRARIES ${FFTW3F_LINK_LIBRARIES})
 string(REPLACE "fftw3" "fftw3_threads" FFTW3_THREADS_LINK_LIBRARIES ${FFTW3_LINK_LIBRARIES})
 
@@ -59,23 +60,20 @@ set(PROJECT_SOURCES
     src/charts/LogChart.cpp
     src/charts/TimeTable.cpp
     src/crossover/CrossoverModel.cpp
-    src/project/ProjectModel.cpp
-    src/status/StatusModel.cpp
-    src/target/TargetModel.cpp
     src/ui/MaterialDesignIcon.cpp
-    src/ui/UiUtil.cpp
     src/util/FrFile.cpp
-    src/AudioFilter.cpp
-    src/Config.cpp
-    src/FrequencyTable.cpp
-    src/main.cpp
     src/main.cpp
     src/qml.qrc
 )
 
+add_subdirectory(src/charts)
+add_subdirectory(src/common)
+add_subdirectory(src/crossover)
 add_subdirectory(src/equalizer)
 add_subdirectory(src/measure)
 add_subdirectory(src/player)
+add_subdirectory(src/project)
+add_subdirectory(src/status)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(qLouder
@@ -123,9 +121,11 @@ PRIVATE
     Qt${QT_VERSION_MAJOR}::Xml
     rxcpp # TODO: remove, still needed for TargetModel.cpp
     #rpp
+    common
     equalizer
     player
     measure
+    project
 )
 
 set_target_properties(qLouder PROPERTIES

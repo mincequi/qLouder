@@ -20,10 +20,10 @@ signals:
 
 private:
     void updateChart();
-    void onCurrentMeasurementChangedF(Measurement<float>* measurement);
+    void onCurrentMeasurementChangedF(Measurement* measurement);
 
     QtCharts::QXYSeries* _logSeries = nullptr;
-    Measurement<float>* _measurement = nullptr;
+    Measurement* _measurement = nullptr;
 
     // Calibration members
     std::map<Calibration, QVector<QPointF>> _calibrations;

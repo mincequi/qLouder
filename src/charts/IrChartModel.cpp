@@ -172,7 +172,7 @@ QVector<QPointF> IrChartModel::simplify(const QVector<QPointF>& in) {
     return out;
 }
 
-void IrChartModel::onCurrentMeasurementChangedF(Measurement<float>* measurement) {
+void IrChartModel::onCurrentMeasurementChangedF(Measurement* measurement) {
     _measurement = measurement;
     emit measurementChanged();
     if (!_measurement || !_series) {

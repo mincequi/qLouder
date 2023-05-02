@@ -3,20 +3,17 @@
 #include <cstring>
 #include <complex>
 
+#include <wavpack/wavpack.h>
+
 #include "Fft.h"
 #include "SignalGenerator.h"
-#include <FrequencyTable.h>
 #include <status/StatusModel.h>
 
 // Swept Sine Chirps for Measuring Impulse Response
 // https://www.thinksrs.com/downloads/pdfs/applicationnotes/SR1_SweptSine.pdf
-
-template <class T>
-Measurement<T>::Measurement(int sampleRate,
-                            double fMin,
-                            double fMax,
-                            const std::vector<T>& inputSignal,
-                            const std::vector<T>& inverseFilter,
+Measurement::Measurement(int sampleRate,
+                            const MonoSignal& inputSignal,
+                            const MonoSignal& inverseFilter,
                             const std::map<double, double>& calibration0,
                             const std::map<double, double>& calibration90,
                             Calibration calibration)
@@ -24,43 +21,69 @@ Measurement<T>::Measurement(int sampleRate,
       _inputSignal(inverseFilter.size()*2),
       _inverseFilter(inverseFilter.size()*2),
       _calibration(calibration),
-      //_table(24, fMin, fMax), // Let's try with a fixed table size. Should make things easier.
       _irWindowLeft(-100 * sampleRate / 1000),
       _irWindowRight(400 * sampleRate / 1000) {
     _frCalibrations[Calibration0] = _table.interpolate(calibration0, false);
     _frCalibrations[Calibration90] = _table.interpolate(calibration90, false);
-    std::memcpy(_inputSignal.data(), inputSignal.data(), inputSignal.size()*sizeof(T));
-    std::memcpy(_inverseFilter.data(), inverseFilter.data(), inverseFilter.size()*sizeof(T));
+    std::memcpy(_inputSignal.data(), inputSignal.data(), inputSignal.size()*sizeof(float));
+    std::memcpy(_inverseFilter.data(), inverseFilter.data(), inverseFilter.size()*sizeof(float));
 }
 
-template <class T>
-const std::vector<T>& Measurement<T>::ir() {
+Measurement::Measurement(int sampleRate,
+                         MonoSignal& ir,
+                         const std::map<std::string, std::string>& tags)
+    : _sampleRate(sampleRate),
+      _ir(ir),
+      _irWindowLeft(-100 * sampleRate / 1000),
+      _irWindowRight(400 * sampleRate / 1000) {
+
+    // Find max value
+    float maxValue = 0.0;
+    findIrMaxValue(_irMaxValueIndex, maxValue);
+
+    // Scale IR
+    // @TODO: here we apply the second scaling. So, is the first one actually needed?
+    for (auto& i : _ir) {
+        i /= maxValue;
+    }
+
+    // Start at -100ms
+    setIrWindowLeft(-100.0);
+    // End at +400ms
+    setIrWindowRight(+400.0);
+}
+
+int Measurement::sampleRate() const {
+    return _sampleRate;
+}
+
+const MonoSignal& Measurement::ir() {
     if (_ir.empty()) {
         // compute deconvolution of the system’s impulse response
         const auto fftLength = _inputSignal.size();
 
         // FFT measured signal
-        std::vector<std::complex<T>> fftInputSignal(fftLength);
-        fft<T>(_inputSignal, fftInputSignal);
+        std::vector<std::complex<float>> fftInputSignal(fftLength);
+        fft<float>(_inputSignal, fftInputSignal);
 
         // FFT reverse filter
-        std::vector<std::complex<T>> fftInverseSignal(fftLength);
-        fft<T>(_inverseFilter, fftInverseSignal);
+        std::vector<std::complex<float>> fftInverseSignal(fftLength);
+        fft<float>(_inverseFilter, fftInverseSignal);
 
         // Compute product
-        std::vector<std::complex<T>> product(fftLength);
+        std::vector<std::complex<float>> product(fftLength);
         // @TODO: do we need this scaling?
-        const T normFactor = 1.0 / fftLength;
+        const float normFactor = 1.0 / fftLength;
         for (size_t i = 0; i < fftLength; i++) {
             product[i] = fftInputSignal[i] * fftInverseSignal[i] * normFactor;
         }
 
         // Compute impulse response
         _ir.resize(fftLength);
-        ifft<T>(product, _ir);
+        ifft<float>(product, _ir);
 
         // Find max value
-        T maxValue = 0.0;
+        float maxValue = 0.0;
         findIrMaxValue(_irMaxValueIndex, maxValue);
 
         // Scale IR
@@ -69,9 +92,9 @@ const std::vector<T>& Measurement<T>::ir() {
             i /= maxValue;
         }
 
-        // Start at -200ms
+        // Start at -100ms
         setIrWindowLeft(-100.0);
-        // End at +800ms
+        // End at +400ms
         setIrWindowRight(+400.0);
 
         // Take total of 100ms -> 80ms (or 27.5m)
@@ -87,8 +110,7 @@ const std::vector<T>& Measurement<T>::ir() {
     return _ir;
 }
 
-template <class T>
-const std::vector<T>& Measurement<T>::irWindow() {
+const MonoSignal& Measurement::irWindow() {
     if (_irWin.empty()) {
         _irWin.reserve(_irWindowRight - _irWindowLeft + 1);
 
@@ -117,47 +139,43 @@ const std::vector<T>& Measurement<T>::irWindow() {
     return _irWin;
 }
 
-template <class T>
-const std::vector<T>& Measurement<T>::windowedIr() {
-    if (_winIr.empty()) {
+const MonoSignal& Measurement::windowedIr() {
+    if (_windowedIr.empty()) {
         const auto& ir_ = ir();
         const auto& irWin = irWindow();
         //findRangeByAmplitude(min, max);
 
-        _winIr.resize(_irWindowRight - _irWindowLeft);
-        for (int i = 0; i < _winIr.size(); ++i) {
-            _winIr.at(i) = ir_.at(i + _irWindowLeft) * irWin.at(i);
+        _windowedIr.resize(_irWindowRight - _irWindowLeft);
+        for (int i = 0; i < _windowedIr.size(); ++i) {
+            _windowedIr.at(i) = ir_.at(i + _irWindowLeft) * irWin.at(i);
         }
-        //std::memcpy(_winIr.data(), ir.data() + _irWindowLeft, _winIr.size()*sizeof(T));
+        //std::memcpy(_winIr.data(), ir.data() + _irWindowLeft, _winIr.size()*sizeof(float));
     }
 
-    return _winIr;
+    return _windowedIr;
 }
 
-template <class T>
-void Measurement<T>::setFrChangedCallback(std::function<void()> cb) {
+void Measurement::setFrChangedCallback(std::function<void()> cb) {
     _frChangedCallback = cb;
 }
 
-template <class T>
-const std::vector<double>& Measurement<T>::frequencies() {
+const std::vector<double>& Measurement::frequencies() {
     return _table.frequencies();
 }
 
-template <class T>
-const std::vector<double>& Measurement<T>::fr() {
+const std::vector<double>& Measurement::fr() {
     if (_fr.empty()) {
         const auto& wIr = windowedIr();
 
-        // Extend to hole seconds (with padded zeros)
+        // Extend to whole seconds (with padded zeros)
         int fftLength = wIr.size();
         if (fftLength % _sampleRate)
             fftLength += _sampleRate - (fftLength % _sampleRate);
-        std::vector<T> buf(fftLength);
-        std::memcpy(buf.data(), wIr.data(), wIr.size() * sizeof(T));
+        MonoSignal buf(fftLength);
+        std::memcpy(buf.data(), wIr.data(), wIr.size() * sizeof(float));
 
-        std::vector<std::complex<T>> out(_sampleRate);
-        fft<T>(buf, out);
+        std::vector<std::complex<float>> out(_sampleRate);
+        fft<float>(buf, out);
 
         // Save magnitude
         std::map<double, double> fMap;
@@ -171,8 +189,7 @@ const std::vector<double>& Measurement<T>::fr() {
     return _fr;
 }
 
-template <class T>
-void Measurement<T>::setFrCalibration(Calibration calibration) {
+void Measurement::setCalibration(Calibration calibration) {
     if (_calibration == calibration) return;
 
     _calibration = calibration;
@@ -183,8 +200,7 @@ void Measurement<T>::setFrCalibration(Calibration calibration) {
     }
 }
 
-template <class T>
-const std::vector<double>& Measurement<T>::calibratedFr() {
+const std::vector<double>& Measurement::calibratedFr() {
     const auto& fr_ = fr();
     if (_calibratedFr.empty()) {
         if (_frCalibrations[_calibration].empty()) {
@@ -199,39 +215,33 @@ const std::vector<double>& Measurement<T>::calibratedFr() {
     return _calibratedFr;
 }
 
-template <class T>
-const std::vector<double>& Measurement<T>::frCalibration(Calibration calibration) {
+const std::vector<double>& Measurement::frCalibration(Calibration calibration) {
     return _frCalibrations[calibration];
 }
 
-template <class T>
-double Measurement<T>::irWindowLeft() const {
+double Measurement::irWindowLeft() const {
     return (double)(_irMaxValueIndex - _irWindowLeft)/_sampleRate * -1000.0;
 }
 
-template <class T>
-void Measurement<T>::setIrWindowLeft(double ms) {
+void Measurement::setIrWindowLeft(double ms) {
     _irWindowLeft = _irMaxValueIndex + _sampleRate * ms / 1000.0;
     _irWindowLeft = std::max(_irWindowLeft, 0);
 
     reset();
 }
 
-template <class T>
-double Measurement<T>::irWindowRight() const {
+double Measurement::irWindowRight() const {
     return (double)(_irWindowRight - _irMaxValueIndex)/_sampleRate * 1000.0;
 }
 
-template <class T>
-void Measurement<T>::setIrWindowRight(double ms) {
+void Measurement::setIrWindowRight(double ms) {
     _irWindowRight = _irMaxValueIndex + _sampleRate * ms / 1000.0;
     _irWindowRight = std::min(_irWindowRight, (int)_ir.size()-1);
 
     reset();
 }
 
-template <class T>
-void Measurement<T>::findIrMaxValue(int& idx, T& value) {
+void Measurement::findIrMaxValue(int& idx, float& value) const {
     for (int i = 0; i < _ir.size(); ++i) {
         if (value < fabs(_ir.at(i))) {
             value = fabs(_ir.at(i));
@@ -240,8 +250,7 @@ void Measurement<T>::findIrMaxValue(int& idx, T& value) {
     }
 }
 
-template <class T>
-void Measurement<T>::findRangeByAmplitude(int& min, int& max) {
+void Measurement::findRangeByAmplitude(int& min, int& max) {
     float ampMax = 0.0f;
     for (int i = min; i >= 0; --i) {
         // 0.00025  -> 72dB
@@ -261,10 +270,9 @@ void Measurement<T>::findRangeByAmplitude(int& min, int& max) {
     }
 }
 
-template <class T>
-void Measurement<T>::reset() {
+void Measurement::reset() {
     _irWin.clear();
-    _winIr.clear();
+    _windowedIr.clear();
     _fr.clear();
     _calibratedFr.clear();
 
@@ -272,6 +280,3 @@ void Measurement<T>::reset() {
         _frChangedCallback();
     }
 }
-
-template class Measurement<float>;
-template class Measurement<double>;

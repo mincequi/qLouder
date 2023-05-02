@@ -1,3 +1,5 @@
+pkg_check_modules(TAGLIB REQUIRED taglib)
+
 add_library(player STATIC
     PlayerBarModel.cpp
     PlayerModel.cpp

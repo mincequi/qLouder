@@ -2,10 +2,9 @@
 #include <complex>
 #include <cstdint>
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/matchers/catch_matchers_vector.hpp>
 
-#include <FrequencyTable.h>
-#include <AudioFilter.h>
+#include <common/FrequencyTable.h>
+#include <common/AudioFilter.h>
 
 TEST_CASE("Mix low and high pass", "[Biquad]") {
     FrequencyTable<double> table(1);

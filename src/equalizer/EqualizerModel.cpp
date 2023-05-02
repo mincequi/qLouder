@@ -3,11 +3,11 @@
 #include <chrono>
 #include <rxcpp/operators/rx-combine_latest.hpp>
 
-#include "AudioFilter.h"
 #include "FilterModel.h"
+#include "TargetModel.h"
+#include <common/AudioFilter.h>
 #include <measure/MeasurementManager.h>
 #include <status/StatusModel.h>
-#include <target/TargetModel.h>
 
 // https://www.sonarworks.com/soundid-reference/blog/learn/eq-curves-defined/
 

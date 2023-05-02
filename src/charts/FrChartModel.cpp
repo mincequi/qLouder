@@ -1,6 +1,6 @@
 #include "FrChartModel.h"
 
-#include "Config.h"
+#include <common/Config.h>
 #include "measure/MeasurementManager.h"
 
 FrChartModel::FrChartModel(QObject *parent)
@@ -51,7 +51,7 @@ void FrChartModel::updateChart() {
 
 }
 
-void FrChartModel::onCurrentMeasurementChangedF(Measurement<float>* measurement) {
+void FrChartModel::onCurrentMeasurementChangedF(Measurement* measurement) {
     _measurement = measurement;
     if (!_measurement) {
         _logSeries->clear();

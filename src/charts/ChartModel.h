@@ -1,5 +1,4 @@
-#ifndef CHARTMODEL_H
-#define CHARTMODEL_H
+#pragma once
 
 #include <memory>
 
@@ -65,5 +64,3 @@ private:
     // Use unique_ptr here to prevent object slicinig
     std::map<Type, std::unique_ptr<AbstractChart>> _charts;
 };
-
-#endif // CHARTMODEL_H

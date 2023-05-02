@@ -4,12 +4,11 @@
 
 #include <QDebug>
 
-#include "Config.h"
-#include "FrequencyTable.h"
 #include "Measurement.h"
 #include "MeasurementError.h"
 #include "ResponseSignal.h"
 #include "SignalGenerator.h"
+#include <common/Config.h>
 #include <status/StatusModel.h>
 
 static QAudioFormat s_inputFormat;
@@ -148,9 +147,7 @@ void MeasurementService::stop(bool clearResult) {
         auto signal = ResponseSignal(&m_inputBuffer, s_inputFormat.sampleRate());
         signal.resample(s_outputFormat.sampleRate());
 
-        auto measurement = new Measurement<float>(s_outputFormat.sampleRate(),
-                                                  _excitationSignal.minF(),
-                                                  _excitationSignal.maxF(),
+        auto measurement = new Measurement(s_outputFormat.sampleRate(),
                                                   signal.data(),
                                                   _inverseFilter.data(),
                                                   cfg->calibration0,

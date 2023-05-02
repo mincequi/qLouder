@@ -7,7 +7,6 @@
 
 #include <rxcpp/rx-lite.hpp>
 
-template <class T>
 class Measurement;
 
 class MeasurementService;
@@ -18,23 +17,22 @@ public:
     static MeasurementManager& instance();
     ~MeasurementManager();
 
-    Measurement<float>* currentMeasurement() const;
+    Measurement* currentMeasurement() const;
 
     void setFrCalibration(Calibration calibration);
 
     rxcpp::observable<std::vector<double>> calibratedFr() const;
 
 signals:
-    void currentMeasurementChangedF(Measurement<float>* measurement);
-    void currentMeasurementChangedD(Measurement<double>* measurement);
+    void currentMeasurementChangedF(Measurement* measurement);
 
 private:
     explicit MeasurementManager(const MeasurementService& measurementService, QObject *parent = nullptr);
-    void onMeasurementAvailable(Measurement<float>* measurement);
+    void onMeasurementAvailable(Measurement* measurement);
 
     const MeasurementService& _measurementService;
-    std::vector<Measurement<float>*> _measurements;
-    Measurement<float>* _currentMeasurement = nullptr;
+    std::vector<Measurement*> _measurements;
+    Measurement* _currentMeasurement = nullptr;
 
     rxcpp::subjects::subject<std::vector<double>> _calibratedFr;
 };

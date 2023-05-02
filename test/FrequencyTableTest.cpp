@@ -2,7 +2,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_vector.hpp>
 
-#include <FrequencyTable.h>
+#include <common/FrequencyTable.h>
 
 TEST_CASE("match exact values", "[FrequencyTable]") {
     FrequencyTable<double> table;

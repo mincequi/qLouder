@@ -1,5 +1,4 @@
-#ifndef STATUSMODEL_H
-#define STATUSMODEL_H
+#pragma once
 
 #include <QObject>
 #include <QTimer>
@@ -49,5 +48,3 @@ private:
     QString _text;
     QTimer _timer;
 };
-
-#endif // STATUSMODEL_H

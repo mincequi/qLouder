@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "AudioFilter.h"
+#include <common/AudioFilter.h>
 
 class PlayerInterface {
 public:

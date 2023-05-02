@@ -1,10 +1,10 @@
-#ifndef MEASUREMENT_H
-#define MEASUREMENT_H
+#pragma once
 
 #include <functional>
 
-#include "FrequencyTable.h"
+#include "MonoSignal.h"
 #include "Types.h"
+#include <common/FrequencyTable.h>
 
 /**
  * @brief The Measurement class
@@ -12,23 +12,35 @@
  * This is a passive data class to hold any values to save and restore a
  * measurement from disk. It shall also encapsulate "basic" and "raw" data
  * operation/manipulation like windowing and FFT.
- *
- * @tparam T the data type to be used for measurement: double or float.
+ * It shall not hold state.
  */
-template<class T>
 class Measurement {
 public:
     explicit Measurement(int sampleRate,
-                         double fMin,
-                         double fMax,
-                         const std::vector<T>& inputSignal,
-                         const std::vector<T>& inverseFilter,
+                         // TODO: change inputSignal and inverseFilter to ir
+                         const MonoSignal& inputSignal,
+                         const MonoSignal& inverseFilter,
                          const std::map<double, double>& calibration0 = {},
                          const std::map<double, double>& calibration90 = {},
                          Calibration calibration = CalibrationNone);
 
-    const std::vector<T>& irWindow();
-    const std::vector<T>& windowedIr();
+    Measurement(int sampleRate,
+                MonoSignal& ir,
+                const std::map<std::string, std::string>& tags);
+
+    int sampleRate() const;
+    const MonoSignal& ir();
+
+    const std::string& speaker() const;
+    const std::string& microphone() const;
+    const std::vector<double>& calibration(Calibration calibration) const;
+    void setCalibration(Calibration calibration);
+
+    uint32_t recordDate() const;
+
+    // TODO: candidate to be moved
+    const MonoSignal& irWindow();
+    const MonoSignal& windowedIr();
 
     double irWindowLeft() const;
     void setIrWindowLeft(double ms);
@@ -37,33 +49,48 @@ public:
     void setIrWindowRight(double ms);
 
     // Frequency response related methods
+    // TODO: remove this one
     const std::vector<double>& frequencies();
     void setFrChangedCallback(std::function<void()>);
 
-    void setFrCalibration(Calibration calibration);
     const std::vector<double>& calibratedFr();
     const std::vector<double>& frCalibration(Calibration calibration);
 
 private:
+    enum class qLouderTagKey {
+        Version,
+
+        Date,
+        Name,
+        Description,
+
+        MicrophoneName,
+        MicrophoneCalibration,
+        MicrophoneCalibration0,
+        MicrophoneCalibration90,
+
+        ImpulseResponseWindowLeft,
+        ImpulseResponseWindowRight
+    };
+
     const std::vector<double>& fr();
 
-    const std::vector<T>& ir();
     //void setInputSignal(const std::vector<T>& inputSignal);
     //void setInverseFilter(const std::vector<T>& inverseFilter);
 
-    void findIrMaxValue(int& idx, T& value);
+    void findIrMaxValue(int& idx, float& value) const;
     void findRangeByAmplitude(int& min, int& max);
 
     void reset();
 
     FrequencyTable<double> _table;
     int _sampleRate = 48000;
-    std::vector<T> _inverseFilter;
-    std::vector<T> _inputSignal;
+    MonoSignal _inverseFilter;
+    MonoSignal _inputSignal;
 
-    std::vector<T> _ir;
-    std::vector<T> _irWin;
-    std::vector<T> _winIr;
+    MonoSignal _ir;
+    MonoSignal _irWin;
+    MonoSignal _windowedIr;
 
     std::function<void()> _frChangedCallback = nullptr;
     std::vector<double> _fr;
@@ -78,5 +105,3 @@ private:
 
     //friend class MeasurementManager;
 };
-
-#endif // MEASUREMENTSESSION_H

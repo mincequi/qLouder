@@ -3,7 +3,6 @@
 #include <QCoreApplication>
 #include <QPointF>
 
-#include <FrequencyTable.h>
 #include <measure/Measurement.h>
 #include <measure/MeasurementManager.h>
 #include <status/StatusModel.h>

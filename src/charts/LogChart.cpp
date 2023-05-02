@@ -2,7 +2,7 @@
 
 #include <assert.h>
 
-#include <FrequencyTable.h>
+#include <common/FrequencyTable.h>
 
 LogChart::LogChart() {
     _xMin = 20.0;

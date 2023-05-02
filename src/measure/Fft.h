@@ -1,5 +1,4 @@
-#ifndef FFT_H
-#define FFT_H
+#pragma once
 
 #include <complex>
 #include <vector>
@@ -54,5 +53,3 @@ void ifft<double>(std::vector<std::complex<double>>& in, std::vector<double>& ou
     fftw_execute(plan);
     fftw_destroy_plan(plan);
 }
-
-#endif // FFT_H

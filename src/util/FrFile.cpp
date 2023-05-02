@@ -21,7 +21,7 @@ std::map<T,T> FrFile<T>::read(const QString& filename) {
         if (line.startsWith('#')) continue;
 
         if (rx.indexIn(line) != -1) {
-            out[rx.cap(1).toDouble()] = rx.cap(3).toDouble();
+            out[rx.cap(1).toDouble()] = -rx.cap(3).toDouble();
         }
     }
 

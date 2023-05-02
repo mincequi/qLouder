@@ -1,5 +1,4 @@
-#ifndef FRFILE_H
-#define FRFILE_H
+#pragma once
 
 #include <map>
 
@@ -13,5 +12,3 @@ public:
 private:
     FrFile();
 };
-
-#endif // FRFILE_H

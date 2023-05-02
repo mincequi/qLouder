@@ -5,7 +5,7 @@ import QtQuick.Controls.Material 2.12
 import QtQuick.Layouts 1.12
 
 import PlayerModel 1.0
-import ProjectModel 1.0
+import SettingsModel 1.0
 
 Page {
     header: Row {
@@ -28,31 +28,6 @@ Page {
             columnSpacing: 12
 
             Label {
-                text: "Project directory"
-                font.pixelSize: 12
-            }
-            Label {
-                id: projectDir
-                Layout.fillWidth: true
-                leftPadding: 6
-                rightPadding: 6
-                font.pixelSize: 12
-                text: ProjectModel.projectDir
-                background: Rectangle {
-                    y: -4.5
-                    height: 24
-                    color: "transparent"
-                    border.color: Material.frameColor
-                    border.width: 1
-                }
-            }
-            SmallToolButton {
-                implicitWidth: 84
-                iconName: "folder"
-                text: "Open..."
-            }
-
-            Label {
                 text: "Microphone calibration file 0°"
                 font.pixelSize: 12
             }
@@ -62,7 +37,7 @@ Page {
                 leftPadding: 6
                 rightPadding: 6
                 font.pixelSize: 12
-                text: ProjectModel.micCalibration0
+                text: SettingsModel.micCalibration0
                 elide: Text.ElideLeft
                 background: Rectangle {
                     y: -4.5
@@ -92,7 +67,7 @@ Page {
                 leftPadding: 6
                 rightPadding: 6
                 font.pixelSize: 12
-                text: ProjectModel.micCalibration90
+                text: SettingsModel.micCalibration90
                 elide: Text.ElideLeft
                 background: Rectangle {
                     y: -4.5
@@ -153,10 +128,10 @@ Page {
             }
             SmallComboBox {
                 id: inputDevices
-                model: ProjectModel.inputDevices
-                //sizeModel: ProjectModel.outputDevices   // Yes, the outputDevices to have a common width with input devices
-                onCurrentIndexChanged: ProjectModel.setInputDevice(currentIndex)
-                Component.onCompleted: currentIndex = ProjectModel.savedInputDevice
+                model: SettingsModel.inputDevices
+                //sizeModel: SettingsModel.outputDevices   // Yes, the outputDevices to have a common width with input devices
+                onCurrentIndexChanged: SettingsModel.setInputDevice(currentIndex)
+                Component.onCompleted: currentIndex = SettingsModel.savedInputDevice
                 Layout.fillWidth: true
             }
             Label {
@@ -165,10 +140,10 @@ Page {
                 font.pixelSize: 12
             }
             SmallComboBox {
-                model: ProjectModel.inputSampleRates
-                sizeModel: ProjectModel.inputSampleRates
-                onCurrentIndexChanged: ProjectModel.setInputSampleRate(currentIndex)
-                Component.onCompleted: currentIndex = ProjectModel.savedInputSampleRate
+                model: SettingsModel.inputSampleRates
+                sizeModel: SettingsModel.inputSampleRates
+                onCurrentIndexChanged: SettingsModel.setInputSampleRate(currentIndex)
+                Component.onCompleted: currentIndex = SettingsModel.savedInputSampleRate
             }
 
             Label {
@@ -176,10 +151,10 @@ Page {
                 font.pixelSize: 12
             }
             SmallComboBox {
-                model: ProjectModel.outputDevices
-                //sizeModel: ProjectModel.outputDevices
-                onCurrentIndexChanged: ProjectModel.setOutputDevice(currentIndex)
-                Component.onCompleted: currentIndex = ProjectModel.savedOutputDevice
+                model: SettingsModel.outputDevices
+                //sizeModel: SettingsModel.outputDevices
+                onCurrentIndexChanged: SettingsModel.setOutputDevice(currentIndex)
+                Component.onCompleted: currentIndex = SettingsModel.savedOutputDevice
                 Layout.fillWidth: true
             }
             Label {
@@ -188,10 +163,10 @@ Page {
                 font.pixelSize: 12
             }
             SmallComboBox {
-                model: ProjectModel.outputSampleRates
-                sizeModel: ProjectModel.inputSampleRates
-                onCurrentIndexChanged: ProjectModel.setOutputSampleRate(currentIndex)
-                Component.onCompleted: currentIndex = ProjectModel.savedOutputSampleRate
+                model: SettingsModel.outputSampleRates
+                sizeModel: SettingsModel.inputSampleRates
+                onCurrentIndexChanged: SettingsModel.setOutputSampleRate(currentIndex)
+                Component.onCompleted: currentIndex = SettingsModel.savedOutputSampleRate
             }
 
             Item {
@@ -214,7 +189,7 @@ Page {
             path = path.replace(/^(file:\/{3})/,"/");
             // unescape html codes like '%23' for '#'
             var cleanPath = decodeURIComponent(path);
-            ProjectModel.openCalibrationFile(degrees, cleanPath)
+            SettingsModel.openCalibrationFile(degrees, cleanPath)
         }
     }
 

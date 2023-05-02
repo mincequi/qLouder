@@ -4,6 +4,10 @@
 
 #include "AudioBuffer.h"
 
+Signal::Signal(AudioBuffer* buffer) :
+    _buffer(buffer) {
+}
+
 Signal::Channels Signal::channels() const {
     return _channels;
 }
@@ -34,10 +38,6 @@ void Signal::resample(int newSampleRate) {
 
     _buffer->data = std::move(newData);
     _sampleRate = newSampleRate;
-}
-
-Signal::Signal(AudioBuffer* buffer)
-    : _buffer(buffer) {
 }
 
 const std::vector<float>& Signal::data() const {

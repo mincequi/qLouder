@@ -1,6 +1,6 @@
 #include "TargetModel.h"
 
-#include "AudioFilter.h"
+#include <common/AudioFilter.h>
 
 TargetModel::TargetModel(QObject *parent)
     : ChartModel(parent) {

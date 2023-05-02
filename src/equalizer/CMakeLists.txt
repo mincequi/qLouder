@@ -6,12 +6,15 @@ add_library(equalizer STATIC
     NoneStrategy.cpp
     PeakingStrategy.cpp
     ShelvingStrategy.cpp
+    TargetModel.cpp
 )
 
 target_link_libraries(equalizer
 PUBLIC
     Qt${QT_VERSION_MAJOR}::Qml
+    rxcpp
 PRIVATE
     Qt${QT_VERSION_MAJOR}::Core
-    rxcpp
+    charts
+    common
 )

@@ -39,7 +39,7 @@ public slots:
 signals:
 
 private:
-    void onCurrentMeasurementChangedF(Measurement<float>* measurement);
+    void onCurrentMeasurementChangedF(Measurement* measurement);
 
     void updateChart();
     void updateIrWindow();
@@ -52,7 +52,7 @@ private:
     QtCharts::QXYSeries* _upperEnvelopeSeries = nullptr;
     QtCharts::QXYSeries* _lowerEnvelopeSeries = nullptr;
 
-    Measurement<float>* _measurement = nullptr;
+    Measurement* _measurement = nullptr;
 };
 
 #endif // IRCHARTMODEL_H

@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
+pkg_check_modules(TAGLIB REQUIRED taglib)
+
 Include(FetchContent)
 
 FetchContent_Declare(
@@ -10,9 +12,6 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(Catch2)
-
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(FFTW3F REQUIRED fftw3f)
 
 # Fft test
 #add_executable(fft_test
@@ -39,33 +38,43 @@ pkg_check_modules(FFTW3F REQUIRED fftw3f)
 #)
 
 # FrequencyTable test
-add_executable(ft_test
+add_executable(FrequencyTableTest
   FrequencyTableTest.cpp
-  ../src/FrequencyTable.cpp
+  ../src/common/FrequencyTable.cpp
 )
-
-target_include_directories(ft_test
+target_include_directories(FrequencyTableTest
 PRIVATE
   ../src
 )
-
-target_link_libraries(ft_test
+target_link_libraries(FrequencyTableTest
 PRIVATE
   Catch2::Catch2WithMain
 )
 
-# TimeTable test
-add_executable(tt_test
-  TimeTableTest.cpp
-  ../src/charts/TimeTable.cpp
+# MeasurementTest
+add_executable(MeasurementTest
+  MeasurementTest.cpp
 )
-
-target_include_directories(tt_test
+target_include_directories(MeasurementTest
 PRIVATE
   ../src
 )
+target_link_libraries(MeasurementTest
+PRIVATE
+  Catch2::Catch2WithMain
+  measure
+)
 
-target_link_libraries(tt_test
+# TimeTable test
+add_executable(TimeTableTest
+  TimeTableTest.cpp
+  ../src/charts/TimeTable.cpp
+)
+target_include_directories(TimeTableTest
+PRIVATE
+  ../src
+)
+target_link_libraries(TimeTableTest
 PRIVATE
   Catch2::Catch2WithMain
 )
@@ -73,16 +82,29 @@ PRIVATE
 # Crossover test
 add_executable(xo_test
   CrossoverTest.cpp
-  ../src/AudioFilter.cpp
-  ../src/FrequencyTable.cpp
 )
-
 target_include_directories(xo_test
 PRIVATE
   ../src
 )
-
 target_link_libraries(xo_test
 PRIVATE
+  common
   Catch2::Catch2WithMain
+)
+
+# Project test
+add_executable(project_test
+  ProjectTest.cpp
+)
+target_include_directories(project_test
+PRIVATE
+  ../src
+  ../3rdParty
+  ${TAGLIB_INCLUDE_DIRS}
+)
+target_link_libraries(project_test
+PRIVATE
+  Catch2::Catch2WithMain
+  ${TAGLIB_LINK_LIBRARIES}
 )

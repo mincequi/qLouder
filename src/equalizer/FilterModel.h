@@ -5,7 +5,6 @@
 #include <QObject>
 #include <QtCharts/QXYSeries>
 
-#include "AudioFilter.h"
 #include "EqualizerModel.h"
 #include "FilterInterface.h"
 #include "LowHighPassStrategy.h"

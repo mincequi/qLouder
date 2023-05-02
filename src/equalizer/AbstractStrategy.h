@@ -1,7 +1,7 @@
 #pragma once
 
-#include "AudioFilter.h"
 #include "FilterInterface.h"
+#include <common/AudioFilter.h>
 
 class EqualizerModel;
 class FilterModel;

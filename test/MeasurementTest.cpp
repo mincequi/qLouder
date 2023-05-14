@@ -7,7 +7,8 @@
 
 #include <measure/AudioBuffer.h>
 #include <measure/ExcitationSignal.h>
-#include <measure/InverseFilter.h>
+#include <measure/Farina.h>
+#include <measure/InverseSignal.h>
 #include <measure/Measurement.h>
 #include <measure/MeasurementFactory.h>
 #include <measure/SignalGenerator.h>
@@ -42,25 +43,22 @@ Measurement loadWv() {
     ir.resize(WavpackGetNumSamples(ctx));
     WavpackUnpackSamples(ctx, (int32_t*)ir.data(), ir.size());
 
-    return Measurement(44100, ir, {});
+    return Measurement(44100, ir);
 }
 
 TEST_CASE("Read metadata", "[Measurement]") {
     AudioBuffer buffer(QIODevice::ReadOnly);
-    auto signal = SignalFactory::createSineSweep(&buffer, Signal::Channels::Left, 44100, 20.0, 20000.0, 441000, 44100, 44100);
-    signal.fadeIn(44100);
-    signal.fadeOut(44100/24);
+    auto farina = Farina(&buffer);
+    auto signal = farina.excitationSignal();
 
     std::vector<float> recorded;
     recorded.resize(signal.data().size()/2);
     for (size_t i = 0; i < signal.data().size(); i += 2) {
         auto s = sin(((i/2.0)/recorded.size()) * M_PI);
-        recorded.at(i/2) = signal.data().at(i) * s * 0.5f;
+        recorded.at(i/2) = signal.data().at(i) * s;
     }
 
-    auto filter = InverseFilter::from(signal);
-
-    auto measurement = Measurement(44100, recorded, filter.data());
+    auto measurement = Measurement(44100, farina.impulseResponse(recorded));
     auto ir = measurement.windowedIr();
 
     MeasurementFactory::toDisk(measurement, "ir_1.wv");

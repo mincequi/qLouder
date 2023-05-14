@@ -13,7 +13,7 @@
 MeasureModel::MeasureModel(MeasurementService& measurementService, QObject *parent)
     : QObject(parent),
       m_measurementService(measurementService) {
-    FrequencyTable<double> table(3);
+    FrequencyTable<double> table(3, 20.0);
     m_frequencyTable = table.frequencies();
     m_maxFrequencySlider = m_frequencyTable.size()-1;
     connect(&m_measurementService, &MeasurementService::progressChanged, this, &MeasureModel::onServiceProgressChanged);

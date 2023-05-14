@@ -19,7 +19,7 @@ EqualizerModel::EqualizerModel(const TargetModel& targetModel,
     ChartModel::setType(FrequencyResponse);
     FrequencyTable<double> table;
     _frequencyTable = table.frequencies();
-    FrequencyTable<double> rangeTable(3);
+    FrequencyTable<double> rangeTable(3, 20.0);
     _rangeTable = rangeTable.frequencies();
 
     MeasurementManager::instance().calibratedFr()

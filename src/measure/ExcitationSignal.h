@@ -1,5 +1,4 @@
-#ifndef EXCITATIONSIGNAL_H
-#define EXCITATIONSIGNAL_H
+#pragma once
 
 #include "Signal.h"
 
@@ -45,5 +44,3 @@ private:
 
     friend class SignalFactory;
 };
-
-#endif // EXCITATIONSIGNAL_H

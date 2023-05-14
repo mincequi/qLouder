@@ -8,7 +8,7 @@ template<class T>
 void fft(std::vector<T>& in, std::vector<std::complex<T>>& out);
 
 template<>
-void fft<float>(std::vector<float>& in, std::vector<std::complex<float>>& out) {
+inline void fft<float>(std::vector<float>& in, std::vector<std::complex<float>>& out) {
     out.resize(in.size());
     auto plan = fftwf_plan_dft_r2c_1d(in.size(),
                                       in.data(),
@@ -19,7 +19,7 @@ void fft<float>(std::vector<float>& in, std::vector<std::complex<float>>& out) {
 }
 
 template<>
-void fft<double>(std::vector<double>& in, std::vector<std::complex<double>>& out) {
+inline void fft<double>(std::vector<double>& in, std::vector<std::complex<double>>& out) {
     out.resize(in.size());
     auto plan = fftw_plan_dft_r2c_1d(in.size(),
                                      in.data(),
@@ -33,7 +33,7 @@ template<class T>
 void ifft(std::vector<std::complex<T>>& in, std::vector<T>& out);
 
 template<>
-void ifft<float>(std::vector<std::complex<float>>& in, std::vector<float>& out) {
+inline void ifft<float>(std::vector<std::complex<float>>& in, std::vector<float>& out) {
     out.resize(in.size());
     auto plan = fftwf_plan_dft_c2r_1d(in.size(),
                                       reinterpret_cast<fftwf_complex*>(in.data()),
@@ -44,7 +44,7 @@ void ifft<float>(std::vector<std::complex<float>>& in, std::vector<float>& out) 
 }
 
 template<>
-void ifft<double>(std::vector<std::complex<double>>& in, std::vector<double>& out) {
+inline void ifft<double>(std::vector<std::complex<double>>& in, std::vector<double>& out) {
     out.resize(in.size());
     auto plan = fftw_plan_dft_c2r_1d(in.size(),
                                      reinterpret_cast<fftw_complex*>(in.data()),

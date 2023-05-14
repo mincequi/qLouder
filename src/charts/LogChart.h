@@ -1,5 +1,4 @@
-#ifndef LOGCHART_H
-#define LOGCHART_H
+#pragma once
 
 #include "AbstractChart.h"
 
@@ -16,7 +15,5 @@ private:
 
     std::vector<double> _frequencies;
     int _fMinIndex = 0;
-    int _fMaxIndex = 30;
+    int _fMaxIndex = 31;
 };
-
-#endif // LOGCHART_H

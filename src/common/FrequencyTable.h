@@ -16,8 +16,7 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef FREQUENCYTABLE_H
-#define FREQUENCYTABLE_H
+#pragma once
 
 #include <cstdint>
 #include <map>
@@ -41,14 +40,12 @@ public:
 	FrequencyTable(uint8_t octaveFraction = 24,
                    T fMin = 20.0,
                    T fMax = 20000.0);
+                   //T fMin = 16.0,
+                   //T fMax = 25000.0);
 
     const std::vector<T>& frequencies();
 
     std::vector<double> interpolate(const std::map<double, double>& in, bool shiftToZero = true);
-
-    static const std::vector<T>& octaveBands();
-
-    static uint16_t octaveBandsIndex(T f);
 
 private:
     uint16_t octaveBand(T f);
@@ -57,12 +54,10 @@ private:
     T upperFrequency(uint16_t band);
 
 	const uint8_t m_octaveFraction = 24;
-	const uint8_t m_stride = 1;
-	const uint16_t m_fMin = 8;
-	const uint16_t m_fMax = 240;
+	const uint8_t _stride = 1;
+	const uint16_t _freqIndexBegin = 8;
+	const uint16_t _freqIndexEnd = 240;
     std::vector<T> m_frequencies;
 
-    static const std::vector<T> frequencyTable;
+    static const std::array<T, 272> frequencyTable;
 };
-
-#endif // FREQUENCYTABLE_H

@@ -18,6 +18,7 @@
 
 #include "FrequencyTable.h"
 
+#include <array>
 #include <iostream>
 #include <math.h>
 
@@ -26,9 +27,9 @@ FrequencyTable<T>::FrequencyTable(uint8_t _octaveFraction,
                                   T _fMin,
                                   T _fMax) :
 	m_octaveFraction(_octaveFraction),
-	m_stride(round(24.0/m_octaveFraction)),
-	m_fMin(octaveBand(_fMin)),
-	m_fMax(octaveBand(_fMax)) {
+	_stride(round(24.0/m_octaveFraction)),
+	_freqIndexBegin(octaveBand(_fMin)),
+	_freqIndexEnd(octaveBand(_fMax)) {
 }
 
 template <class T>
@@ -36,8 +37,8 @@ const std::vector<T>& FrequencyTable<T>::frequencies() {
 	if (!m_frequencies.empty()) return m_frequencies;
 
 	const uint8_t stride = round(24.0/m_octaveFraction);
-	for (size_t i = m_fMin; i < frequencyTable.size();  i += stride) {
-		if (i >= m_fMin && i <= m_fMax) {
+	for (size_t i = _freqIndexBegin; i < frequencyTable.size();  i += stride) {
+		if (i >= _freqIndexBegin && i <= _freqIndexEnd) {
 			m_frequencies.push_back(frequencyTable.at(i));
 		}
 	}
@@ -50,7 +51,7 @@ std::vector<double> FrequencyTable<T>::interpolate(const std::map<double, double
 
     std::vector<double> out;
 	out.reserve(frequencies().size());
-	for (auto i = m_fMin; i <= m_fMax; i += m_stride) {
+	for (auto i = _freqIndexBegin; i <= _freqIndexEnd; i += _stride) {
 
         // Check what "they" have to offer for "our" frequency band
 		auto lower = in.lower_bound(lowerFrequency(i));
@@ -68,9 +69,15 @@ std::vector<double> FrequencyTable<T>::interpolate(const std::map<double, double
 			continue;
 		}
 
-        // Case 2: no values from "in" for our current band and at the beginning of "in" -> add 0.0
-        if (distance < 1 && (lower == in.begin() || upper == in.end())) {
-            out.push_back(0.0);
+        // Case 2.1: no values from "in" for our current band and at the beginning of "in" -> add lower value
+        if (distance < 1 && lower == in.begin()) {
+            out.push_back(lower->second);
+            continue;
+        }
+
+        // Case 2.2: no values from "in" for our current band and at the end of "in" -> add lower value
+        if (distance < 1 && upper == in.end()) {
+            out.push_back((--upper)->second);
             continue;
         }
 
@@ -118,57 +125,21 @@ std::vector<double> FrequencyTable<T>::interpolate(const std::map<double, double
 }
 
 template <class T>
-const std::vector<T>& FrequencyTable<T>::octaveBands() {
-	return frequencyTable;
-}
-
-template <class T>
-uint16_t FrequencyTable<T>::octaveBandsIndex(T f) {
-	uint i = 0;
-    // Find next greater frequency of f
-	for (const auto it : frequencyTable) {
-        if (it < f)
-            ++i;
-        else
-            break;
-	}
-
-    // Check if we reached the end
-	for (; i < frequencyTable.size() - 1; ++i) {
-        if (frequencyTable.at(i+1) >= f)
-            break;
-	}
-
-	double c;
-	if (i+1 > frequencyTable.size()) {
-		c = frequencyTable.at(i);
-	} else {
-		c = sqrt(frequencyTable.at(i)*frequencyTable.at(i+1));
-	}
-
-    // Check if lower or upper frequency is closer to f
-    if (f <= c)
-        return i;
-    else
-        return i+1;
-}
-
-template <class T>
 uint16_t FrequencyTable<T>::octaveBand(T f) {
 	uint i = 0;
 	for (const auto it : frequencyTable) {
 		if (it < f) ++i; else break;
 	}
 
-	for (; i < frequencyTable.size() - m_stride; i += m_stride) {
-		if (frequencyTable.at(i+m_stride) >= f) break;
+	for (; i < frequencyTable.size() - _stride; i += _stride) {
+		if (frequencyTable.at(i+_stride) >= f) break;
 	}
 
 	double c;
-	if (i+m_stride > frequencyTable.size()) {
+	if (i+_stride >= frequencyTable.size()) {
 		c = frequencyTable.at(i);
 	} else {
-		c = sqrt(frequencyTable.at(i)*frequencyTable.at(i+m_stride));
+		c = sqrt(frequencyTable.at(i)*frequencyTable.at(i+_stride));
 	}
 	if (f <= c) return i;
 	else return i+1;
@@ -181,17 +152,18 @@ T FrequencyTable<T>::octaveBandFrequency(T f) {
 
 template <class T>
 T FrequencyTable<T>::lowerFrequency(uint16_t band) {
-	return sqrt(frequencyTable.at(band)*frequencyTable.at(band-m_stride)) * 0.995;
+	return sqrt(frequencyTable.at(band)*frequencyTable.at(band-_stride)) * 0.995;
 }
 
 template <class T>
 T FrequencyTable<T>::upperFrequency(uint16_t band) {
-	return sqrt(frequencyTable.at(band)*frequencyTable.at(band+m_stride)) * 1.005;
+	return sqrt(frequencyTable.at(band)*frequencyTable.at(band+_stride)) * 1.005;
 }
 
 // 1/24th octave (or Renard R80) frequency table
 template <class T>
-const std::vector<T> FrequencyTable<T>::frequencyTable {
+const std::array<T, 272> FrequencyTable<T>::frequencyTable {
+      12.5,     12.8,    13.2,    13.6,    14.0,    14.5,    15.0,    15.5,
 	  16.0,     16.5,    17.0,    17.5,    18.0,    18.5,    19.0,    19.5,
 
 	  20.0,     20.6,    21.2,    21.8,    22.4,    23.0,    23.6,    24.3,
@@ -228,7 +200,7 @@ const std::vector<T> FrequencyTable<T>::frequencyTable {
 	16000.0, 16500.0, 17000.0, 17500.0, 18000.0, 18500.0, 19000.0, 19500.0,
 
 	20000.0, 20600.0, 21200.0, 21800.0, 22400.0, 23000.0, 23600.0, 24300.0,
-	25000.0
+    25000.0, 25800.0, 26500.0, 27200.0, 28000.0, 29000.0, 30000.0, 30700.0
 };
 
 template class FrequencyTable<float>;

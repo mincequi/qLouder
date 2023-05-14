@@ -1,5 +1,4 @@
-#ifndef RESPONSESIGNAL_H
-#define RESPONSESIGNAL_H
+#pragma once
 
 #include "Signal.h"
 
@@ -13,5 +12,3 @@ class ResponseSignal : public Signal
 public:
     ResponseSignal(AudioBuffer* buffer, int sampleRate);
 };
-
-#endif // RESPONSESIGNAL_H

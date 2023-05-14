@@ -1,10 +1,11 @@
 #include "MeasurementFactory.h"
 
-#include "Measurement.h"
-
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <wavpack/wavpack.h>
+
+#include "Measurement.h"
 
 Measurement* MeasurementFactory::fromDisk(const std::string& fileName) {
 
@@ -20,6 +21,7 @@ void MeasurementFactory::toDisk(Measurement& measurement, const std::string& fil
         std::memcpy(output->data() + oldSize, data, byte_count);
         return 1;
     }, &out, nullptr);
+
     WavpackConfig config = {0};
     config.bytes_per_sample = 4;
     config.bits_per_sample = 32;
@@ -33,6 +35,18 @@ void MeasurementFactory::toDisk(Measurement& measurement, const std::string& fil
     WavpackPackInit(wpc);
     WavpackPackSamples(wpc, (int32_t*)measurement.ir().data(), measurement.ir().size());
     WavpackFlushSamples(wpc);
+
+    std::string str;
+    float f = 1.0f;
+    for (int i = 0; i < 256; ++i) {
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(2) << f;
+        str += ss.str();
+        if (i != 255) str += '\0';
+        f *= 1.02f;
+    }
+    WavpackAppendTagItem(wpc, "qLouder MicrophoneCalibration0", str.data(), str.size());
+    WavpackWriteTag(wpc);
 
     std::fstream file;
     file = std::fstream(fileName.c_str(), std::ios::out | std::ios::binary);

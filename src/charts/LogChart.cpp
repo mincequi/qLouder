@@ -11,9 +11,10 @@ LogChart::LogChart() {
     _yMax = 6.0;
     _tickInterval = 10;
 
-    FrequencyTable<double> table(3);
+    FrequencyTable<double> table(3);//, 20.0, 20000.0);
     _frequencies = table.frequencies();
     assert(_frequencies.size() == 31);
+    _fMaxIndex = _frequencies.size() - 1;
 }
 
 void LogChart::reset() {
@@ -25,7 +26,7 @@ void LogChart::zoom(double zoom) {
         return;
     }
 
-    if (zoom < 1.0 && (distance) >= _frequencies.size()-1) {
+    if (zoom < 1.0 && (distance) >= _frequencies.size()) {
         return;
     }
 

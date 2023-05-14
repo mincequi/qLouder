@@ -18,7 +18,9 @@ add_library(measure STATIC
     AudioBuffer.cpp
     AudioDeviceInfo.cpp
     ExcitationSignal.cpp
-    InverseFilter.cpp
+    Farina.cpp
+    ImpulseResponse.cpp
+    InverseSignal.cpp
     MeasurementError.cpp
     MeasureModel.cpp
     Measurement.cpp

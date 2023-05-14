@@ -1,15 +1,10 @@
-#ifndef MEASUREMENTSERVICE_H
-#define MEASUREMENTSERVICE_H
+#pragma once
 
-#include <limits>
-
-#include <QObject>
 #include <QAudioInput>
 #include <QAudioOutput>
 
 #include "AudioBuffer.h"
-#include "ExcitationSignal.h"
-#include "InverseFilter.h"
+#include "Farina.h"
 
 class Measurement;
 
@@ -56,11 +51,8 @@ private:
 	AudioBuffer m_outputBuffer;
 	AudioBuffer m_inputBuffer;
 
-    ExcitationSignal _excitationSignal;
-    InverseFilter _inverseFilter;
+    Farina _farina;
 
 	QAudioInput* m_input = nullptr;
 	QAudioOutput* m_output = nullptr;
 };
-
-#endif // MEASUREMENTSERVICE_H

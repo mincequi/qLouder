@@ -1,11 +1,11 @@
-#include "InverseFilter.h"
+#include "InverseSignal.h"
 
 #include <math.h>
 
 #include "ExcitationSignal.h"
 
-InverseFilter InverseFilter::from(const ExcitationSignal& excitationSignal) {
-    InverseFilter filter;
+InverseSignal InverseSignal::from(const ExcitationSignal& excitationSignal) {
+    InverseSignal filter;
 
     const auto outSize = excitationSignal.data().size() / 2;
     filter._data.resize(outSize);
@@ -22,14 +22,14 @@ InverseFilter InverseFilter::from(const ExcitationSignal& excitationSignal) {
     return filter;
 }
 
-InverseFilter::InverseFilter() {
+InverseSignal::InverseSignal() {
 }
 
-const std::vector<float>& InverseFilter::data() const {
+const std::vector<float>& InverseSignal::data() const {
     return _data;
 }
 
-void InverseFilter::amplitudeEnvelope(int offsetFront,
+void InverseSignal::amplitudeEnvelope(int offsetFront,
                                       int offsetBack,
                                       double minF,
                                       double maxF) {

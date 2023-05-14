@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include "MonoSignal.h"
+#include "ImpulseResponse.h"
 #include "Types.h"
 #include <common/FrequencyTable.h>
 
@@ -18,14 +18,13 @@ class Measurement {
 public:
     explicit Measurement(int sampleRate,
                          // TODO: change inputSignal and inverseFilter to ir
-                         const MonoSignal& inputSignal,
-                         const MonoSignal& inverseFilter,
+                         const MonoSignal& ir,
                          const std::map<double, double>& calibration0 = {},
                          const std::map<double, double>& calibration90 = {},
                          Calibration calibration = CalibrationNone);
 
     Measurement(int sampleRate,
-                MonoSignal& ir,
+                const MonoSignal& ir,
                 const std::map<std::string, std::string>& tags);
 
     int sampleRate() const;
@@ -75,18 +74,13 @@ private:
 
     const std::vector<double>& fr();
 
-    //void setInputSignal(const std::vector<T>& inputSignal);
-    //void setInverseFilter(const std::vector<T>& inverseFilter);
-
-    void findIrMaxValue(int& idx, float& value) const;
+    static void findIrMaxValue(const MonoSignal& ir, int& idx, float& value);
     void findRangeByAmplitude(int& min, int& max);
 
     void reset();
 
     FrequencyTable<double> _table;
     int _sampleRate = 48000;
-    MonoSignal _inverseFilter;
-    MonoSignal _inputSignal;
 
     MonoSignal _ir;
     MonoSignal _irWin;

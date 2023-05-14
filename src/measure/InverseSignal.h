@@ -1,15 +1,14 @@
-#ifndef INVERSEFILTER_H
-#define INVERSEFILTER_H
+#pragma once
 
 #include <vector>
 
 class ExcitationSignal;
 
-class InverseFilter {
+class InverseSignal {
 public:
-    static InverseFilter from(const ExcitationSignal& excitationSignal);
+    static InverseSignal from(const ExcitationSignal& excitationSignal);
 
-    InverseFilter();
+    InverseSignal();
 
     const std::vector<float>& data() const;
 
@@ -21,5 +20,3 @@ private:
 
     std::vector<float> _data;
 };
-
-#endif // INVERSEFILTER_H

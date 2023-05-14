@@ -12,25 +12,44 @@
 // Swept Sine Chirps for Measuring Impulse Response
 // https://www.thinksrs.com/downloads/pdfs/applicationnotes/SR1_SweptSine.pdf
 Measurement::Measurement(int sampleRate,
-                            const MonoSignal& inputSignal,
-                            const MonoSignal& inverseFilter,
-                            const std::map<double, double>& calibration0,
-                            const std::map<double, double>& calibration90,
-                            Calibration calibration)
+                         const MonoSignal& ir,
+                         const std::map<double, double>& calibration0,
+                         const std::map<double, double>& calibration90,
+                         Calibration calibration)
     : _sampleRate(sampleRate),
-      _inputSignal(inverseFilter.size()*2),
-      _inverseFilter(inverseFilter.size()*2),
-      _calibration(calibration),
+      _ir(ir),
+      _calibration(calibration)/*,
       _irWindowLeft(-100 * sampleRate / 1000),
-      _irWindowRight(400 * sampleRate / 1000) {
+      _irWindowRight(400 * sampleRate / 1000)*/ {
     _frCalibrations[Calibration0] = _table.interpolate(calibration0, false);
     _frCalibrations[Calibration90] = _table.interpolate(calibration90, false);
-    std::memcpy(_inputSignal.data(), inputSignal.data(), inputSignal.size()*sizeof(float));
-    std::memcpy(_inverseFilter.data(), inverseFilter.data(), inverseFilter.size()*sizeof(float));
+
+    // Find max value
+    float maxValue = 0.0;
+    findIrMaxValue(_ir, _irMaxValueIndex, maxValue);
+
+    // Scale IR
+    for (auto& i : _ir) {
+        i /= maxValue;
+    }
+
+    // Take total of 100ms -> 80ms (or 27.5m)
+    // @TODO: think about default right window for bass
+    //      220ms(240ms)    ->  4.55Hz (40Hz, 1/12)
+    //      300ms(320ms)    ->  3.33Hz (28Hz, 1/12)
+    //      400ms(420ms)    ->  2.50Hz (40Hz, 1/24)
+    //      460ms(480ms)    ->  2.17Hz (20Hz, 1/12)
+    //      480ms(500ms)    ->  2.08Hz (37.5Hz, 1/24)
+    //      580ms(600ms)    ->  1.72Hz (31.5Hz, 1/24)
+
+    // Start at -100ms
+    setIrWindowLeft(-100.0);
+    // End at +400ms
+    setIrWindowRight(+400.0);
 }
 
 Measurement::Measurement(int sampleRate,
-                         MonoSignal& ir,
+                         const MonoSignal& ir,
                          const std::map<std::string, std::string>& tags)
     : _sampleRate(sampleRate),
       _ir(ir),
@@ -39,10 +58,9 @@ Measurement::Measurement(int sampleRate,
 
     // Find max value
     float maxValue = 0.0;
-    findIrMaxValue(_irMaxValueIndex, maxValue);
+    findIrMaxValue(_ir, _irMaxValueIndex, maxValue);
 
     // Scale IR
-    // @TODO: here we apply the second scaling. So, is the first one actually needed?
     for (auto& i : _ir) {
         i /= maxValue;
     }
@@ -58,55 +76,6 @@ int Measurement::sampleRate() const {
 }
 
 const MonoSignal& Measurement::ir() {
-    if (_ir.empty()) {
-        // compute deconvolution of the system’s impulse response
-        const auto fftLength = _inputSignal.size();
-
-        // FFT measured signal
-        std::vector<std::complex<float>> fftInputSignal(fftLength);
-        fft<float>(_inputSignal, fftInputSignal);
-
-        // FFT reverse filter
-        std::vector<std::complex<float>> fftInverseSignal(fftLength);
-        fft<float>(_inverseFilter, fftInverseSignal);
-
-        // Compute product
-        std::vector<std::complex<float>> product(fftLength);
-        // @TODO: do we need this scaling?
-        const float normFactor = 1.0 / fftLength;
-        for (size_t i = 0; i < fftLength; i++) {
-            product[i] = fftInputSignal[i] * fftInverseSignal[i] * normFactor;
-        }
-
-        // Compute impulse response
-        _ir.resize(fftLength);
-        ifft<float>(product, _ir);
-
-        // Find max value
-        float maxValue = 0.0;
-        findIrMaxValue(_irMaxValueIndex, maxValue);
-
-        // Scale IR
-        // @TODO: here we apply the second scaling. So, is the first one actually needed?
-        for (auto& i : _ir) {
-            i /= maxValue;
-        }
-
-        // Start at -100ms
-        setIrWindowLeft(-100.0);
-        // End at +400ms
-        setIrWindowRight(+400.0);
-
-        // Take total of 100ms -> 80ms (or 27.5m)
-        // @TODO: think about default right window for bass
-        //      220ms(240ms)    ->  4.55Hz (40Hz, 1/12)
-        //      300ms(320ms)    ->  3.33Hz (28Hz, 1/12)
-        //      400ms(420ms)    ->  2.50Hz (40Hz, 1/24)
-        //      460ms(480ms)    ->  2.17Hz (20Hz, 1/12)
-        //      480ms(500ms)    ->  2.08Hz (37.5Hz, 1/24)
-        //      580ms(600ms)    ->  1.72Hz (31.5Hz, 1/24)
-    }
-
     return _ir;
 }
 
@@ -241,10 +210,10 @@ void Measurement::setIrWindowRight(double ms) {
     reset();
 }
 
-void Measurement::findIrMaxValue(int& idx, float& value) const {
-    for (int i = 0; i < _ir.size(); ++i) {
-        if (value < fabs(_ir.at(i))) {
-            value = fabs(_ir.at(i));
+void Measurement::findIrMaxValue(const MonoSignal& ir, int& idx, float& value) {
+    for (int i = 0; i < ir.size(); ++i) {
+        if (value < fabs(ir.at(i))) {
+            value = fabs(ir.at(i));
             idx = i;
         }
     }

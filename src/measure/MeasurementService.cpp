@@ -23,7 +23,7 @@ MeasurementService::MeasurementService(QObject *parent)
     : QObject{parent},
       m_outputBuffer(QIODevice::ReadOnly),
       m_inputBuffer(QIODevice::WriteOnly),
-      _excitationSignal(&m_outputBuffer) {
+      _farina(&m_outputBuffer) {
     s_inputFormat.setByteOrder(QAudioFormat::LittleEndian);
     s_inputFormat.setChannelCount(1);
     s_inputFormat.setCodec("audio/pcm");
@@ -85,33 +85,14 @@ void MeasurementService::setOutputDevice(const QAudioDeviceInfo& audioDevice, in
 }
 
 void MeasurementService::start(Signal::Channels channels, int durationPerOctaveMs, int volume, double fMin, double fMax) {
+    _farina.setSampleRate(s_outputFormat.sampleRate());
+    _farina.setChannels(channels);
+    _farina.setDurationPerOctave(durationPerOctaveMs);
+    _farina.setLevel(volume);
+    _farina.setBeginFrequency(fMin);
+    _farina.setEndFrequency(fMax);
 
-    if (_excitationSignal.samplesPerOctave() != durationPerOctaveMs / 1000.0f * s_outputFormat.sampleRate() ||
-            _excitationSignal.channels() != channels ||
-            _excitationSignal.volume() != volume ||
-            _excitationSignal.minF() != fMin ||
-            _excitationSignal.maxF() != fMax) {
-
-        qlStatus->showMessage("Generating excitation signal");
-
-        // "Optimizing the exponential sine sweep (ESS) signal for in situ measurements on noise barriers"
-        // https://www.conforg.fr/euronoise2015/proceedings/data/articles/000420.pdf
-        // Fade-In: 1 octave, Fade-Out: 1/24th octave
-        _excitationSignal = SignalFactory::createSineSweep(&m_outputBuffer,
-                                                           channels,
-                                                           s_outputFormat.sampleRate(),
-                                                           fMin,
-                                                           fMax,
-                                                           durationPerOctaveMs / 1000.0f * s_outputFormat.sampleRate(),
-                                                           s_outputFormat.sampleRate(),
-                                                           s_outputFormat.sampleRate());
-        _excitationSignal.fadeIn(durationPerOctaveMs * s_outputFormat.sampleRate() / 1000);
-        _excitationSignal.fadeOut(durationPerOctaveMs * s_outputFormat.sampleRate() / 24000);
-
-        _inverseFilter = InverseFilter::from(_excitationSignal);
-
-        _excitationSignal.setVolume(volume);
-    }
+    _farina.excitationSignal();
 
     auto signalLength = log2(fMax/fMin) * durationPerOctaveMs;
     qlStatus->showMessage("Measuring", signalLength + 1);
@@ -144,15 +125,14 @@ void MeasurementService::stop(bool clearResult) {
     } else {
         qlStatus->clearMessage();
 
-        auto signal = ResponseSignal(&m_inputBuffer, s_inputFormat.sampleRate());
-        signal.resample(s_outputFormat.sampleRate());
+        auto responseSignal = ResponseSignal(&m_inputBuffer, s_inputFormat.sampleRate());
+        responseSignal.resample(s_outputFormat.sampleRate());
 
         auto measurement = new Measurement(s_outputFormat.sampleRate(),
-                                                  signal.data(),
-                                                  _inverseFilter.data(),
-                                                  cfg->calibration0,
-                                                  cfg->calibration90,
-                                                  cfg->calibration);
+                                           _farina.impulseResponse(responseSignal.data()),
+                                           cfg->calibration0,
+                                           cfg->calibration90,
+                                           cfg->calibration);
         emit measurementAvailable(measurement);
     }
     m_progress = 0.0f;

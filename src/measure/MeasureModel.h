@@ -1,17 +1,20 @@
-#ifndef MEASUREMODEL_H
-#define MEASUREMODEL_H
+#pragma once
 
-#include <QAudio>
 #include <QObject>
 
 #include <vector>
 
 #include "Signal.h"
 
+class Measurement;
 class MeasurementService;
 
 class MeasureModel : public QObject {
 	Q_OBJECT
+
+    // General properties
+    Q_PROPERTY(bool isMeasurementAvailable READ isMeasurementAvailable NOTIFY measureStateChanged)
+
     // Signal properties
 	Q_PROPERTY(QStringList lengths READ lengths CONSTANT)
     Q_PROPERTY(QStringList channels READ channels CONSTANT)
@@ -41,6 +44,9 @@ class MeasureModel : public QObject {
 public:
 	explicit MeasureModel(MeasurementService& measurementService, QObject *parent = nullptr);
     ~MeasureModel();
+
+    // General propertis
+    bool isMeasurementAvailable() const;
 
     // Signal properties
 	QStringList lengths() const;
@@ -76,7 +82,10 @@ signals:
     void errorOccurred();
 
 private:
+    void onCurrentMeasurementChanged(Measurement* measurement);
     void onServiceProgressChanged(double progress);
+    Measurement* _currentMeasurement = nullptr;
+
     int m_durationPerOctave = 250;
     Signal::Channels _channels = Signal::Channels::Left;
     int m_level = 0;
@@ -96,5 +105,3 @@ private:
 
 	MeasurementService& m_measurementService;
 };
-
-#endif // MEASUREMODEL_H

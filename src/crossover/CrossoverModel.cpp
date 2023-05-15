@@ -1,13 +1,5 @@
 #include "CrossoverModel.h"
 
-#include <utility>
-
-#include <QDebug>
-#include <QSaveFile>
-#include <QTimer>
-#include <QUrl>
-#include <QVariant>
-
 #include <common/AudioFilter.h>
 #include <common/FrequencyTable.h>
 #include <common/UiUtil.h>

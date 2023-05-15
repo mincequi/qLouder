@@ -104,30 +104,6 @@ ApplicationWindow {
         //}
     }
 
-    Rectangle {
-        color: colorWithAlpha(Material.background, 0.66)
-        opacity: MeasureModel.progress > 0.0 ? 1.0 : 0.0
-        anchors.left: bar.right
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: playerBar.top
-
-        Gauge {
-            id: gauge
-            radius: 72
-            anchors.centerIn: parent
-            anchors.horizontalCenterOffset: -48
-            value: MeasureModel.level
-            valueMax: MeasureModel.levelMax
-            valueWarning: 0.0
-            valueRangeMin: -96.0
-            valueRangeMax: 12.0
-            opacity: MeasureModel.progress > 0.0 ? 1.0 : 0.0
-
-            Behavior on opacity { SmoothedAnimation { duration: 250; velocity: -1; easing.type: "OutQuart" } }
-        }
-    }
-
     ToolBar {
         id: playerControls
         width: leftToolBarWidth
@@ -216,6 +192,30 @@ ApplicationWindow {
         CrossoverTab {
         }
         TargetTab {
+        }
+    }
+
+    Rectangle {
+        color: colorWithAlpha(Material.background, 0.66)
+        opacity: MeasureModel.progress > 0.0 ? 1.0 : 0.0
+        anchors.left: bar.right
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: playerBar.top
+
+        Gauge {
+            id: gauge
+            radius: 72
+            anchors.centerIn: parent
+            anchors.horizontalCenterOffset: -48
+            value: MeasureModel.level
+            valueMax: MeasureModel.levelMax
+            valueWarning: 0.0
+            valueRangeMin: -96.0
+            valueRangeMax: 12.0
+            opacity: MeasureModel.progress > 0.0 ? 1.0 : 0.0
+
+            Behavior on opacity { SmoothedAnimation { duration: 250; velocity: -1; easing.type: "OutQuart" } }
         }
     }
 }

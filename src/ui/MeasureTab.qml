@@ -83,16 +83,6 @@ Page {
                 Layout.fillWidth: true
             }
 
-            /*
-            SmallToolButton {
-                id: saveButton
-                text: "Save"
-                iconName: "content-save"
-                iconColor: Material.foreground
-                onClicked: fileDialog.open()
-            }
-            */
-
             Rectangle {
                 height: 24
                 width: 1
@@ -177,6 +167,30 @@ Page {
                 // spacer item
                 Item {
                     Layout.fillHeight: true
+                },
+
+                SmallToolButton {
+                    id: loadButton
+                    height: 24
+                    implicitWidth: 96
+                    text: "Load"
+                    font.pixelSize: 10
+                    iconName: "file"
+                    iconColor: Material.foreground
+                    enabled: false
+                    //onClicked: saveDialog.open()
+                },
+
+                SmallToolButton {
+                    id: saveButton
+                    height: 24
+                    implicitWidth: 96
+                    text: "Save"
+                    font.pixelSize: 10
+                    iconName: "content-save"
+                    iconColor: Material.foreground
+                    enabled: MeasureModel.isMeasurementAvailable
+                    onClicked: saveDialog.open()
                 }
             ]
         }
@@ -213,13 +227,15 @@ Page {
     }
 
     FileDialog {
-        id: fileDialog
-        title: "Export signal"
+        id: saveDialog
+        title: "Export measurement"
         folder: shortcuts.home
+        defaultSuffix: "wv"
+        nameFilters: [ "Impulse response (*.wv)" ]
         selectExisting: false
         selectMultiple: false
         onAccepted: {
-            MeasureModel.saveFile(fileDialog.fileUrl)
+            MeasureModel.saveFile(saveDialog.fileUrl)
         }
     }
 }

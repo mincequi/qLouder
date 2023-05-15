@@ -1,5 +1,4 @@
-#ifndef MEASUREMENTMANAGER_H
-#define MEASUREMENTMANAGER_H
+#pragma once
 
 #include <QObject>
 
@@ -36,5 +35,3 @@ private:
 
     rxcpp::subjects::subject<std::vector<double>> _calibratedFr;
 };
-
-#endif // MEASUREMENTMANAGER_H

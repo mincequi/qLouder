@@ -18,9 +18,9 @@ Measurement::Measurement(int sampleRate,
                          Calibration calibration)
     : _sampleRate(sampleRate),
       _ir(ir),
-      _calibration(calibration)/*,
+      _calibration(calibration),
       _irWindowLeft(-100 * sampleRate / 1000),
-      _irWindowRight(400 * sampleRate / 1000)*/ {
+      _irWindowRight(400 * sampleRate / 1000) {
     _frCalibrations[Calibration0] = _table.interpolate(calibration0, false);
     _frCalibrations[Calibration90] = _table.interpolate(calibration90, false);
 

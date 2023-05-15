@@ -1,12 +1,13 @@
 #include "MeasureModel.h"
 
-#include <QAudioDeviceInfo>
 #include <QDebug>
 #include <QSaveFile>
 #include <QTimer>
 #include <QUrl>
-#include <QVariant>
 
+#include "Measurement.h"
+#include "MeasurementFactory.h"
+#include "MeasurementManager.h"
 #include "MeasurementService.h"
 #include <common/FrequencyTable.h>
 
@@ -20,6 +21,9 @@ MeasureModel::MeasureModel(MeasurementService& measurementService, QObject *pare
     connect(&m_measurementService, &MeasurementService::levelChanged, this, &MeasureModel::levelChanged);
     connect(&m_measurementService, &MeasurementService::errorOccured, this, &MeasureModel::errorOccurred);
 
+    connect(&MeasurementManager::instance(), &MeasurementManager::currentMeasurementChangedF,
+            this, &MeasureModel::onCurrentMeasurementChanged);
+
     //QTimer *timer = new QTimer(this);
     //connect(timer, &QTimer::timeout, this, [this]() {
     //    m_demoProgress += 0.1f;
@@ -31,6 +35,10 @@ MeasureModel::MeasureModel(MeasurementService& measurementService, QObject *pare
 }
 
 MeasureModel::~MeasureModel() {
+}
+
+bool MeasureModel::isMeasurementAvailable() const {
+    return _currentMeasurement != nullptr;
 }
 
 QStringList MeasureModel::lengths() const {
@@ -167,12 +175,12 @@ void MeasureModel::onMeasureButtonClicked() {
 }
 
 void MeasureModel::saveFile(const QUrl& fileName) {
-    QSaveFile file(fileName.fileName());
-    if (!file.open(QIODevice::WriteOnly)) return;
-    const auto bytesWritten = file.write((const char*)m_measurementService.signal().data(), m_measurementService.signal().size()*4);
-    if (!file.commit() || !bytesWritten) {
-        qDebug() << "error writing file";
-    }
+    MeasurementFactory::toDisk(*_currentMeasurement, fileName.path().toStdString());
+}
+
+void MeasureModel::onCurrentMeasurementChanged(Measurement* measurement) {
+    _currentMeasurement = measurement;
+    emit measureStateChanged();
 }
 
 void MeasureModel::onServiceProgressChanged(double progress) {

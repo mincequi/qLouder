@@ -3,7 +3,6 @@ import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.12
 import QtQuick.Controls.impl 2.12
 import QtQuick.Templates 2.12 as T
-import QtQuick.Controls.Material 2.12
 //import QtQuick.Controls.Material.impl 1.1
 
 ComboBox {

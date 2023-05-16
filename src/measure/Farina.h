@@ -1,7 +1,8 @@
 #pragma once
 
+#include <common/ImpulseResponse.h>
+
 #include "ExcitationSignal.h"
-#include "ImpulseResponse.h"
 #include "InverseSignal.h"
 
 class Farina {

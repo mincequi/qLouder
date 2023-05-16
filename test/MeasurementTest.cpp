@@ -5,15 +5,15 @@
 #include <fstream>
 #include <iostream>
 
+#include <wavpack/wavpack.h>
+
 #include <measure/AudioBuffer.h>
 #include <measure/ExcitationSignal.h>
 #include <measure/Farina.h>
 #include <measure/InverseSignal.h>
-#include <measure/Measurement.h>
-#include <measure/MeasurementFactory.h>
 #include <measure/SignalGenerator.h>
-
-#include <wavpack/wavpack.h>
+#include <project/Project.h>
+#include <project/ProjectFactory.h>
 
 std::vector<uint8_t> out;
 
@@ -26,7 +26,7 @@ static int block_out(std::vector<uint8_t>* output, uint8_t* data, int32_t byte_c
     return 1;
 }
 
-Measurement loadWv() {
+Project loadWv() {
     auto ctx = WavpackOpenFileInput("ir_1.wv", nullptr, 0, 0);
     REQUIRE(ctx != nullptr);
 
@@ -39,11 +39,11 @@ Measurement loadWv() {
     REQUIRE(WavpackGetMode(ctx) & MODE_LOSSLESS);
     //REQUIRE(WavpackGetMode(ctx) & MODE_WVC);
 
-    std::vector<float> ir;
+    ImpulseResponse ir;
     ir.resize(WavpackGetNumSamples(ctx));
     WavpackUnpackSamples(ctx, (int32_t*)ir.data(), ir.size());
 
-    return Measurement(44100, ir);
+    return Project(44100, ir);
 }
 
 TEST_CASE("Read metadata", "[Measurement]") {
@@ -58,10 +58,10 @@ TEST_CASE("Read metadata", "[Measurement]") {
         recorded.at(i/2) = signal.data().at(i) * s;
     }
 
-    auto measurement = Measurement(44100, farina.impulseResponse(recorded));
+    auto measurement = Project(44100, farina.impulseResponse(recorded));
     auto ir = measurement.windowedIr();
 
-    MeasurementFactory::toDisk(measurement, "ir_1.wv");
+    ProjectFactory::toDisk(measurement, "ir_1.wv");
 
     auto measurement2 = loadWv();
     auto fr1 = measurement.calibratedFr();

@@ -1,5 +1,4 @@
-#ifndef FRCHARTMODEL_H
-#define FRCHARTMODEL_H
+#pragma once
 
 #include "ChartModel.h"
 
@@ -20,14 +19,12 @@ signals:
 
 private:
     void updateChart();
-    void onCurrentMeasurementChangedF(Measurement* measurement);
+    void onCurrentMeasurementChangedF(Project* measurement);
 
     QtCharts::QXYSeries* _logSeries = nullptr;
-    Measurement* _measurement = nullptr;
+    Project* _project = nullptr;
 
     // Calibration members
     std::map<Calibration, QVector<QPointF>> _calibrations;
     QtCharts::QXYSeries* _calibrationSeries = nullptr;
 };
-
-#endif // FRCHARTMODEL_H

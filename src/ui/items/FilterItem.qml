@@ -5,13 +5,18 @@ import QtQuick.Layouts 1.0
 
 import EqualizerModel 1.0
 
-import "items"
+Rectangle {
+    property var chart2
+    property var filterModel
+    id: control
+    implicitWidth: 96
+    implicitHeight: 84
+    color: Material.primary
+    //radius: 6.0
 
 ColumnLayout {
     id: item
     width: 96
-    property var chart2
-    property var filterModel
     property int itemHeight: 18
 
     spacing: 0
@@ -20,21 +25,21 @@ ColumnLayout {
         Label {
             id: label
             text: "Filter " + (index + 1).toString()
-            height: itemHeight
+            height: item.itemHeight
             leftPadding: 6
-            font.pixelSize: 12
+            font.pixelSize: 10
         }
         Item {
             Layout.fillWidth: true
         }
-        SmallToolButton {
+        MicroToolButton {
             id: deleteFilter
-            implicitHeight: itemHeight
+            implicitHeight: item.itemHeight
             iconName: "close"
             iconColor: Material.color(Material.Red, Material.Shade300)
             flat: true
             onClicked: {
-                chart2.removeSeries(model.response)
+                control.chart2.removeSeries(model.response)
                 EqualizerModel.removeFilter(index)
             }
         }
@@ -47,7 +52,7 @@ ColumnLayout {
 
         Label {
             width: 24
-            height: itemHeight
+            height: item.itemHeight
             text: "T"
             leftPadding: 6
             font.pixelSize: 10
@@ -55,20 +60,20 @@ ColumnLayout {
         }
         MicroComboBox {
             id: typeComboBox
-            implicitHeight: itemHeight
+            implicitHeight: item.itemHeight
             font.pixelSize: 10
             model: ["None", "Peaking", "Low Pass", "High Pass", "Low Shelf", "High Shelf"]
             onCurrentIndexChanged: {
                 //console.log("onCurrentIndexChanged>", currentIndex)
-                filterModel.setType(currentIndex)
+                control.filterModel.setType(currentIndex)
             }
-            currentIndex: filterModel.type
+            currentIndex: control.filterModel.type
             Layout.fillWidth: true
             Layout.leftMargin: 3
         }
     }
 
-    UpDownSpinBox {
+    MicroUpDownSpinBox {
         label: "F"
         enabled: model.isFrequencyAvailable
         value: model.f
@@ -76,14 +81,14 @@ ColumnLayout {
         onValueUp: EqualizerModel.stepF(index, +1)
         onValueDown: EqualizerModel.stepF(index, -1)
     }
-    UpDownSpinBox {
+    MicroUpDownSpinBox {
         label: "Q"
         enabled: model.isQAvailable
         value: model.q.toPrecision(3)
         onValueUp: EqualizerModel.stepQ(index, -0.5)
         onValueDown: EqualizerModel.stepQ(index, +0.5)
     }
-    UpDownSpinBox {
+    MicroUpDownSpinBox {
         label: "G"
         enabled: model.isGainAvailable
         value: model.g.toFixed(1)
@@ -91,10 +96,10 @@ ColumnLayout {
         onValueUp: EqualizerModel.stepG(index, +0.2)
         onValueDown: EqualizerModel.stepG(index, -0.2)
     }
-    ToolSeparator {
-        Layout.fillWidth: true
-        topPadding: 0
-        bottomPadding: 0
-        orientation: Qt.Horizontal
+    Rectangle {
+        implicitWidth: 96
+        implicitHeight: 1
+        color: Material.backgroundColor
     }
+}
 }

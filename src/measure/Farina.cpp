@@ -2,7 +2,7 @@
 
 #include <complex>
 
-#include "Fft.h"
+#include <common/Fft.h>
 #include "InverseSignal.h"
 #include "SignalGenerator.h"
 

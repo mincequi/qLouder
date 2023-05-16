@@ -7,6 +7,9 @@ import QtCharts 2.3
 
 import FrChartModel 1.0
 import MeasureModel 1.0
+import ProjectsModel 1.0
+
+import "items"
 
 Page {
     function colorWithAlpha(color, alpha) {
@@ -113,23 +116,23 @@ Page {
                     spacing: 0
                     Layout.topMargin: 6
 
-                    SmallToolButton {
+                    MicroToolButton {
                         iconName: "magnify-minus"
                         flat: true
                         onClicked: frChart.model.zoom(0.5);
                     }
-                    SmallToolButton {
+                    MicroToolButton {
                         id: zoomIn
                         iconName: "magnify-plus"
                         flat: true
                         onClicked: frChart.model.zoom(2.0);
                     }
-                    SmallToolButton {
+                    MicroToolButton {
                         iconName: "chevron-left"
                         flat: true
                         onClicked: frChart.model.pan(-0.2);
                     }
-                    SmallToolButton {
+                    MicroToolButton {
                         iconName: "chevron-right"
                         flat: true
                         onClicked: frChart.model.pan(0.2);
@@ -169,7 +172,7 @@ Page {
                     Layout.fillHeight: true
                 },
 
-                SmallToolButton {
+                MicroToolButton {
                     id: loadButton
                     height: 24
                     implicitWidth: 96
@@ -177,11 +180,11 @@ Page {
                     font.pixelSize: 10
                     iconName: "file"
                     iconColor: Material.foreground
-                    enabled: false
-                    //onClicked: saveDialog.open()
+                    //enabled: false
+                    onClicked: loadDialog.open()
                 },
 
-                SmallToolButton {
+                MicroToolButton {
                     id: saveButton
                     height: 24
                     implicitWidth: 96
@@ -231,11 +234,21 @@ Page {
         title: "Export measurement"
         folder: shortcuts.home
         defaultSuffix: "wv"
-        nameFilters: [ "Impulse response (*.wv)" ]
+        nameFilters: [ "WavPack files (*.wv)" ]
         selectExisting: false
         selectMultiple: false
         onAccepted: {
             MeasureModel.saveFile(saveDialog.fileUrl)
+        }
+    }
+
+    FileDialog {
+        id: loadDialog
+        title: "Import measurement"
+        folder: shortcuts.home
+        nameFilters: [ "WavPack files (*.wv)" ]
+        onAccepted: {
+            ProjectsModel.loadProject(loadDialog.fileUrl)
         }
     }
 }

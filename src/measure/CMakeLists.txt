@@ -19,15 +19,10 @@ add_library(measure STATIC
     AudioDeviceInfo.cpp
     ExcitationSignal.cpp
     Farina.cpp
-    ImpulseResponse.cpp
     InverseSignal.cpp
     MeasurementError.cpp
     MeasureModel.cpp
-    Measurement.cpp
-    MeasurementFactory.cpp
-    MeasurementManager.cpp
     MeasurementService.cpp
-    MonoSignal.cpp
     ResponseSignal.cpp
     Signal.cpp
     SignalGenerator.cpp
@@ -39,7 +34,6 @@ PUBLIC
     ${WAVPACK_INCLUDE_DIRS}
 
 PRIVATE
-    ${FFTW3_INCLUDE_DIRS}
     ${r8brain_SOURCE_DIR}
 )
 
@@ -50,9 +44,8 @@ PUBLIC
     rxcpp
 
 PRIVATE
-    ${FFTW3F_LINK_LIBRARIES}
-    ${FFTW3_LINK_LIBRARIES}
     pthread
     common
+    project
     status
 )

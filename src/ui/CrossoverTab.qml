@@ -7,6 +7,8 @@ import QtCharts 2.3
 
 import CrossoverModel 1.0
 
+import "items"
+
 Page {
     header: ToolBar {
         height: 24
@@ -38,20 +40,20 @@ Page {
                     text: "Low pass"
                     font.pixelSize: 12
                 },
-                UpDownSpinBox {
+                MicroUpDownSpinBox {
                     label: "F"
                     value: CrossoverModel.lowPassFrequencyReadout
                     unit: CrossoverModel.lowPassFrequencyUnitReadout
                     onValueUp: CrossoverModel.stepParam(0, +1, 0)
                     onValueDown: CrossoverModel.stepParam(0, -1, 0)
                 },
-                UpDownSpinBox {
+                MicroUpDownSpinBox {
                     label: "Q"
                     value: CrossoverModel.lowPassQ.toPrecision(3)
                     onValueUp: CrossoverModel.stepParam(0, 0, +0.2)
                     onValueDown: CrossoverModel.stepParam(0, 0, -0.2)
                 },
-                UpDownSpinBox {
+                MicroUpDownSpinBox {
                     label: "G"
                     value: CrossoverModel.lowPassG.toFixed(1)
                     unit: "dB"
@@ -61,6 +63,7 @@ Page {
                 SmallComboBox {
                     flat: true
                     implicitWidth: 96
+                    currentIndex: CrossoverModel.lowPassOrder
                     model: [ "Order 2", "Order 4" ]
                     onCurrentIndexChanged: CrossoverModel.setOrder(0, currentIndex)
                 },
@@ -78,20 +81,20 @@ Page {
                     text: "High pass"
                     font.pixelSize: 12
                 },
-                UpDownSpinBox {
+                MicroUpDownSpinBox {
                     label: "F"
                     value: CrossoverModel.highPassFrequencyReadout
                     unit: CrossoverModel.highPassFrequencyUnitReadout
                     onValueUp: CrossoverModel.stepParam(1, +1, 0)
                     onValueDown: CrossoverModel.stepParam(1, -1, 0)
                 },
-                UpDownSpinBox {
+                MicroUpDownSpinBox {
                     label: "Q"
                     value: CrossoverModel.highPassQ.toPrecision(3)
                     onValueUp: CrossoverModel.stepParam(1, 0, +0.2)
                     onValueDown: CrossoverModel.stepParam(1, 0, -0.2)
                 },
-                UpDownSpinBox {
+                MicroUpDownSpinBox {
                     label: "G"
                     value: CrossoverModel.highPassG.toFixed(1)
                     unit: "dB"
@@ -101,12 +104,14 @@ Page {
                 SmallComboBox {
                     flat: true
                     implicitWidth: 96
+                    currentIndex: CrossoverModel.highPassOrder
                     model: [ "Order 2", "Order 4" ]
                     onCurrentIndexChanged: CrossoverModel.setOrder(1, currentIndex)
                 },
                 SmallSwitch {
                     implicitHeight: 24
                     implicitWidth: 96
+                    checked: CrossoverModel.highPassInvert
                     onCheckedChanged: CrossoverModel.invert(checked)
                 },
 
@@ -137,7 +142,7 @@ Page {
                 chart.handles.markerSize = 9.0
                 // F and Q handles
                 chart.handles.append(160, -3.0)
-                chart.handles.append(176.0, -3.0)
+                chart.handles.append(176, -3.0)
                 // Gain handles
                 chart.handles.append(6, 0.0)
                 chart.handles.append(234.0, 0.0)

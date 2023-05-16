@@ -145,19 +145,19 @@ Page {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     clip: true
-
                     model: EqualizerModel.filters
                     delegate: FilterItem {
                         chart2: chart.chart
                         filterModel: modelData
                     }
+                    spacing: 1.0
                 },
                 Rectangle {
                     width: 96
                     height: 1
                     color: Material.background
                 },
-                SmallToolButton {
+                MicroToolButton {
                     height: 24
                     implicitWidth: 96
                     text: "Add filter"
@@ -178,7 +178,7 @@ Page {
                     }
                 },
                 // Optimize button
-                SmallToolButton {
+                MicroToolButton {
                     height: 24
                     implicitWidth: 96
                     text: "Optimize"

@@ -2,6 +2,8 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
 
+import "icon"
+
 TabButton {
     property alias materialIcon: icon.name
     property alias iconSize: icon.size

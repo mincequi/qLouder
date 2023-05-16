@@ -9,7 +9,6 @@ CrossoverModel::CrossoverModel(QObject *parent)
     setType(FrequencyResponse);
     FrequencyTable<double> table;
     _frequencyTable = table.frequencies();
-    _highPassF = _frequencyTable.size()-1;
 }
 
 QString CrossoverModel::lowPassFrequencyReadout() const {
@@ -115,12 +114,12 @@ void CrossoverModel::stepParam(int index, double x, double y) {
 
 void CrossoverModel::setOrder(int index, int orderIndex) {
     if (index == 0) {
-        _lowPassC = orderIndex + 1;
+        _lowPassOrderIndex = orderIndex;
         computeLowPassResponse();
         computeSumResponse();
         emit rangeChanged();
     } else if (index == 1) {
-        _highPassC = orderIndex + 1;
+        _highPassOrderIndex = orderIndex;
         computeHighPassResponse();
         computeSumResponse();
         emit rangeChanged();
@@ -169,7 +168,7 @@ void CrossoverModel::computeLowPassResponse() {
     handles()->replace(0, _lowPassF, _lowPassQ + _lowPassG);
 
     AudioFilter lp(FilterType::LowPass, _frequencyTable.at(_lowPassF), 0.0, pow(10, _lowPassQ/20.0));
-    _lowPassResponse = lp.response(_frequencyTable, _lowPassC);
+    _lowPassResponse = lp.response(_frequencyTable, _lowPassOrderIndex + 1);
 
     QVector<QPointF> points;
     points.reserve(_frequencyTable.size());
@@ -185,7 +184,7 @@ void CrossoverModel::computeHighPassResponse() {
     handles()->replace(1, _highPassF, _highPassQ + _highPassG);
 
     AudioFilter hp(FilterType::HighPass, _frequencyTable.at(_highPassF), 0.0, pow(10, _highPassQ/20.0));
-    _highPassResponse = hp.response(_frequencyTable, _highPassC);
+    _highPassResponse = hp.response(_frequencyTable, _highPassOrderIndex + 1);
 
     QVector<QPointF> points;
     points.reserve(_frequencyTable.size());

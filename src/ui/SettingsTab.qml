@@ -7,6 +7,8 @@ import QtQuick.Layouts 1.12
 import PlayerModel 1.0
 import SettingsModel 1.0
 
+import "items"
+
 Page {
     header: Row {
         height: 24
@@ -47,7 +49,7 @@ Page {
                     border.width: 1
                 }
             }
-            SmallToolButton {
+            MicroToolButton {
                 implicitWidth: 84
                 iconName: "file"
                 text: "Open..."
@@ -77,7 +79,7 @@ Page {
                     border.width: 1
                 }
             }
-            SmallToolButton {
+            MicroToolButton {
                 implicitWidth: 84
                 iconName: "file"
                 text: "Open..."
@@ -107,7 +109,7 @@ Page {
                     border.width: 1
                 }
             }
-            SmallToolButton {
+            MicroToolButton {
                 implicitWidth: 84
                 iconName: "file-music"
                 text: "Open..."

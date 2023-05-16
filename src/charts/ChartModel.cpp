@@ -3,10 +3,10 @@
 #include <QCoreApplication>
 #include <QPointF>
 
-#include <measure/Measurement.h>
-#include <measure/MeasurementManager.h>
+#include <project/Project.h>
+#include <project/ProjectManager.h>
 #include <status/StatusModel.h>
-#include <ui/MaterialDesignIcon.h>
+#include <ui/icon/MaterialDesignIcon.h>
 
 #include "LinChart.h"
 #include "LogChart.h"

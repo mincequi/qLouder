@@ -9,6 +9,7 @@ TabBar {
     width: parent.width
     background: Rectangle {
         color: Material.primary
+        //radius: 6.0
     }
 
     contentItem: ListView {

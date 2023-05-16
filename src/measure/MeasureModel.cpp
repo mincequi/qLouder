@@ -5,11 +5,11 @@
 #include <QTimer>
 #include <QUrl>
 
-#include "Measurement.h"
-#include "MeasurementFactory.h"
-#include "MeasurementManager.h"
 #include "MeasurementService.h"
 #include <common/FrequencyTable.h>
+#include <project/Project.h>
+#include <project/ProjectFactory.h>
+#include <project/ProjectManager.h>
 
 MeasureModel::MeasureModel(MeasurementService& measurementService, QObject *parent)
     : QObject(parent),
@@ -21,7 +21,7 @@ MeasureModel::MeasureModel(MeasurementService& measurementService, QObject *pare
     connect(&m_measurementService, &MeasurementService::levelChanged, this, &MeasureModel::levelChanged);
     connect(&m_measurementService, &MeasurementService::errorOccured, this, &MeasureModel::errorOccurred);
 
-    connect(&MeasurementManager::instance(), &MeasurementManager::currentMeasurementChangedF,
+    connect(&ProjectManager::instance(), &ProjectManager::currentProjectChanged,
             this, &MeasureModel::onCurrentMeasurementChanged);
 
     //QTimer *timer = new QTimer(this);
@@ -175,10 +175,10 @@ void MeasureModel::onMeasureButtonClicked() {
 }
 
 void MeasureModel::saveFile(const QUrl& fileName) {
-    MeasurementFactory::toDisk(*_currentMeasurement, fileName.path().toStdString());
+    ProjectFactory::toDisk(*_currentMeasurement, fileName.path().toStdString());
 }
 
-void MeasureModel::onCurrentMeasurementChanged(Measurement* measurement) {
+void MeasureModel::onCurrentMeasurementChanged(Project* measurement) {
     _currentMeasurement = measurement;
     emit measureStateChanged();
 }

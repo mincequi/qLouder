@@ -1,12 +1,12 @@
 #include "FrChartModel.h"
 
 #include <common/Config.h>
-#include "measure/MeasurementManager.h"
+#include <project/ProjectManager.h>
 
 FrChartModel::FrChartModel(QObject *parent)
     : ChartModel{parent} {
     setType(FrequencyResponse);
-    connect(&MeasurementManager::instance(), &MeasurementManager::currentMeasurementChangedF,
+    connect(&ProjectManager::instance(), &ProjectManager::currentProjectChanged,
             this, &FrChartModel::onCurrentMeasurementChangedF);
 }
 
@@ -19,7 +19,7 @@ void FrChartModel::setCalibration(int index) {
     if (_calibrationSeries)
         _calibrationSeries->replace(_calibrations[cfg->calibration]);
 
-    MeasurementManager::instance().setFrCalibration(cfg->calibration);
+    ProjectManager::instance().setFrCalibration(cfg->calibration);
 }
 
 void FrChartModel::setLogSeries(QtCharts::QAbstractSeries* series) {
@@ -35,12 +35,12 @@ void FrChartModel::setCalibrationSeries(QtCharts::QAbstractSeries* series) {
 }
 
 void FrChartModel::updateChart() {
-    if (!_measurement) {
+    if (!_project) {
         return;
     }
 
-    const auto& fs = _measurement->frequencies();
-    const auto& fir = _measurement->calibratedFr();
+    const auto& fs = _project->frequencies();
+    const auto& fir = _project->calibratedFr();
 
     QVector<QPointF> points;
     points.reserve(fs.size());
@@ -51,9 +51,9 @@ void FrChartModel::updateChart() {
 
 }
 
-void FrChartModel::onCurrentMeasurementChangedF(Measurement* measurement) {
-    _measurement = measurement;
-    if (!_measurement) {
+void FrChartModel::onCurrentMeasurementChangedF(Project* project) {
+    _project = project;
+    if (!_project) {
         _logSeries->clear();
         _calibrationSeries->clear();
         _calibrations.clear();
@@ -61,14 +61,14 @@ void FrChartModel::onCurrentMeasurementChangedF(Measurement* measurement) {
     }
 
     // Install callback to get notified, when measurement is changed
-    _measurement->setFrChangedCallback(std::bind(&FrChartModel::updateChart, this));
+    _project->setFrChangedCallback(std::bind(&FrChartModel::updateChart, this));
 
     // Calibrations are static, so we update our series
     _calibrations.clear();
-    const auto& fs = measurement->frequencies();
-    const auto& cFr = _measurement->calibratedFr();
-    const auto& c0 = measurement->frCalibration(Calibration0);
-    const auto& c90 = measurement->frCalibration(Calibration90);
+    const auto& fs = project->frequencies();
+    const auto& cFr = _project->calibratedFr();
+    const auto& c0 = project->frCalibration(Calibration0);
+    const auto& c90 = project->frCalibration(Calibration90);
 
     auto& points0 = _calibrations[Calibration0];
     points0.reserve(fs.size());

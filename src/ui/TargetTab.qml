@@ -7,6 +7,8 @@ import QtCharts 2.3
 
 import TargetModel 1.0
 
+import "items"
+
 Page {
     header: ToolBar {
         height: 24
@@ -29,7 +31,7 @@ Page {
                     font.bold: true
                     font.pixelSize: 12
                 },
-                UpDownSpinBox {
+                MicroUpDownSpinBox {
                     //label: "F"
                     value: TargetModel.loudness.toFixed(1) + " phon"
                     onValueUp: TargetModel.stepParam(0, 0, +0.5)
@@ -43,7 +45,7 @@ Page {
                 //    font.bold: true
                 //    font.pixelSize: 12
                 //},
-                //UpDownSpinBox {
+                //MicroUpDownSpinBox {
                 //    value: TargetModel.harman
                 //    onValueUp: TargetModel.stepParam(1, 0, +0.25)
                 //    onValueDown: TargetModel.stepParam(1, 0, -0.25)
@@ -78,14 +80,14 @@ Page {
                     font.pixelSize: 12
                 },
 
-                UpDownSpinBox {
+                MicroUpDownSpinBox {
                     label: "Min"
                     value: TargetModel.sumMin.toFixed(1)
                     unit: "dB"
                     valueColor: Material.accent
                     buttonsVisible: false
                 },
-                UpDownSpinBox {
+                MicroUpDownSpinBox {
                     label: "Max"
                     value: TargetModel.sumMax.toFixed(1)
                     unit: "dB"

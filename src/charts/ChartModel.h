@@ -5,7 +5,9 @@
 #include <QtCharts/QXYSeries>
 
 #include "AbstractChart.h"
-#include "measure/Measurement.h"
+#include <project/Project.h>
+
+class AbstractChart;
 
 class ChartModel : public QObject {
     Q_OBJECT

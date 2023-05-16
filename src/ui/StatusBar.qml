@@ -6,6 +6,8 @@ import QtQuick.Layouts 1.12
 import CrossoverModel 1.0
 import StatusModel 1.0
 
+import "items"
+
 ToolBar {
     height: 48
     width: parent.width
@@ -49,7 +51,7 @@ ToolBar {
             font.pixelSize: 12
         }
 
-        UpDownSpinBox {
+        MicroUpDownSpinBox {
             visible: StatusModel.tabIndex > 1
             Layout.maximumWidth: 84
             label: "Min"
@@ -58,7 +60,7 @@ ToolBar {
             valueColor: Material.accent
             buttonsVisible: false
         }
-        UpDownSpinBox {
+        MicroUpDownSpinBox {
             visible: StatusModel.tabIndex > 1
             Layout.maximumWidth: 84
             label: "Max"
@@ -67,7 +69,7 @@ ToolBar {
             valueColor: Material.accent
             buttonsVisible: false
         }
-        UpDownSpinBox {
+        MicroUpDownSpinBox {
             visible: StatusModel.ripple.length > 0
             Layout.maximumWidth: 84
             label: "Ripple"

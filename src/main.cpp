@@ -3,23 +3,20 @@
 #include <QQuickStyle>
 #include <QThread>
 
-#include "charts/ChartModel.h"
-#include "charts/FrChartModel.h"
-#include "charts/IrChartModel.h"
-#include "crossover/CrossoverModel.h"
-#include "equalizer/EqualizerModel.h"
-#include "equalizer/FilterModel.h"
-#include "equalizer/TargetModel.h"
-#include "measure/Measurement.h"
-#include "measure/MeasureModel.h"
-#include "measure/MeasurementService.h"
-#include "measure/SignalGenerator.h"
-#include "player/PlayerBarModel.h"
-#include "player/PlayerModel.h"
-#include "project/ProjectModel.h"
-#include "project/ProjectsModel.h"
-#include "project/SettingsModel.h"
-#include "status/StatusModel.h"
+#include <charts/FrChartModel.h>
+#include <charts/IrChartModel.h>
+#include <crossover/CrossoverModel.h>
+#include <equalizer/EqualizerModel.h>
+#include <equalizer/FilterModel.h>
+#include <equalizer/TargetModel.h>
+#include <measure/MeasureModel.h>
+#include <measure/MeasurementService.h>
+#include <player/PlayerBarModel.h>
+#include <player/PlayerModel.h>
+#include <project/ProjectModel.h>
+#include <project/ProjectsModel.h>
+#include <settings/SettingsModel.h>
+#include <status/StatusModel.h>
 
 class ModelProviderFactory {
 public:

@@ -4,23 +4,25 @@
 
 #include <QDebug>
 
-#include "Measurement.h"
 #include "MeasurementError.h"
 #include "ResponseSignal.h"
 #include "SignalGenerator.h"
 #include <common/Config.h>
+#include <project/Project.h>
+#include <project/ProjectManager.h>
 #include <status/StatusModel.h>
 
 static QAudioFormat s_inputFormat;
 static QAudioFormat s_outputFormat;
 
 MeasurementService& MeasurementService::instance() {
-    static MeasurementService instance;
+    static MeasurementService instance(ProjectManager::instance());
     return instance;
 }
 
-MeasurementService::MeasurementService(QObject *parent)
+MeasurementService::MeasurementService(ProjectManager& projectManager, QObject *parent)
     : QObject{parent},
+      _projectManager(projectManager),
       m_outputBuffer(QIODevice::ReadOnly),
       m_inputBuffer(QIODevice::WriteOnly),
       _farina(&m_outputBuffer) {
@@ -128,12 +130,12 @@ void MeasurementService::stop(bool clearResult) {
         auto responseSignal = ResponseSignal(&m_inputBuffer, s_inputFormat.sampleRate());
         responseSignal.resample(s_outputFormat.sampleRate());
 
-        auto measurement = new Measurement(s_outputFormat.sampleRate(),
+        auto measurement = new Project(s_outputFormat.sampleRate(),
                                            _farina.impulseResponse(responseSignal.data()),
                                            cfg->calibration0,
                                            cfg->calibration90,
                                            cfg->calibration);
-        emit measurementAvailable(measurement);
+        _projectManager.add(measurement);
     }
     m_progress = 0.0f;
     m_inputLevel = -99.0f;

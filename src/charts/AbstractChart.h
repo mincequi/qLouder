@@ -1,5 +1,4 @@
-#ifndef ICHART_H
-#define ICHART_H
+#pragma once
 
 class AbstractChart {
 public:
@@ -13,5 +12,3 @@ public:
     double _yMax = +1.0;
     int    _tickInterval = 10;
 };
-
-#endif // ICHART_H

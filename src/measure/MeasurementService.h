@@ -7,6 +7,7 @@
 #include "Farina.h"
 
 class Measurement;
+class ProjectManager;
 
 class MeasurementService : public QObject {
 	Q_OBJECT
@@ -30,16 +31,17 @@ public:
 
 signals:
     void progressChanged(double progress);
-    void measurementAvailable(Measurement* measurement);
     void levelChanged();
     void errorOccured();
 
 private:
-    explicit MeasurementService(QObject* parent = nullptr);
+    explicit MeasurementService(ProjectManager& projectManager, QObject* parent = nullptr);
 
     void onOutputBufferEmpty();
 	void onInputStateChanged(QAudio::State state);
 	void onOutputStateChanged(QAudio::State state);
+
+    ProjectManager& _projectManager;
 
     double m_progress = 0.0f;
     float m_inputLevel = -99.0f;

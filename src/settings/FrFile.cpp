@@ -4,17 +4,15 @@
 #include <QIODevice>
 #include <QRegExp>
 
-template <class T>
-FrFile<T>::FrFile() {
+FrFile::FrFile() {
 }
 
-template <class T>
-std::map<T,T> FrFile<T>::read(const QString& filename) {
+std::map<double,double> FrFile::read(const QString& filename) {
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return {};
 
-    std::map<T,T> out;
+    std::map<double,double> out;
     QRegExp rx("(([0-9]*[.])?[0-9]+)\\t([+-]?([0-9]*[.])?[0-9]+)");
     while (!file.atEnd()) {
         QByteArray line = file.readLine();
@@ -35,6 +33,3 @@ std::map<T,T> FrFile<T>::read(const QString& filename) {
 
     return out;
 }
-
-template class FrFile<float>;
-template class FrFile<double>;

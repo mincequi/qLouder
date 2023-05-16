@@ -1,17 +1,23 @@
-#include "MeasurementFactory.h"
+#include "ProjectFactory.h"
 
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <wavpack/wavpack.h>
 
-#include "Measurement.h"
+#include "Project.h"
 
-Measurement* MeasurementFactory::fromDisk(const std::string& fileName) {
+Project* ProjectFactory::fromDisk(const std::string& fileName) {
+    auto ctx = WavpackOpenFileInput(fileName.c_str(), nullptr, 0, 0);
 
+    ImpulseResponse ir;
+    ir.resize(WavpackGetNumSamples(ctx));
+    WavpackUnpackSamples(ctx, (int32_t*)ir.data(), ir.size());
+
+    return new Project(WavpackGetSampleRate(ctx), ir);
 }
 
-void MeasurementFactory::toDisk(Measurement& measurement, const std::string& fileName) {
+void ProjectFactory::toDisk(Project& project, const std::string& fileName) {
 
     std::vector<uint8_t> out;
     auto wpc = WavpackOpenFileOutput([](void* id, void* data, int32_t byte_count) {
@@ -27,13 +33,13 @@ void MeasurementFactory::toDisk(Measurement& measurement, const std::string& fil
     config.bits_per_sample = 32;
     config.channel_mask = 4; // Microsoft standard: 4 == mono, 3 == stereo
     config.num_channels = 1;
-    config.sample_rate = measurement.sampleRate();
+    config.sample_rate = project.sampleRate();
     config.float_norm_exp = 127;
     config.qmode |= QMODE_RAW_PCM;
     //config.flags = CONFIG_VERY_HIGH_FLAG | CONFIG_HYBRID_FLAG | CONFIG_HYBRID_SHAPE;
-    WavpackSetConfiguration(wpc, &config, measurement.ir().size());
+    WavpackSetConfiguration(wpc, &config, project.ir().size());
     WavpackPackInit(wpc);
-    WavpackPackSamples(wpc, (int32_t*)measurement.ir().data(), measurement.ir().size());
+    WavpackPackSamples(wpc, (int32_t*)project.ir().data(), project.ir().size());
     WavpackFlushSamples(wpc);
 
     std::string str;

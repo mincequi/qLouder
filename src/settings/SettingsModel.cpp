@@ -8,8 +8,8 @@
 #include <QUrl>
 
 #include <common/Config.h>
-#include "measure/MeasurementService.h"
-#include "util/FrFile.h"
+#include <measure/MeasurementService.h>
+#include <settings/FrFile.h>
 
 static const QString calibration0Key("calibration0");
 static const QString calibration90Key("calibration90");
@@ -177,11 +177,11 @@ int SettingsModel::savedOutputSampleRate() const {
 
 void SettingsModel::openCalibrationFile(int degrees, const QString& fileName) {
     if (degrees == 0) {
-        cfg->calibration0 = FrFile<double>::read(fileName);
+        cfg->calibration0 = FrFile::read(fileName);
         m_micCalibration0 = cfg->calibration0.empty() ? "Error parsing: " : "";
         m_micCalibration0 += fileName;
     } else if (degrees == 90) {
-        cfg->calibration90 = FrFile<double>::read(fileName);
+        cfg->calibration90 = FrFile::read(fileName);
         m_micCalibration90 = cfg->calibration90.empty() ? "Error parsing: " : "";
         m_micCalibration90 += fileName;
     }

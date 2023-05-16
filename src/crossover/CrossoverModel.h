@@ -10,11 +10,14 @@ class CrossoverModel : public ChartModel {
     Q_PROPERTY(QString lowPassFrequencyUnitReadout READ lowPassFrequencyUnitReadout NOTIFY rangeChanged)
     Q_PROPERTY(double lowPassQ READ lowPassQ NOTIFY rangeChanged)
     Q_PROPERTY(double lowPassG MEMBER _lowPassG NOTIFY rangeChanged)
+    Q_PROPERTY(int lowPassOrder MEMBER _lowPassOrderIndex NOTIFY rangeChanged)
 
     Q_PROPERTY(QString highPassFrequencyReadout READ highPassFrequencyReadout NOTIFY rangeChanged)
     Q_PROPERTY(QString highPassFrequencyUnitReadout READ highPassFrequencyUnitReadout NOTIFY rangeChanged)
     Q_PROPERTY(double highPassQ READ highPassQ NOTIFY rangeChanged)
     Q_PROPERTY(double highPassG MEMBER _highPassG NOTIFY rangeChanged)
+    Q_PROPERTY(int highPassOrder MEMBER _highPassOrderIndex NOTIFY rangeChanged)
+    Q_PROPERTY(int highPassInvert MEMBER _invert NOTIFY rangeChanged)
 
     Q_PROPERTY(double sumMin MEMBER _sumMin NOTIFY rangeChanged)
     Q_PROPERTY(double sumMax MEMBER _sumMax NOTIFY rangeChanged)
@@ -58,12 +61,12 @@ private:
     int _lowPassF = 0.0;
     double _lowPassQ = -3.0;
     double _lowPassG = 0.0;
-    int _lowPassC = 1;
+    int _lowPassOrderIndex = 0;
     int _highPassF = 0.0;
     double _highPassQ = -3.0;
     double _highPassG = 0.0;
-    int _highPassC = 1;
-    bool _invert = false;
+    int _highPassOrderIndex = 0;
+    bool _invert = true;
 
     double _sumMax = -144.0;
     double _sumMin = 144.0;

@@ -1,5 +1,4 @@
-#ifndef TIMETABLE_H
-#define TIMETABLE_H
+#pragma once
 
 #include <vector>
 
@@ -13,5 +12,3 @@ private:
 
     TimeTable();
 };
-
-#endif // TIMETABLE_H

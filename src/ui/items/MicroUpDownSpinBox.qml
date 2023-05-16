@@ -55,14 +55,14 @@ RowLayout {
     ColumnLayout {
         visible: buttonsVisible
         spacing: 0
-        SmallToolButton {
+        MicroToolButton {
             yOffset: 1
             iconName: "chevron-up"
             iconColor: Material.foreground
             implicitHeight: control.implicitHeight/2
             onClicked: control.valueUp()
         }
-        SmallToolButton {
+        MicroToolButton {
             yOffset: -1
             iconName: "chevron-down"
             iconColor: Material.foreground

@@ -8,9 +8,10 @@ import MeasureModel 1.0
 import PlayerModel 1.0
 import PlayerBarModel 1.0
 
-ToolBar {
+import "items"
+
+MicroToolBar {
     height: 48
-    Material.elevation: 0
 
     SmallRangeSlider {
         id: sineSweepRangeSlider
@@ -79,7 +80,7 @@ ToolBar {
         font.bold: true
     }
 
-    SmallToolButton {
+    MicroToolButton {
         id: deleteFilter
         visible: PlayerModel.isPlaying
         anchors.top: parent.top

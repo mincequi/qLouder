@@ -1,18 +1,17 @@
-#include "Measurement.h"
+#include "Project.h"
 
 #include <cstring>
 #include <complex>
 
 #include <wavpack/wavpack.h>
 
-#include "Fft.h"
-#include "SignalGenerator.h"
+#include <common/Fft.h>
 #include <status/StatusModel.h>
 
 // Swept Sine Chirps for Measuring Impulse Response
 // https://www.thinksrs.com/downloads/pdfs/applicationnotes/SR1_SweptSine.pdf
-Measurement::Measurement(int sampleRate,
-                         const MonoSignal& ir,
+Project::Project(int sampleRate,
+                         const ImpulseResponse& ir,
                          const std::map<double, double>& calibration0,
                          const std::map<double, double>& calibration90,
                          Calibration calibration)
@@ -48,8 +47,8 @@ Measurement::Measurement(int sampleRate,
     setIrWindowRight(+400.0);
 }
 
-Measurement::Measurement(int sampleRate,
-                         const MonoSignal& ir,
+Project::Project(int sampleRate,
+                         const ImpulseResponse& ir,
                          const std::map<std::string, std::string>& tags)
     : _sampleRate(sampleRate),
       _ir(ir),
@@ -71,15 +70,15 @@ Measurement::Measurement(int sampleRate,
     setIrWindowRight(+400.0);
 }
 
-int Measurement::sampleRate() const {
+int Project::sampleRate() const {
     return _sampleRate;
 }
 
-const MonoSignal& Measurement::ir() {
+const ImpulseResponse& Project::ir() {
     return _ir;
 }
 
-const MonoSignal& Measurement::irWindow() {
+const ImpulseResponse& Project::irWindow() {
     if (_irWin.empty()) {
         _irWin.reserve(_irWindowRight - _irWindowLeft + 1);
 
@@ -108,7 +107,7 @@ const MonoSignal& Measurement::irWindow() {
     return _irWin;
 }
 
-const MonoSignal& Measurement::windowedIr() {
+const ImpulseResponse& Project::windowedIr() {
     if (_windowedIr.empty()) {
         const auto& ir_ = ir();
         const auto& irWin = irWindow();
@@ -124,15 +123,15 @@ const MonoSignal& Measurement::windowedIr() {
     return _windowedIr;
 }
 
-void Measurement::setFrChangedCallback(std::function<void()> cb) {
+void Project::setFrChangedCallback(std::function<void()> cb) {
     _frChangedCallback = cb;
 }
 
-const std::vector<double>& Measurement::frequencies() {
+const std::vector<double>& Project::frequencies() {
     return _table.frequencies();
 }
 
-const std::vector<double>& Measurement::fr() {
+const std::vector<double>& Project::fr() {
     if (_fr.empty()) {
         const auto& wIr = windowedIr();
 
@@ -158,7 +157,7 @@ const std::vector<double>& Measurement::fr() {
     return _fr;
 }
 
-void Measurement::setCalibration(Calibration calibration) {
+void Project::setCalibration(Calibration calibration) {
     if (_calibration == calibration) return;
 
     _calibration = calibration;
@@ -169,7 +168,7 @@ void Measurement::setCalibration(Calibration calibration) {
     }
 }
 
-const std::vector<double>& Measurement::calibratedFr() {
+const std::vector<double>& Project::calibratedFr() {
     const auto& fr_ = fr();
     if (_calibratedFr.empty()) {
         if (_frCalibrations[_calibration].empty()) {
@@ -184,33 +183,33 @@ const std::vector<double>& Measurement::calibratedFr() {
     return _calibratedFr;
 }
 
-const std::vector<double>& Measurement::frCalibration(Calibration calibration) {
+const std::vector<double>& Project::frCalibration(Calibration calibration) {
     return _frCalibrations[calibration];
 }
 
-double Measurement::irWindowLeft() const {
+double Project::irWindowLeft() const {
     return (double)(_irMaxValueIndex - _irWindowLeft)/_sampleRate * -1000.0;
 }
 
-void Measurement::setIrWindowLeft(double ms) {
+void Project::setIrWindowLeft(double ms) {
     _irWindowLeft = _irMaxValueIndex + _sampleRate * ms / 1000.0;
     _irWindowLeft = std::max(_irWindowLeft, 0);
 
     reset();
 }
 
-double Measurement::irWindowRight() const {
+double Project::irWindowRight() const {
     return (double)(_irWindowRight - _irMaxValueIndex)/_sampleRate * 1000.0;
 }
 
-void Measurement::setIrWindowRight(double ms) {
+void Project::setIrWindowRight(double ms) {
     _irWindowRight = _irMaxValueIndex + _sampleRate * ms / 1000.0;
     _irWindowRight = std::min(_irWindowRight, (int)_ir.size()-1);
 
     reset();
 }
 
-void Measurement::findIrMaxValue(const MonoSignal& ir, int& idx, float& value) {
+void Project::findIrMaxValue(const MonoSignal& ir, int& idx, float& value) {
     for (int i = 0; i < ir.size(); ++i) {
         if (value < fabs(ir.at(i))) {
             value = fabs(ir.at(i));
@@ -219,7 +218,7 @@ void Measurement::findIrMaxValue(const MonoSignal& ir, int& idx, float& value) {
     }
 }
 
-void Measurement::findRangeByAmplitude(int& min, int& max) {
+void Project::findRangeByAmplitude(int& min, int& max) {
     float ampMax = 0.0f;
     for (int i = min; i >= 0; --i) {
         // 0.00025  -> 72dB
@@ -239,7 +238,7 @@ void Measurement::findRangeByAmplitude(int& min, int& max) {
     }
 }
 
-void Measurement::reset() {
+void Project::reset() {
     _irWin.clear();
     _windowedIr.clear();
     _fr.clear();

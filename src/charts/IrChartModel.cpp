@@ -1,14 +1,14 @@
 #include "IrChartModel.h"
 
 #include "TimeTable.h"
-#include "measure/MeasurementManager.h"
+#include <project/ProjectManager.h>
 
 #include <cmath>
 #include <QCoreApplication>
 
 IrChartModel::IrChartModel(QObject *parent)
     : ChartModel{parent} {
-    connect(&MeasurementManager::instance(), &MeasurementManager::currentMeasurementChangedF,
+    connect(&ProjectManager::instance(), &ProjectManager::currentProjectChanged,
             this, &IrChartModel::onCurrentMeasurementChangedF);
 
 }
@@ -38,27 +38,27 @@ void IrChartModel::setIrWindowSeries(QtCharts::QAbstractSeries* series) {
 }
 
 bool IrChartModel::hasMeasurement() const {
-    return _measurement != nullptr;
+    return _project != nullptr;
 }
 
 void IrChartModel::moveIrWindowLeft(int step) {
-    const auto val = fabs(_measurement->irWindowLeft());
+    const auto val = fabs(_project->irWindowLeft());
 
     if (step < 0)
-        _measurement->setIrWindowLeft(-TimeTable::lower(val));
+        _project->setIrWindowLeft(-TimeTable::lower(val));
     else
-        _measurement->setIrWindowLeft(-TimeTable::upper(val));
+        _project->setIrWindowLeft(-TimeTable::upper(val));
 
     updateChart();
 }
 
 void IrChartModel::moveIrWindowRight(int step) {
-    const auto val = fabs(_measurement->irWindowRight());
+    const auto val = fabs(_project->irWindowRight());
 
     if (step < 0)
-        _measurement->setIrWindowRight(TimeTable::lower(val));
+        _project->setIrWindowRight(TimeTable::lower(val));
     else
-        _measurement->setIrWindowRight(TimeTable::upper(val));
+        _project->setIrWindowRight(TimeTable::upper(val));
 
     updateChart();
 }
@@ -66,21 +66,21 @@ void IrChartModel::moveIrWindowRight(int step) {
 void IrChartModel::moveHandle(int index, double x, double y) {
     if (index == 0) {
         x = std::min(x, -0.1);
-        _measurement->setIrWindowLeft(x);
+        _project->setIrWindowLeft(x);
     } else if (index == 1) {
         x = std::max(x, +0.5);
-        _measurement->setIrWindowRight(x);
+        _project->setIrWindowRight(x);
     }
 
     updateChart();
 }
 
 QString IrChartModel::irWindowLeftReadout() const {
-    if (!_measurement) {
+    if (!_project) {
         return {};
     }
 
-    auto val = fabs(_measurement->irWindowLeft());
+    auto val = fabs(_project->irWindowLeft());
     if (val < 10.0)
          return QString::number(val, 'f', 1) + " ms";
     else
@@ -88,11 +88,11 @@ QString IrChartModel::irWindowLeftReadout() const {
 }
 
 QString IrChartModel::irWindowRightReadout() const {
-    if (!_measurement) {
+    if (!_project) {
         return {};
     }
 
-    auto val = _measurement->irWindowRight();
+    auto val = _project->irWindowRight();
     if (val < 10.0)
          return QString::number(val, 'f', 1) + " ms";
     else
@@ -100,39 +100,39 @@ QString IrChartModel::irWindowRightReadout() const {
 }
 
 double IrChartModel::irWindowLeft() const {
-    if (!_measurement) {
+    if (!_project) {
         return -100.0; //std::numeric_limits<double>::quiet_NaN();
     }
 
-    return _measurement->irWindowLeft();
+    return _project->irWindowLeft();
 }
 
 double IrChartModel::irWindowRight() const {
-    if (!_measurement) {
+    if (!_project) {
         return 400.0; //std::numeric_limits<double>::quiet_NaN();
     }
 
-    return _measurement->irWindowRight();
+    return _project->irWindowRight();
 }
 
 void IrChartModel::updateChart() {
-    if (!_measurement || !_series) {
+    if (!_project || !_series) {
         return;
     }
 
     // Update UI controls
-    handles()->replace(0, _measurement->irWindowLeft(), 0.0);
-    handles()->replace(1, _measurement->irWindowRight(), 0.0);
+    handles()->replace(0, _project->irWindowLeft(), 0.0);
+    handles()->replace(1, _project->irWindowRight(), 0.0);
 
     // Process core events, before doing costly operations
     QCoreApplication::processEvents();
 
-    const auto& wir = _measurement->windowedIr();
+    const auto& wir = _project->windowedIr();
     QVector<QPointF> points;
     points.reserve(wir.size());
-    const double durationMs = (_measurement->irWindowRight() - _measurement->irWindowLeft());
+    const double durationMs = (_project->irWindowRight() - _project->irWindowLeft());
     for (int i = 0; i < wir.size(); ++i) {
-        points.append( { _measurement->irWindowLeft() + (double)i/wir.size()*durationMs, wir.at(i) } );
+        points.append( { _project->irWindowLeft() + (double)i/wir.size()*durationMs, wir.at(i) } );
     }
     updateIrWindow();
 
@@ -143,18 +143,18 @@ void IrChartModel::updateChart() {
 }
 
 void IrChartModel::updateIrWindow() {
-    const auto& wir = _measurement->windowedIr();
-    const auto& w = _measurement->irWindow();
+    const auto& wir = _project->windowedIr();
+    const auto& w = _project->irWindow();
 
     QVector<QPointF> points;
     points.reserve(w.size());
-    const double durationMs = (_measurement->irWindowRight() - _measurement->irWindowLeft());
-    points.append( { _measurement->irWindowLeft(), w.front() } );
+    const double durationMs = (_project->irWindowRight() - _project->irWindowLeft());
+    points.append( { _project->irWindowLeft(), w.front() } );
     for (int i = 1; i < w.size()-1; ++i) {
         if (fabs(points.last().ry() - w.at(i)) > 0.005)
-            points.append( { _measurement->irWindowLeft() + (double)i/w.size()*durationMs, w.at(i) } );
+            points.append( { _project->irWindowLeft() + (double)i/w.size()*durationMs, w.at(i) } );
     }
-    points.append( { _measurement->irWindowRight(), w.back() } );
+    points.append( { _project->irWindowRight(), w.back() } );
 
     _irWindowSeries->replace(points);
     emit irWindowChanged();
@@ -172,10 +172,10 @@ QVector<QPointF> IrChartModel::simplify(const QVector<QPointF>& in) {
     return out;
 }
 
-void IrChartModel::onCurrentMeasurementChangedF(Measurement* measurement) {
-    _measurement = measurement;
+void IrChartModel::onCurrentMeasurementChangedF(Project* measurement) {
+    _project = measurement;
     emit measurementChanged();
-    if (!_measurement || !_series) {
+    if (!_project || !_series) {
         return;
     }
 

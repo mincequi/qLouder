@@ -29,6 +29,7 @@ FetchContent_MakeAvailable(miniaudio)
 #FetchContent_MakeAvailable(rpp)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -60,8 +61,7 @@ set(PROJECT_SOURCES
     src/charts/LogChart.cpp
     src/charts/TimeTable.cpp
     src/crossover/CrossoverModel.cpp
-    src/ui/MaterialDesignIcon.cpp
-    src/util/FrFile.cpp
+    src/ui/icon/MaterialDesignIcon.cpp
     src/main.cpp
     src/qml.qrc
 )
@@ -73,6 +73,7 @@ add_subdirectory(src/equalizer)
 add_subdirectory(src/measure)
 add_subdirectory(src/player)
 add_subdirectory(src/project)
+add_subdirectory(src/settings)
 add_subdirectory(src/status)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -123,9 +124,10 @@ PRIVATE
     #rpp
     common
     equalizer
-    player
     measure
+    player
     project
+    settings
 )
 
 set_target_properties(qLouder PROPERTIES

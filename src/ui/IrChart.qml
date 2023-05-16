@@ -7,6 +7,8 @@ import QtQuick.Layouts 1.0
 import ChartModel 1.0
 import IrChartModel 1.0
 
+import "items"
+
 Chart {
     id: chart
     type: ChartModel.ImpulseResponse
@@ -37,23 +39,23 @@ Chart {
             spacing: 0
             Layout.topMargin: 6
 
-            SmallToolButton {
+            MicroToolButton {
                 iconName: "magnify-minus"
                 flat: true
                 onClicked: model.zoom(0.5);
             }
-            SmallToolButton {
+            MicroToolButton {
                 id: zoomIn
                 iconName: "magnify-plus"
                 flat: true
                 onClicked: model.zoom(2.0);
             }
-            SmallToolButton {
+            MicroToolButton {
                 iconName: "chevron-left"
                 flat: true
                 onClicked: model.pan(-0.2);
             }
-            SmallToolButton {
+            MicroToolButton {
                 iconName: "chevron-right"
                 flat: true
                 onClicked: model.pan(0.2);
@@ -80,7 +82,7 @@ Chart {
             Layout.rightMargin: 0
             enabled: model.hasMeasurement
 
-            SmallToolButton {
+            MicroToolButton {
                 iconName: "minus"
                 iconColor: Material.foreground
                 onClicked: model.moveIrWindowLeft(-1);
@@ -95,7 +97,7 @@ Chart {
                 Layout.fillWidth: true
             }
 
-            SmallToolButton {
+            MicroToolButton {
                 iconName: "plus"
                 iconColor: Material.foreground
                 onClicked: model.moveIrWindowLeft(1);
@@ -122,7 +124,7 @@ Chart {
             Layout.rightMargin: 0
             enabled: model.hasMeasurement
 
-            SmallToolButton {
+            MicroToolButton {
                 iconName: "minus"
                 iconColor: Material.foreground
                 onClicked: model.moveIrWindowRight(-1);
@@ -137,7 +139,7 @@ Chart {
                 Layout.fillWidth: true
             }
 
-            SmallToolButton {
+            MicroToolButton {
                 iconName: "plus"
                 iconColor: Material.foreground
                 onClicked: model.moveIrWindowRight(1);

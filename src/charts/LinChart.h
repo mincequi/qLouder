@@ -1,5 +1,4 @@
-#ifndef LINCHART_H
-#define LINCHART_H
+#pragma once
 
 #include "AbstractChart.h"
 
@@ -12,5 +11,3 @@ private:
     void zoom(double zoom) override;
     void pan(double pan) override;
 };
-
-#endif // LINCHART_H

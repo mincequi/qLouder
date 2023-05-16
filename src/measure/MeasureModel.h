@@ -6,7 +6,7 @@
 
 #include "Signal.h"
 
-class Measurement;
+class Project;
 class MeasurementService;
 
 class MeasureModel : public QObject {
@@ -82,9 +82,9 @@ signals:
     void errorOccurred();
 
 private:
-    void onCurrentMeasurementChanged(Measurement* measurement);
+    void onCurrentMeasurementChanged(Project* measurement);
     void onServiceProgressChanged(double progress);
-    Measurement* _currentMeasurement = nullptr;
+    Project* _currentMeasurement = nullptr;
 
     int m_durationPerOctave = 250;
     Signal::Channels _channels = Signal::Channels::Left;

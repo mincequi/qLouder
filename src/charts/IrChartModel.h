@@ -1,5 +1,4 @@
-#ifndef IRCHARTMODEL_H
-#define IRCHARTMODEL_H
+#pragma once
 
 #include "ChartModel.h"
 
@@ -39,7 +38,7 @@ public slots:
 signals:
 
 private:
-    void onCurrentMeasurementChangedF(Measurement* measurement);
+    void onCurrentMeasurementChangedF(Project* measurement);
 
     void updateChart();
     void updateIrWindow();
@@ -52,7 +51,5 @@ private:
     QtCharts::QXYSeries* _upperEnvelopeSeries = nullptr;
     QtCharts::QXYSeries* _lowerEnvelopeSeries = nullptr;
 
-    Measurement* _measurement = nullptr;
+    Project* _project = nullptr;
 };
-
-#endif // IRCHARTMODEL_H

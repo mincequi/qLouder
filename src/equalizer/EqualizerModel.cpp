@@ -6,7 +6,7 @@
 #include "FilterModel.h"
 #include "TargetModel.h"
 #include <common/AudioFilter.h>
-#include <measure/MeasurementManager.h>
+#include <project/ProjectManager.h>
 #include <status/StatusModel.h>
 
 // https://www.sonarworks.com/soundid-reference/blog/learn/eq-curves-defined/
@@ -22,7 +22,7 @@ EqualizerModel::EqualizerModel(const TargetModel& targetModel,
     FrequencyTable<double> rangeTable(3, 20.0);
     _rangeTable = rangeTable.frequencies();
 
-    MeasurementManager::instance().calibratedFr()
+    ProjectManager::instance().calibratedFr()
             .combine_latest([](const auto& measurement, const auto& filter) {
         std::vector<double> out;
         out.reserve(measurement.size());

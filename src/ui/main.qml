@@ -11,6 +11,8 @@ import PlayerBarModel 1.0
 import ProjectsModel 1.0
 import StatusModel 1.0
 
+import "items"
+
 ApplicationWindow {
     function colorWithAlpha(color, alpha) {
         return Qt.rgba(color.r, color.g, color.b, alpha)
@@ -34,13 +36,11 @@ ApplicationWindow {
     Material.primary: Material.color(Material.Grey, Material.Shade800)
     Material.accent: Material.DeepOrange
 
-    ToolBar {
+    MicroToolBar {
         id: upperLeftToolBar
         width: leftToolBarWidth
-        height: 24
         anchors.left: parent.left
         anchors.top: parent.top
-        Material.elevation: 0
     }
 
     VerticalTabBar {
@@ -93,29 +93,30 @@ ApplicationWindow {
         width: 96
         //Layout.fillHeight: true
         clip: true
-
+        spacing: 1
         model: ProjectsModel.projects
+        currentIndex: ProjectsModel.index
         delegate: ProjectItem {
             projectModel: modelData
         }
-        //model: EqualizerModel.filters
-        //delegate: FilterItem {
-        //    filterModel: modelData
-        //}
+        highlight: Rectangle {
+            z: 1;
+            color: "transparent"
+            border.color: Material.accent
+        }
     }
 
-    ToolBar {
+    MicroToolBar {
         id: playerControls
         width: leftToolBarWidth
         height: 48
         anchors.bottom: lowerLeftToolBar.top
         anchors.bottomMargin: 1
-        Material.elevation: 0
 
         ColumnLayout {
             anchors.fill: parent
             spacing: 0
-            SmallToolButton {
+            MicroToolButton {
                 id: measureButton
                 font.pixelSize: 10
                 implicitWidth: leftToolBarWidth
@@ -125,7 +126,7 @@ ApplicationWindow {
                 iconColor: Material.color(Material.Red, Material.Shade300)
                 onClicked: PlayerBarModel.toggleMeasure()
             }
-            SmallToolButton {
+            MicroToolButton {
                 id: playButton
                 font.pixelSize: 10
                 implicitWidth: leftToolBarWidth

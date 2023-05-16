@@ -2,9 +2,9 @@
 
 #include <functional>
 
-#include "ImpulseResponse.h"
 #include "Types.h"
 #include <common/FrequencyTable.h>
+#include <common/ImpulseResponse.h>
 
 /**
  * @brief The Measurement class
@@ -14,21 +14,20 @@
  * operation/manipulation like windowing and FFT.
  * It shall not hold state.
  */
-class Measurement {
+class Project {
 public:
-    explicit Measurement(int sampleRate,
-                         // TODO: change inputSignal and inverseFilter to ir
-                         const MonoSignal& ir,
-                         const std::map<double, double>& calibration0 = {},
-                         const std::map<double, double>& calibration90 = {},
-                         Calibration calibration = CalibrationNone);
+    explicit Project(int sampleRate,
+                     const ImpulseResponse& ir,
+                     const std::map<double, double>& calibration0 = {},
+                     const std::map<double, double>& calibration90 = {},
+                     Calibration calibration = CalibrationNone);
 
-    Measurement(int sampleRate,
-                const MonoSignal& ir,
-                const std::map<std::string, std::string>& tags);
+    Project(int sampleRate,
+            const ImpulseResponse& ir,
+            const std::map<std::string, std::string>& tags);
 
     int sampleRate() const;
-    const MonoSignal& ir();
+    const ImpulseResponse& ir();
 
     const std::string& speaker() const;
     const std::string& microphone() const;
@@ -38,8 +37,8 @@ public:
     uint32_t recordDate() const;
 
     // TODO: candidate to be moved
-    const MonoSignal& irWindow();
-    const MonoSignal& windowedIr();
+    const ImpulseResponse& irWindow();
+    const ImpulseResponse& windowedIr();
 
     double irWindowLeft() const;
     void setIrWindowLeft(double ms);
@@ -82,9 +81,9 @@ private:
     FrequencyTable<double> _table;
     int _sampleRate = 48000;
 
-    MonoSignal _ir;
-    MonoSignal _irWin;
-    MonoSignal _windowedIr;
+    ImpulseResponse _ir;
+    ImpulseResponse _irWin;
+    ImpulseResponse _windowedIr;
 
     std::function<void()> _frChangedCallback = nullptr;
     std::vector<double> _fr;

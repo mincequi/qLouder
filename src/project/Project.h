@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <string>
 
 #include "Types.h"
 #include <common/FrequencyTable.h>

@@ -1,6 +1,8 @@
 #include "ProjectFactory.h"
 
+#include <cstring>
 #include <fstream>
+#include <iomanip>
 #include <sstream>
 #include <vector>
 #include <wavpack/wavpack.h>

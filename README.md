@@ -37,6 +37,7 @@ optimal filter set and crossover for your DIY loudspeaker.
 * Simple music player
 
 # TODO
+* Port to Qt6
 * SPL meter
 * Persistent measurements
 * ~~Harman house curve~~
@@ -49,7 +50,7 @@ optimal filter set and crossover for your DIY loudspeaker.
 
 # Requirements
 * GCC >= 9.4.0
-* Qt >= 5.12
+* Qt >= 5.12 (Qt6 not yet supported)
 * e.g. Ubuntu >= 20.04 (Focal)
 * PulseAudio is running
 
@@ -75,6 +76,7 @@ sudo apt install \
   qtmultimedia5-dev \
   qtquickcontrols2-5-dev \
   qml-module-qtcharts \
+  qml-module-qtquick-dialogs \
   qml-module-qtquick-shapes \
   qml-module-qt-labs-folderlistmodel \
   qml-module-qt-labs-settings \

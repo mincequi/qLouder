@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.14)
 
 project(qLouder VERSION 0.3 LANGUAGES CXX C)
 
+add_compile_options(-Wno-deprecated-declarations)
+
 Include(FetchContent)
 Set(FETCHCONTENT_QUIET FALSE)
 

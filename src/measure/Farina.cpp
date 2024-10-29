@@ -1,6 +1,7 @@
 #include "Farina.h"
 
 #include <complex>
+#include <cstring>
 
 #include <common/Fft.h>
 #include "InverseSignal.h"
